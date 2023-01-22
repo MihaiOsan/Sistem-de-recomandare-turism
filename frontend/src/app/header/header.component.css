@@ -1,0 +1,27 @@
+.navbar{
+    background-color: #1A1A1A;
+    margin: 0px;
+    position: sticky;
+}
+
+.navbar-brand{
+    color: #F8F8F8;
+}
+
+.navbar-brand:hover{
+    color: #FFA500;
+    transition: 0.5s ease-in-out;
+    background-color: rgb(55, 55, 55);
+}
+
+.navbar-button{
+    color: #F8F8F8;
+}
+
+.navbar-button:hover{
+    color: #FFA500;
+    transition: 0.5s ease-in-out;
+    background-color: rgb(55, 55, 55);
+    /* border-bottom: #FFA500 4px solid; */
+
+}

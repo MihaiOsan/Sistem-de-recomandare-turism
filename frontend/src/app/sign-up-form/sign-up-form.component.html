@@ -1,0 +1,40 @@
+<section>
+    <div class = "imgBx">
+        <img src = "https://cdn.romania-insider.com/sites/default/files/styles/article_large_image/public/featured_images/Autumn-trip-road-Pixabay.com_.jpg">
+        <div class="centered">
+            <h1>One of us?</h1>
+            <p>If you already have an account, sign in. We've missed you!</p>
+            <a routerLink="/LogIn">Start planning</a>
+        </div>
+    </div>
+    <div class = "contentBx">
+        <div class = "formBx">
+            <h1>New here?</h1>
+            <p>Sign up and discover great amount of new opportunities!</p>
+            <form>
+                <div class = "inputBx">
+                    <span>Name</span>
+                    <input class="field" type = "text" name = "name" id = "name" placeholder = "Enter your name" >
+                </div>
+                <div class = "inputBx">
+                    <span>Email</span>
+                    <input type = "email" name = "email" id = "email" placeholder = "example@ex.com" class="field">
+                </div>
+                <div class = "inputBx">
+                    <span>Phone</span>
+                    <input type = "tel" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" name = "phone" id = "phone" placeholder = "123-456-7890" class="field">
+                </div>
+                <div class = "inputBx">
+                    <span>Password</span>
+                    <input type = "password" name = "password" id = "password" placeholder = "Enter your password" class="field">
+                </div>
+                <div class = "inputBx">
+                    <input type = "button" name = "createNewUser" value = "Create account">
+                </div>
+                <p>Already have an account? <a routerLink="/LogIn">Start planning</a></p>
+
+            </form>
+
+        </div>
+    </div>
+</section>

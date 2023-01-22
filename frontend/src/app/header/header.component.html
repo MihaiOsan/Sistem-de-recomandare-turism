@@ -1,0 +1,23 @@
+<nav class="navbar navbar-dark navbar-fixed-top">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a href="#" class="navbar-brand">TripPlanner</a>
+    </div>
+
+    <div class="collapse navbar-collapse">
+      <ul class="nav navbar-nav">
+        <li routerLinkActive="active"><a class="navbar-button">Attractions</a></li>
+        <li routerLinkActive="active"><a class="navbar-button" routerLink="#">Create a plan</a></li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li class="dropdown" appDropdown>
+          <a style="cursor: pointer;" class="dropdown-toggle navbar-button" role="button">Account <span class="caret"></span></a>
+          <ul class="dropdown-menu">
+            <li><a style="cursor: pointer;">Save Data</a></li>
+            <li><a style="cursor: pointer;">Fetch Data</a></li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
