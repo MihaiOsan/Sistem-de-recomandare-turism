@@ -1,12 +1,9 @@
 package com.demo.backend.config;
 
-import com.demo.backend.models.CustomOAuth2User;
+import com.demo.backend.services.OAuth2LoginSuccesHandler;
 import com.demo.backend.services.CustomOAuth2UserService;
 import com.demo.backend.services.UserDetailsServiceImpl;
 import com.demo.backend.services.UserService;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,14 +13,10 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
-
-import java.io.IOException;
 
 @Configuration
 @EnableWebSecurity
@@ -71,21 +64,8 @@ public class WebSecurityConfig {
                 .userInfoEndpoint()
                 .userService(oauthUserService)
                 .and()
-                .successHandler(new AuthenticationSuccessHandler() {
-
-                    @Override
-                    public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
-                                                        Authentication authentication) throws IOException, ServletException {
-                        System.out.println("AuthenticationSuccessHandler invoked");
-                        System.out.println("Authentication name: " + authentication.getName());
-                        CustomOAuth2User oauthUser = (CustomOAuth2User) authentication.getPrincipal();
-
-                        userService.processOAuthPostLogin(oauthUser.getEmail());
-
-                        response.sendRedirect("/list");
-                    }
-                })
-                //.defaultSuccessUrl("/list")
+                .successHandler(oAuth2LoginSuccesHandler)
+                //.defaultSuccessUrl("/")
                 .and()
                 .logout().logoutSuccessUrl("/").permitAll()
                 .and()
@@ -100,4 +80,7 @@ public class WebSecurityConfig {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private OAuth2LoginSuccesHandler oAuth2LoginSuccesHandler;
 }

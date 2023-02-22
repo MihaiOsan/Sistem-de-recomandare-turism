@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.sql.Timestamp;
+import java.time.ZonedDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -22,21 +23,22 @@ public class User {
     @Id
     @Column(name = "user_id")
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    private String id;
+    private Long id;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String email;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private String password;
 
+    @Column(nullable = false)
     private String userName;
 
     @Column(length = 12)
     private String phoneNumber;
 
     @Column(updatable = false)
-    private Timestamp createdTime;
+    private ZonedDateTime createdTime;
 
     private boolean enable;
 
