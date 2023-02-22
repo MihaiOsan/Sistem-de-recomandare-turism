@@ -42,7 +42,6 @@ public class User {
 
     private boolean enable;
 
-    @Column(updatable = false)
     private String verificationCode;
 
     @Enumerated(EnumType.STRING)

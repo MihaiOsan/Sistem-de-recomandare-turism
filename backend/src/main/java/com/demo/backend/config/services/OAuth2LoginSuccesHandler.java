@@ -32,11 +32,11 @@ public class OAuth2LoginSuccesHandler extends SimpleUrlAuthenticationSuccessHand
         String email = oAuth2User.getEmail();
         Optional<User> existingUser = userRepository.getUserByEmail(email);
         if (existingUser.isEmpty())
-            userService.createOAuthUserPostLogin(email, oAuth2User.getName(), AuthenticationProvider.GOOLGE);
-        else{
-            userService.updateOAuthUserPostLogin(existingUser.get(), oAuth2User.getName(), AuthenticationProvider.GOOLGE);
+            userService.createOAuthUserPostLogin(email, oAuth2User.getName(), AuthenticationProvider.valueOf(oAuth2User.getClientName()));
+        else if (existingUser.get().getAuthProvider() == AuthenticationProvider.LOCAL){
+            userService.updateOAuthUserPostLogin(existingUser.get(), oAuth2User.getName(), AuthenticationProvider.valueOf(oAuth2User.getClientName()));
         }
-        response.sendRedirect("/");
+        response.sendRedirect("/users");
         super.onAuthenticationSuccess(request, response, authentication);
     }
 }

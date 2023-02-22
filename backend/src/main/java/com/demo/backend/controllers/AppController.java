@@ -20,15 +20,6 @@ public class AppController {
         return "index";
     }
 
-    @PostMapping("/register")
-    public String processRegister(@RequestBody User user) {
-        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-        String encodedPassword = passwordEncoder.encode(user.getPassword());
-        user.setPassword(encodedPassword);
 
-        userRepository.save(user);
-
-        return "register_success";
-    }
 
 }
