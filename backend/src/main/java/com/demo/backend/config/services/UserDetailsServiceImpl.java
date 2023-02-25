@@ -1,4 +1,4 @@
-package com.demo.backend.services;
+package com.demo.backend.config.services;
 
 import com.demo.backend.models.MyUserDetails;
 import com.demo.backend.models.entity.User;

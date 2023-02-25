@@ -1,9 +1,10 @@
-package com.demo.backend.services;
+package com.demo.backend.config.services;
 
 import com.demo.backend.models.AuthenticationProvider;
-import com.demo.backend.models.CustomOAuth2User;
+import com.demo.backend.config.models.CustomOAuth2User;
 import com.demo.backend.models.entity.User;
 import com.demo.backend.repository.UserRepository;
+import com.demo.backend.services.UserService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

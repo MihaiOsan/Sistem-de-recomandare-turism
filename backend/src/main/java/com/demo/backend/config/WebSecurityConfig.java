@@ -1,8 +1,8 @@
 package com.demo.backend.config;
 
-import com.demo.backend.services.OAuth2LoginSuccesHandler;
-import com.demo.backend.services.CustomOAuth2UserService;
-import com.demo.backend.services.UserDetailsServiceImpl;
+import com.demo.backend.config.services.OAuth2LoginSuccesHandler;
+import com.demo.backend.config.services.CustomOAuth2UserService;
+import com.demo.backend.config.services.UserDetailsServiceImpl;
 import com.demo.backend.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -50,14 +50,14 @@ public class WebSecurityConfig {
     @Bean
     protected SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests()
-                .requestMatchers("/", "/login", "/oauth/**").permitAll()
+                .requestMatchers("/", "/login", "/oauth/**", "/register", "/users").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .formLogin().permitAll()
                 .loginPage("/login")
                 .usernameParameter("email")
                 .passwordParameter("pass")
-                .defaultSuccessUrl("/list")
+                .defaultSuccessUrl("/")
                 .and()
                 .oauth2Login()
                 .loginPage("/login")
@@ -65,7 +65,7 @@ public class WebSecurityConfig {
                 .userService(oauthUserService)
                 .and()
                 .successHandler(oAuth2LoginSuccesHandler)
-                //.defaultSuccessUrl("/")
+                .defaultSuccessUrl("/")
                 .and()
                 .logout().logoutSuccessUrl("/").permitAll()
                 .and()
