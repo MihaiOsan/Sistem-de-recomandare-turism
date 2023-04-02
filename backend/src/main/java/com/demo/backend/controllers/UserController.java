@@ -31,10 +31,10 @@ public class UserController {
     UserService userService;
 
 
-    @GetMapping("/users")
-    public List<User> getAllUsers (){
-        List<User> usersList= userRepository.findAll();
-        return usersList;
+    @GetMapping("/{userEmail}")
+    public User userByEmail(@PathVariable String userEmail){
+        User user = userRepository.getUserByEmail(userEmail).get();
+        return user;
     }
 
     @RequestMapping("/login")

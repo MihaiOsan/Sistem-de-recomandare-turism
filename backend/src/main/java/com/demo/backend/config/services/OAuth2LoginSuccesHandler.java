@@ -36,7 +36,8 @@ public class OAuth2LoginSuccesHandler extends SimpleUrlAuthenticationSuccessHand
         else if (existingUser.get().getAuthProvider() == AuthenticationProvider.LOCAL){
             userService.updateOAuthUserPostLogin(existingUser.get(), oAuth2User.getName(), AuthenticationProvider.valueOf(oAuth2User.getClientName()));
         }
-        response.sendRedirect("/users");
+        String redirectUrl = String.format("%s?email=%s", "http://localhost:4200/LogIn", email);
+        response.sendRedirect(redirectUrl);
         super.onAuthenticationSuccess(request, response, authentication);
     }
 }

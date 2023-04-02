@@ -54,11 +54,12 @@ public class UserService {
     }
 
     public User userLocalLogin(UserLocalLoginInfo userLogin) throws UserNotFoundException {
-        Optional<User> user = userRepository.getUserByUsername(userLogin.getEmail());
+        Optional<User> user = userRepository.getUserByEmail(userLogin.getEmail());
         if (user.isPresent()&& passwordEncoder.matches(userLogin.getPassword(), user.get().getPassword()) && user.get().getAuthProvider() == AuthenticationProvider.LOCAL)
             return user.get();
-        else
+        else{
             throw new UserNotFoundException("Could not find a user with this email and password");
+        }
     }
 
     public User userLocalRegister(UserLocalRegisterInfo userRegister) throws EmailExistException{

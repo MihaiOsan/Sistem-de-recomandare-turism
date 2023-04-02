@@ -10,7 +10,10 @@ import { SignUpFormComponent } from './sign-up-form/sign-up-form.component';
 import { HomePageComponent } from './home-page/home-page.component';
 import { AttractionsPageComponent } from './attractions-page/attractions-page.component';
 import { CreateAPlanPageComponent } from './create-aplan-page/create-aplan-page.component';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { HttpClientModule } from '@angular/common/http';
 
+import { CoolSocialLoginButtonsModule } from '@angular-cool/social-login-buttons';
 @NgModule({
   declarations: [
     AppComponent,
@@ -24,7 +27,11 @@ import { CreateAPlanPageComponent } from './create-aplan-page/create-aplan-page.
   imports: [
     BrowserModule,
     AppRoutingModule,
-    NgbModule
+    NgbModule,
+    FormsModule,
+    ReactiveFormsModule,
+    HttpClientModule,
+    CoolSocialLoginButtonsModule 
   ],
   providers: [],
   bootstrap: [AppComponent]

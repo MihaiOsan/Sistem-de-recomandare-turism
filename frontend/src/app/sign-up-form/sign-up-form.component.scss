@@ -15,7 +15,7 @@ section{
 
 section .imgBx{
     position: relative;
-    width: 50%;
+    width: 60%;
     height: 100%;
 }
 
@@ -39,7 +39,7 @@ section .imgBx img{
 
 section .contentBx{
     position: relative;
-    width: 50%;
+    width: 40%;
     height: 100%;
     display: flex;
     justify-content: center;
@@ -47,11 +47,11 @@ section .contentBx{
 }
 
 section .contentBx .formBx{
-    width: 50%;
+    width: 70%;
 }
 
 section .contentBx .formBx h1{
-    color: #607d8b;
+    color: #3d3d3d;
     font-size: 1.8em;
     font-weight: 600;
     text-transform: uppercase;
@@ -65,7 +65,7 @@ section .contentBx .formBx p{
     display: inline-block;
     font-size: 16px;
     margin-bottom: 5px;
-    color: #607d8b;
+    color: #3d3d3d;
     font-weight: 400;
     letter-spacing: 1px;
     padding-bottom: 30px;
@@ -94,7 +94,7 @@ section .contentBx .formBx .inputBx span{
     display: inline-block;
     font-size: 16px;
     margin-bottom: 5px;
-    color: #607d8b;
+    color: #3d3d3d;
     font-weight: 400;
     letter-spacing: 1px;
 }
@@ -104,11 +104,11 @@ section .contentBx .formBx .inputBx input{
     padding: 10px 20px;
     outline: none;
     font-weight: 400;
-    border: 1px solid #607d8b;
+    border: 1px solid #3d3d3d;
     font-size: 16px;
     letter-spacing: 1PX;
-    color: #607d8b;
-    border-radius: 30px;
+    color: #3d3d3d;
+    border-radius: 10px;
     background: transparent;
 }
 
@@ -121,7 +121,7 @@ section .contentBx .formBx .inputBx input:focus{
 }
 
 section .contentBx .formBx .inputBx input[type="button"]{
-    background: #607d8b;
+    background: #3d3d3d;
     color: #fff;
     font-weight: 500;
     letter-spacing: 1px;
@@ -145,8 +145,7 @@ section .contentBx .formBx .inputBx input[type="button"]:hover{
 .centered {
     position: absolute;
     top: 75%;
-    left: 40%;
-    transform: translate(-50%, -50%);
+    left: 5%;
   }
 
 section .centered h1{
