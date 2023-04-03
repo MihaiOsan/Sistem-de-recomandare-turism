@@ -16,6 +16,12 @@ import { HttpClientModule } from '@angular/common/http';
 import { CoolSocialLoginButtonsModule } from '@angular-cool/social-login-buttons';
 import { LoginCodeValidationComponent } from './login-code-validation/login-code-validation.component';
 import { SignupSideComponent } from './signup-side/signup-side.component';
+import { AppDropdownDirectiveDirective } from './app-dropdown-directive.directive';
+import { ManagePlansPageComponent } from './manage-plans-page/manage-plans-page.component';
+import { JoinPeoplePageComponent } from './join-people-page/join-people-page.component';
+import { StatisticsPageComponent } from './statistics-page/statistics-page.component';
+import { AccountPageComponent } from './account-page/account-page.component';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -26,7 +32,12 @@ import { SignupSideComponent } from './signup-side/signup-side.component';
     AttractionsPageComponent,
     CreateAPlanPageComponent,
     LoginCodeValidationComponent,
-    SignupSideComponent
+    SignupSideComponent,
+    AppDropdownDirectiveDirective,
+    ManagePlansPageComponent,
+    JoinPeoplePageComponent,
+    StatisticsPageComponent,
+    AccountPageComponent
   ],
   imports: [
     BrowserModule,
@@ -35,7 +46,7 @@ import { SignupSideComponent } from './signup-side/signup-side.component';
     FormsModule,
     ReactiveFormsModule,
     HttpClientModule,
-    CoolSocialLoginButtonsModule 
+    CoolSocialLoginButtonsModule
   ],
   providers: [],
   bootstrap: [AppComponent]

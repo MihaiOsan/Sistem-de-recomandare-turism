@@ -15,11 +15,4 @@ public class UserReturn {
     private String phone;
     @Enumerated(EnumType.STRING)
     private AuthenticationProvider authProvider;
-
-    public UserReturn (User user){
-        this.authProvider=user.getAuthProvider();
-        this.enable=user.isEnable();
-        this.userName=user.getUserName();
-        this.
-    }
 }
