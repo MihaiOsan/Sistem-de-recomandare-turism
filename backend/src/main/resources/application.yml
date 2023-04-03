@@ -1,0 +1,44 @@
+spring:
+    datasource:
+        password: Proiect
+        url: jdbc:postgresql://localhost:5432/Licenta
+        username: postgres
+    jpa:
+        database-platform: org.hibernate.dialect.PostgreSQLDialect
+        hibernate:
+            ddl-auto: create-drop
+        properties:
+            hibernate:
+                format_sql: true
+                jdbc:
+                    lob:
+                        non_contextual_creation: true
+    main:
+        banner-mode: 'off'
+    security:
+        oauth2:
+            client:
+                registration:
+                    google:
+                        clientId: 923002745365-nmrv2itdi7f84p27klq813afjefusj16.apps.googleusercontent.com
+                        clientSecret: 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
+                        scope:
+                        - email
+                        - profile
+                    facebook:
+                        clientId: 1142080343156027
+                        clientSecret: d1146cba61aa403ad07d9a28c1727ef3
+                        scope: 
+                        - email
+                        - public_profile
+    mail:
+        host: smtp.gmail.com
+        port: 587
+        username: tripmaker2022.2023@gmail.com
+        password: kpmvntxwebwfgvok
+        properties:
+            mail:
+                smtp:
+                    auth: true
+                    starttls:
+                        enable: true
