@@ -6,6 +6,7 @@ import { User } from './model';
 
 @Injectable({ providedIn: 'root' })
 export class AuthenticationService {
+    
     private currentUserSubject: BehaviorSubject<User>;
     public currentUser: Observable<User>;
 
@@ -56,6 +57,26 @@ export class AuthenticationService {
 
     register(name: string, phoneNumber: string, username: string, password: string) {
       return this.http.post<any>(`http://localhost:8080/user/register/local`, { name: name, email: username, password: password, phone: phoneNumber })
+      .pipe(map(user => {
+        localStorage.setItem('currentUser', JSON.stringify(user));
+        this.currentUserSubject.next(user);
+        this.reloadPage();
+        return user;
+      }));
+    }
+
+    codeVerification(email: string, code: string) {
+      return this.http.post<any>(`http://localhost:8080/user/register/local/veriffication`, { email: email, code: code })
+      .pipe(map(user => {
+        localStorage.setItem('currentUser', JSON.stringify(user));
+        this.currentUserSubject.next(user);
+        this.reloadPage();
+        return user;
+      }));
+    }
+
+    resetCode(email: string) {
+      return this.http.post<any>(`http://localhost:8080/user/resendVerificationCode`, email)
       .pipe(map(user => {
         localStorage.setItem('currentUser', JSON.stringify(user));
         this.currentUserSubject.next(user);

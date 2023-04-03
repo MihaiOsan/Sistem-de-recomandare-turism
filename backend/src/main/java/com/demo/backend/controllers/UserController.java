@@ -1,21 +1,15 @@
 package com.demo.backend.controllers;
 
+import com.demo.backend.models.DTO.LocalUserVerification;
 import com.demo.backend.models.entity.User;
-import com.demo.backend.models.utils.UserLocalLoginInfo;
-import com.demo.backend.models.utils.UserLocalRegisterInfo;
+import com.demo.backend.models.DTO.UserLocalLoginInfo;
+import com.demo.backend.models.DTO.UserLocalRegisterInfo;
 import com.demo.backend.repository.UserRepository;
 import com.demo.backend.services.UserService;
-import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-
-import java.security.Principal;
-import java.util.Base64;
-import java.util.List;
 
 import static org.springframework.http.HttpStatus.OK;
 
@@ -66,7 +60,17 @@ public class UserController {
         }
     }
 
-
+    @PostMapping("/register/local/veriffication")
+    public ResponseEntity<User> verfyAccoutn(@RequestBody LocalUserVerification localUserVerification) {
+        try{
+            userService.userLocalRegisterVerification(localUserVerification.getEmail(),localUserVerification.getCode());
+            User user = userRepository.getUserByEmail(localUserVerification.getEmail()).get();
+            return new ResponseEntity<>(user, OK);
+        }
+        catch (Exception e){
+            return new ResponseEntity<>(null, HttpStatusCode.valueOf(400));
+        }
+    }
 
     @PostMapping("/resendVerificationCode")
     public ResponseEntity<String> updateVerificationCode(@RequestBody String userEmail) {

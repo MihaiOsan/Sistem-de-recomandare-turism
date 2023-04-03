@@ -1,4 +1,4 @@
-package com.demo.backend.models.utils;
+package com.demo.backend.models.DTO;
 
 import lombok.Data;
 

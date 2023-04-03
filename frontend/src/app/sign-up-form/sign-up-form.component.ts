@@ -15,12 +15,19 @@ export class SignUpFormComponent implements OnInit {
   loading = false;
   submitted = false;
 
-  
+
   constructor(private formBuilder: FormBuilder, private router: Router, private authenticationService: AuthenticationService) {
     if (this.authenticationService.currentUserValue) {
-      this.router.navigate(['/home']);
+      console.log(this.authenticationService.currentUserValue.enable);
+      if (this.authenticationService.currentUserValue.enable==true) {
+        this.router.navigate(['/home']);
+      }
+      else {
+        console.log("else");
+        this.router.navigate(['/Validation']);
+      }
     }
-   }
+  }
 
   ngOnInit(): void {
     this.registerForm = this.formBuilder.group({
@@ -45,16 +52,16 @@ export class SignUpFormComponent implements OnInit {
 
     this.loading = true;
     this.authenticationService.register(this.f['name'].value, this.f['phone'].value, this.f['email'].value, this.f['password'].value)
-    .pipe(first())
-    .subscribe(
-      (data) => {
-        this.router.navigate(['/home']);
-      },
-      (error) => {
-        this.loading = false;
-      }
-    );
-    this.router.navigate(['/LogIn']);
+      .pipe(first())
+      .subscribe(
+        (data) => {
+          this.router.navigate(['/Validation']);
+        },
+        (error) => {
+          this.loading = false;
+        }
+      );
+    this.router.navigate(['/Validationn']);
   }
 
 }

@@ -14,6 +14,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 
 import { CoolSocialLoginButtonsModule } from '@angular-cool/social-login-buttons';
+import { LoginCodeValidationComponent } from './login-code-validation/login-code-validation.component';
+import { SignupSideComponent } from './signup-side/signup-side.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -22,7 +24,9 @@ import { CoolSocialLoginButtonsModule } from '@angular-cool/social-login-buttons
     SignUpFormComponent,
     HomePageComponent,
     AttractionsPageComponent,
-    CreateAPlanPageComponent
+    CreateAPlanPageComponent,
+    LoginCodeValidationComponent,
+    SignupSideComponent
   ],
   imports: [
     BrowserModule,

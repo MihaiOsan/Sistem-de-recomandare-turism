@@ -20,7 +20,12 @@ export class LogInFormComponent implements OnInit {
 
   constructor(private activeRoute: ActivatedRoute, private formBuilder: FormBuilder, private authenticationService: AuthenticationService, private router: Router, private http: HttpClient) {
     if (this.authenticationService.currentUserValue) {
-      this.router.navigate(['/home']);
+      if (this.authenticationService.currentUserValue.enable===true) {
+        this.router.navigate(['/home']);
+      }
+      else {
+        this.router.navigate(['/Validation']);
+      }
     }
   }
 
@@ -57,7 +62,8 @@ export class LogInFormComponent implements OnInit {
       .pipe(first())
       .subscribe(
         (data) => {
-          this.router.navigate(['/home']);
+          data.enabled ? this.router.navigate(['/home']) : this.router.navigate(['/Validation']);
+          //this.router.navigate(['/home']);
         },
         (error) => {
           this.loading = false;

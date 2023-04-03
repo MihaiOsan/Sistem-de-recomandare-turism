@@ -6,14 +6,13 @@ import com.demo.backend.exceptions.UserNotFoundException;
 import com.demo.backend.exceptions.ValidationCodeDontMatchException;
 import com.demo.backend.models.AuthenticationProvider;
 import com.demo.backend.models.entity.User;
-import com.demo.backend.models.utils.UserLocalLoginInfo;
-import com.demo.backend.models.utils.UserLocalRegisterInfo;
+import com.demo.backend.models.DTO.UserLocalLoginInfo;
+import com.demo.backend.models.DTO.UserLocalRegisterInfo;
 import com.demo.backend.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.thymeleaf.standard.processor.StandardHrefTagProcessor;
 
 import java.time.ZonedDateTime;
 import java.util.Optional;
@@ -93,6 +92,7 @@ public class UserService {
 
     public void userLocalRegisterVerification(String email, String code) throws UserNotFoundException, ValidationCodeDontMatchException, AuthProviderException {
         Optional<User> userO = userRepository.getUserByEmail(email);
+        if(!userO.get().isEnable()){
         if (userO.isEmpty()){
             throw new UserNotFoundException("Could not find a user with this email");
         }
@@ -100,28 +100,33 @@ public class UserService {
             throw new AuthProviderException("Could not validate this type of account");
         }
         else if (passwordEncoder.matches(code, userO.get().getVerificationCode())){
-
-            //TODO implement this
-
+            User user = userO.get();
+            user.setEnable(true);
+            userRepository.save(user);
         }
         else{
             throw new ValidationCodeDontMatchException("Validation code not match");
-        }
+        }}
     }
 
     public void updateUserVerificationCode(String userEmail){
-        Optional<User> userO = userRepository.getUserByUsername(userEmail);
+        System.out.println(userEmail);
+        Optional<User> userO = userRepository.getUserByEmail(userEmail);
         if (userO.isPresent() && userO.get().getAuthProvider() == AuthenticationProvider.LOCAL) {
             User user = userO.get();
-            user.setVerificationCode(passwordEncoder.encode((generateCode())));
+            String validationCode = generateCode();
+            String subject = "Account activation";
+            String body = "In order to finalise account creation, please introduce the next code into the designated field after registering:\n\n"+ validationCode;
+
+            emailService.sendEmail(user.getEmail(), subject, body);
+
+            user.setVerificationCode(passwordEncoder.encode(validationCode));
             userRepository.save(user);
             System.out.println("Updated verification code for user: " + user.getEmail());
         }
         else
             throw new RuntimeException("User verification code not updated");
     }
-
-
 
     public String generateCode(){
         String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
