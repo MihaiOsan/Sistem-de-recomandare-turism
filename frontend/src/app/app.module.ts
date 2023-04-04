@@ -12,6 +12,9 @@ import { AttractionsPageComponent } from './attractions-page/attractions-page.co
 import { CreateAPlanPageComponent } from './create-aplan-page/create-aplan-page.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { MatSliderModule } from '@angular/material/slider';
+
 
 import { CoolSocialLoginButtonsModule } from '@angular-cool/social-login-buttons';
 import { LoginCodeValidationComponent } from './login-code-validation/login-code-validation.component';
@@ -21,6 +24,9 @@ import { ManagePlansPageComponent } from './manage-plans-page/manage-plans-page.
 import { JoinPeoplePageComponent } from './join-people-page/join-people-page.component';
 import { StatisticsPageComponent } from './statistics-page/statistics-page.component';
 import { AccountPageComponent } from './account-page/account-page.component';
+import { CardComponent } from './home-page/card/card.component';
+import { SliderComponent } from './home-page/slider/slider.component';
+import { SwiperModule } from 'swiper/angular';
 
 @NgModule({
   declarations: [
@@ -37,7 +43,9 @@ import { AccountPageComponent } from './account-page/account-page.component';
     ManagePlansPageComponent,
     JoinPeoplePageComponent,
     StatisticsPageComponent,
-    AccountPageComponent
+    AccountPageComponent,
+    CardComponent,
+    SliderComponent
   ],
   imports: [
     BrowserModule,
@@ -46,7 +54,8 @@ import { AccountPageComponent } from './account-page/account-page.component';
     FormsModule,
     ReactiveFormsModule,
     HttpClientModule,
-    CoolSocialLoginButtonsModule
+    CoolSocialLoginButtonsModule,
+    SwiperModule
   ],
   providers: [],
   bootstrap: [AppComponent]

@@ -1,25 +1,25 @@
 <nav class="navbar navbar-dark navbar-fixed-top">
   <div class="container-fluid">
     <div class="navbar-header">
-      <a routerLink="home" class="navbar-brand"><b>TripPlanner</b></a>
+      <a routerLink="home" class="navbar-brand" (click)="onRoute()"><b>TripPlanner</b></a>
     </div>
 
     <div class="collapse navbar-collapse">
       <ul class="nav navbar-nav">
-        <li routerLinkActive="active"><a class="navbar-button" routerLink="Attractions">Attractions</a></li>
+        <li routerLinkActive="active"><a class="navbar-button" routerLink="Attractions" (click)="onRoute()">Attractions</a></li>
        
-        <li routerLinkActive="active"><a class="navbar-button" *ngIf="currentUser" routerLink="CreateAPlan">Create a plan</a></li>
-        <li routerLinkActive="active"><a class="navbar-button" *ngIf="currentUser" routerLink="ManagePlans">Manage plans</a></li>
-        <li routerLinkActive="active"><a class="navbar-button" *ngIf="currentUser" routerLink="JoinPeople">Join people</a></li>
-        <li routerLinkActive="active"><a class="navbar-button" *ngIf="currentUser" routerLink="Statistics">Statistics</a></li>
+        <li routerLinkActive="active"><a class="navbar-button" *ngIf="currentUser" routerLink="CreateAPlan" (click)="onRoute()">Create a plan</a></li>
+        <li routerLinkActive="active"><a class="navbar-button" *ngIf="currentUser" routerLink="ManagePlans" (click)="onRoute()">Manage plans</a></li>
+        <li routerLinkActive="active"><a class="navbar-button" *ngIf="currentUser" routerLink="JoinPeople" (click)="onRoute()">Join people</a></li>
+        <li routerLinkActive="active"><a class="navbar-button" *ngIf="currentUser" routerLink="Statistics" (click)="onRoute()">Statistics</a></li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li class="dropdown" appDropdown>
           <a style="cursor: pointer;" class="dropdown-toggle navbar-button" (click)="toggleOpen()" role="button">Account <span class="caret"></span></a>
           <ul class="dropdown-menu">
-            <li><a style="cursor: pointer;" *ngIf="!currentUser" routerLink="LogIn">Log in</a></li>
-            <li><a style="cursor: pointer;" *ngIf="!currentUser" routerLink="SignUp">Sign up</a></li>
-            <li><a style="cursor: pointer;" *ngIf="currentUser" routerLink="Account">Settings</a></li>
+            <li><a style="cursor: pointer;" *ngIf="!currentUser" routerLink="LogIn" (click)="onRoute()">Log in</a></li>
+            <li><a style="cursor: pointer;" *ngIf="!currentUser" routerLink="SignUp" (click)="onRoute()">Sign up</a></li>
+            <li><a style="cursor: pointer;" *ngIf="currentUser" routerLink="Account" (click)="onRoute()">Settings</a></li>
             <li><a style="cursor: pointer;" *ngIf="currentUser" (click)="onLogout()">Log out</a></li>
           </ul>
         </li>

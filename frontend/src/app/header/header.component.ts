@@ -37,5 +37,11 @@ export class HeaderComponent implements OnInit {
     }
   }
 
-   
+  onRoute() {
+    if (this.isOpen) {
+      this.isOpen = !this.isOpen;
+      const dropdownMenu = this.el.nativeElement.querySelector('.dropdown-menu');
+      this.renderer.removeClass(dropdownMenu, 'show');
+    }
+  }
 }

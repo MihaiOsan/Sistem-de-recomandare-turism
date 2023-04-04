@@ -5,23 +5,23 @@
 }
 
 .navbar-brand{
-    color: #F8F8F8;
+    color: #cfcfcf;
 }
 
 .navbar-brand:hover{
     color: #FFA500;
-    transition: 0.5s ease-in-out;
-    background-color: rgb(55, 55, 55);
+    transition: 0.3s ease-in-out;
+    background-color: #1A1A1A
 }
 
 .navbar-button{
-    color: #F8F8F8;
+    color: #cfcfcf;
 }
 
 .navbar-button:hover{
-    color: #FFA500;
-    transition: 0.5s ease-in-out;
-    background-color: rgb(55, 55, 55);
+    color: #fff;
+    transition: 0.3s ease-in-out;
+    background-color: #1A1A1A
     /* border-bottom: #FFA500 4px solid; */
 
 }
