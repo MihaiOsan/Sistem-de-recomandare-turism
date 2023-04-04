@@ -1,0 +1,21 @@
+@import '~swiper/swiper-bundle.min.css';
+.card-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-left: 60px;
+    padding-right: 60px;
+    padding-top: 30px;
+    padding-bottom: 30px;
+  }
+
+.swiper-button-next, .swiper-button-prev {
+  color: #1a1a1a;
+}
+
+@media (max-width: 768px) {
+    .card-container app-card {
+      flex-basis: calc(50% - 40px);
+      margin-bottom: 20px;
+    }
+  }

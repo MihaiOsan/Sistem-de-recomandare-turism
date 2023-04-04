@@ -12,10 +12,22 @@ import { AttractionsPageComponent } from './attractions-page/attractions-page.co
 import { CreateAPlanPageComponent } from './create-aplan-page/create-aplan-page.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { MatSliderModule } from '@angular/material/slider';
+
 
 import { CoolSocialLoginButtonsModule } from '@angular-cool/social-login-buttons';
 import { LoginCodeValidationComponent } from './login-code-validation/login-code-validation.component';
 import { SignupSideComponent } from './signup-side/signup-side.component';
+import { AppDropdownDirectiveDirective } from './app-dropdown-directive.directive';
+import { ManagePlansPageComponent } from './manage-plans-page/manage-plans-page.component';
+import { JoinPeoplePageComponent } from './join-people-page/join-people-page.component';
+import { StatisticsPageComponent } from './statistics-page/statistics-page.component';
+import { AccountPageComponent } from './account-page/account-page.component';
+import { CardComponent } from './home-page/card/card.component';
+import { SliderComponent } from './home-page/slider/slider.component';
+import { SwiperModule } from 'swiper/angular';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -26,7 +38,14 @@ import { SignupSideComponent } from './signup-side/signup-side.component';
     AttractionsPageComponent,
     CreateAPlanPageComponent,
     LoginCodeValidationComponent,
-    SignupSideComponent
+    SignupSideComponent,
+    AppDropdownDirectiveDirective,
+    ManagePlansPageComponent,
+    JoinPeoplePageComponent,
+    StatisticsPageComponent,
+    AccountPageComponent,
+    CardComponent,
+    SliderComponent
   ],
   imports: [
     BrowserModule,
@@ -35,7 +54,8 @@ import { SignupSideComponent } from './signup-side/signup-side.component';
     FormsModule,
     ReactiveFormsModule,
     HttpClientModule,
-    CoolSocialLoginButtonsModule 
+    CoolSocialLoginButtonsModule,
+    SwiperModule
   ],
   providers: [],
   bootstrap: [AppComponent]

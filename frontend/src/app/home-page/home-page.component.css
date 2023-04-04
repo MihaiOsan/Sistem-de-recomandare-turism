@@ -1,0 +1,225 @@
+
+  
+  footer {
+    background-color: #1a1a1a;
+    color: #fff;
+    padding: 1rem;
+    text-align: center;
+  }
+
+  body {
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    color: #333;
+    margin: 0;
+    padding: 0;
+  }
+
+  /* Sections */
+  section {
+    padding: 100px 20px;
+    text-align: center;
+  }
+
+  #home {
+    padding: 50px 20px;
+    text-align: left;
+    bottom: 0;
+    display: flex; /* Add this line */
+    flex-direction: column; /* Add this line */
+    justify-content: flex-end; /* Add this line */
+    background-image: url('https://cdn.romania-insider.com/sites/default/files/styles/article_large_image/public/featured_images/Autumn-trip-road-Pixabay.com_.jpg');
+    background-position: center;
+    background-color: rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(3px);
+    background-size: cover;
+    position: relative;
+    color: #fff;
+  }
+
+  #home::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(3px);
+    z-index: -1;
+  }
+
+  
+  .text-content {
+    flex: 1;
+    padding-right: 30px;
+    padding-left: 30px;
+  }
+  
+  .image-content {
+    flex: 1;
+    padding-left: 30px;
+    padding-right: 30px;
+  }
+  
+  .image-content img {
+    width: 100%;
+    height: auto;
+  }
+
+
+  .features {
+    display: flex;
+    justify-content: center;
+    padding: 50px 0;
+  }
+  
+  .features-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 900px;
+    width: 100%;
+    margin: 0 auto;
+  }
+
+  .group-planning {
+    display: flex;
+    justify-content: center;
+    padding: 50px 0;
+  }
+  
+  .group-planning-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 900px;
+    width: 100%;
+    margin: 0 auto;
+  }
+
+  /* thre cards section */
+
+  .stats {
+
+    background-color: #f8f8f8;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 50px 0;
+  }
+  
+  .card {
+    background-color: #fff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 300px;
+    padding: 20px;
+    margin: 0 20px;
+    border: 1px solid #ccc;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+  }
+
+  .card-container {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+  }
+
+  .stats-title {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    margin-bottom: 20px;
+  }
+  
+  .stats-title h2 {
+    text-align: center;
+  }
+
+  section h2 {
+    font-size: 3rem;
+  }
+  
+  .card h3 {
+    font-size: 3rem;
+    color: #FFA500;
+    margin-bottom: 10px;
+  }
+  
+  .card p {
+    font-size: 2rem;
+    text-align: center;
+  }
+
+  .orange-section {
+    background-color: orange;
+    padding: 25px 0;
+  }
+  
+  .content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 20px;
+  }
+  
+  .photo {
+    width: 50px;
+    height: 50px;
+    margin-right: 20px;
+    object-fit: cover;
+  }
+  
+  .title {
+    font-size: 1.5rem;
+    color: #fff;
+    text-align: center;
+    margin: 0;
+  }
+  
+  /* ... existing styles ... */
+
+.orange-button {
+    padding: 15px 30px;
+    outline: none;
+    font-weight: 400;
+    font-size: 16px;
+    letter-spacing: 1px;
+    border-radius: 5px;
+    background: #1a1a1a;
+    color: #fff;
+    font-weight: 500;
+    letter-spacing: 1px;
+    cursor: pointer;
+    border: none;
+    outline: none;
+    transition: 0.3s;
+  }
+  
+  .orange-button:hover {
+    background: #1a1a1a;
+    color: #cfcfcf;
+    font-weight: 500;
+    letter-spacing: 1px;
+    cursor: pointer;
+    border: none;
+    outline: none;
+    transition: 0.5s;
+  }
+
+
+  .swiper-pagination-bullet {
+    width: 10px;
+    height: 10px;
+    background-color: white;
+  }
+
+
+  .swiper-pagination-bullet-active {
+    background-color: #FFA500;
+  }
