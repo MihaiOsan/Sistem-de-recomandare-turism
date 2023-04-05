@@ -1,6 +1,7 @@
 package com.demo.backend.models.entity;
 
 import com.demo.backend.models.AuthenticationProvider;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -10,6 +11,7 @@ import lombok.Setter;
 import java.sql.Timestamp;
 import java.time.ZonedDateTime;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -46,4 +48,12 @@ public class User {
 
     @Enumerated(EnumType.STRING)
     private AuthenticationProvider authProvider;
+
+    @OneToMany(mappedBy = "user")
+    @JsonIgnore
+    private List<Plan> plansCreated;
+
+    @ManyToMany(mappedBy = "user")
+    @JsonIgnore
+    private List<Plan> plansWithFriends;
 }
