@@ -1,0 +1,43 @@
+.container {
+    display: flex;
+    height: 100vh;
+  }
+  
+  .sidebar {
+    background-color: #e0e0e0;
+    padding: 10px;
+    width: 20%;
+    box-sizing: border-box;
+    margin-right: 10px;
+  }
+  
+  .main-content {
+    background-color: #d0d0d0;
+    padding: 10px;
+    width: 80%;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .map {
+    background-color: #c0c0c0;
+    flex-grow: 1;
+    border-radius: 15px;
+    margin-bottom: 10px;
+    height: 25vh;
+  }
+  
+  .cards {
+    background-color: #b0b0b0;
+    padding: 10px;
+    flex-grow: 2;
+    margin-bottom: 10px;
+  }
+  
+  .navigation {
+    background-color: #a0a0a0;
+    padding: 10px;
+    flex-grow: 1;
+  }
+  

@@ -1,11 +1,27 @@
-<p>attractions-page works!</p>
-<google-map height="400px"
-            width="750px"
-            [center]="center"
-            [zoom]="zoom"
-            (mapClick)="moveMap($event)"
-            (mapMousemove)="move($event)">
-</google-map>
+<div class="container">
+    <div class="sidebar">
+      <div class="searcher">Searcher</div>
+      <div class="calendar">Calendar</div>
+      <div class="categories">Categories (Checkboxes)</div>
+    </div>
+    <div class="main-content">
+      <div class="map"><google-map height="100%"
+        width="100%"
+        [center]="center"
+        [zoom]="zoom"
+        (mapClick)="moveMap($event)"
+        (mapMousemove)="move($event)"
+        >
+    </google-map></div>
+      <div class="cards">Cards</div>
+      <div class="navigation">Navigation Buttons</div>
 
 <div>Latitude: {{display?.lat}}</div>
 <div>Longitude: {{display?.lng}}</div>
+    </div>
+  </div>
+  
+
+
+
+
