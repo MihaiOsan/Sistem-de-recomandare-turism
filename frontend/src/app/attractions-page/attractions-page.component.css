@@ -117,11 +117,12 @@
   }
   
   .map {
-    background-color: #c0c0c0;
+    background-color: #fff;
     flex-grow: 1;
     border-radius: 15px;
     margin-bottom: 10px;
-    height: 25vh;
+    height: calc(50vh - 40px); /* Adjust the value as needed */
+    overflow: hidden;
   }
   
   .cards {
@@ -255,5 +256,9 @@
     visibility: visible;
     transform: scale(1);
     transition: 0s;
+  }
+  
+  .form{
+    width: 100%;
   }
   

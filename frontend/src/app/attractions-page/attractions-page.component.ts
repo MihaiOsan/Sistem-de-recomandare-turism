@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
+import { GoogleMap } from '@angular/google-maps';
 
 @Component({
   selector: 'app-attractions-page',
@@ -8,76 +9,61 @@ import { FormControl } from '@angular/forms';
 })
 export class AttractionsPageComponent implements OnInit {
 
+  @ViewChild('mapSearchField') mapSearchField!:ElementRef;
+  @ViewChild('GoogleMap') map!: GoogleMap;
+
   constructor() { }
-
-
-  radiusControl = new FormControl();
-  map!: google.maps.Map;
-  marker!: google.maps.Marker;
-  circle!: google.maps.Circle;
 
   display: any;
   center: google.maps.LatLngLiteral = {
-    lat: 24,
+    lat: 54,
     lng: 12
   };
-  zoom = 4;
+  mapCongiguration = {
+    zoom: 4,
+    center: this.center,
+    mapTypeId: 'roadmap',
+    disableDefaultUI: true,
+    zoomControl: true,
+    scaleControl: true,
+    streetViewControl: true,
+    rotateControl: true,
+    fullscreenControl: true,};
 
 
-  ngOnInit(): void { 
+    ngAfterViewInit() {
+      console.log('ngAfterViewInit');
+      const searchBox = new google.maps.places.SearchBox(this.mapSearchField.nativeElement);
+      this.map.controls.push(this.mapSearchField.nativeElement);
 
-    this.initMap();
-    this.initAutocomplete();
-  }
-
-  initMap(): void {
-    this.map = new google.maps.Map(document.getElementById('map') as HTMLElement, {
-      center: { lat: 24, lng: 12 },
-      zoom: 4,
-    });
-  }
-
-  initAutocomplete(): void {
-    const autocomplete = new google.maps.places.Autocomplete(this.searchElement.nativeElement);
-    autocomplete.setFields(['geometry']);
-    autocomplete.bindTo('bounds', this.map);
-
-    autocomplete.addListener('place_changed', () => {
-      const place = autocomplete.getPlace();
-      if (!place.geometry) {
-        return;
-      }
-
-      this.setMarkerAndCircle(place.geometry.location);
-    });
-  }
-
-  setMarkerAndCircle(location: google.maps.LatLng): void {
-    if (this.marker) {
-      this.marker.setMap(null);
+      searchBox.addListener('places_changed', () => {
+        console.log('places_changed');
+        const places = searchBox.getPlaces();
+        if (!places || places.length === 0) {
+          return;
+          console.log('No places found');
+        }
+        console.log(searchBox);
+  
+        const bounds = new google.maps.LatLngBounds();
+        console.log(bounds);
+        places.forEach((place) => {
+          if (!place.geometry || !place.geometry.location) {
+            console.log('Returned place contains no geometry');
+            return;
+          }
+  
+          if (place.geometry.viewport) {
+            bounds.union(place.geometry.viewport);
+          } else {
+            bounds.extend(place.geometry.location);
+          }
+        });
+        this.map.fitBounds(bounds);
+      });
     }
-    if (this.circle) {
-      this.circle.setMap(null);
-    }
 
-    this.marker = new google.maps.Marker({
-      map: this.map,
-      position: location,
-    });
-
-    this.circle = new google.maps.Circle({
-      map: this.map,
-      center: location,
-      radius: parseFloat(this.searchControl.value) * 1000, // Convert km to meters
-      fillColor: '#FFA500',
-      fillOpacity: 0.3,
-      strokeColor: '#FFA500',
-      strokeWeight: 2,
-    });
-
-    this.map.fitBounds(this.circle.getBounds());
-  }
-
+  ngOnInit(): void { }
 
   moveMap(event: google.maps.MapMouseEvent) {
     if (event.latLng != null) this.center = (event.latLng.toJSON());
