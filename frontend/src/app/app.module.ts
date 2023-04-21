@@ -27,7 +27,8 @@ import { AccountPageComponent } from './account-page/account-page.component';
 import { CardComponent } from './home-page/card/card.component';
 import { SliderComponent } from './home-page/slider/slider.component';
 import { SwiperModule } from 'swiper/angular';
-import { GoogleMapsModule } from '@angular/google-maps'
+import { GoogleMap, GoogleMapsModule } from '@angular/google-maps';
+import { AttractionCardComponent } from './attraction-card/attraction-card.component'
 
 @NgModule({
   declarations: [
@@ -46,7 +47,8 @@ import { GoogleMapsModule } from '@angular/google-maps'
     StatisticsPageComponent,
     AccountPageComponent,
     CardComponent,
-    SliderComponent
+    SliderComponent,
+    AttractionCardComponent
   ],
   imports: [
     BrowserModule,
@@ -57,7 +59,7 @@ import { GoogleMapsModule } from '@angular/google-maps'
     HttpClientModule,
     CoolSocialLoginButtonsModule,
     SwiperModule,
-    GoogleMapsModule
+    GoogleMapsModule,
   ],
   providers: [],
   bootstrap: [AppComponent]

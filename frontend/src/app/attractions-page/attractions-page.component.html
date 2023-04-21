@@ -1,27 +1,74 @@
-<div class="container">
-    <div class="sidebar">
-      <div class="searcher">Searcher</div>
-      <div class="calendar">Calendar</div>
-      <div class="categories">Categories (Checkboxes)</div>
+<div class="location-page">
+    <div class="container">
+        <div class="sidebar">
+            <form>
+                <div class="section">
+
+                    <h1>Filters
+                    </h1>
+                </div>
+                <div class="section">
+                    <label class="section-label">Find attraction</label>
+                    <input type="text" class="search-bar" placeholder="Search...">
+                </div>
+                <div class="section">
+                    <label class="section-label">Range</label>
+                    <input type="number" list="range-options" class="range-input" min="0" [(ngModel)]="radiusControl.value" placeholder="Enter range (km)">
+                    <datalist id="range-options">
+                        <option value="1">1 km</option>
+                        <option value="2">2 km</option>
+                        <option value="5">5 km</option>
+                        <option value="10">10 km</option>
+                        <option value="15">15 km</option>
+                    </datalist>
+
+                </div>
+                <div class="section">
+                    <label class="section-label">Type</label>
+                    <div class="checkbox-container">
+                        <div class="checkbox-button" (click)="toggleCheckbox($event)">
+                            <input type="checkbox" id="museum" value="museum">
+                            <label for="museum">Museum</label>
+                        </div>
+                        <div class="checkbox-button" (click)="toggleCheckbox($event)">
+                            <input type="checkbox" id="restaurant" value="restaurant">
+                            <label for="restaurant">Restaurant</label>
+                        </div>
+                        <div class="checkbox-button" (click)="toggleCheckbox($event)">
+                            <input type="checkbox" id="sightseeing" value="sightseeing">
+                            <label for="sightseeing">Sightseeing</label>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="main-content">
+            <form class="form">
+                <label for="search">
+                    <input required="" autocomplete="off" placeholder="search a place" id="search" type="text" #search>
+                    <div class="icon">
+                        <svg stroke-width="2" stroke="currentColor" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="swap-on">
+                            <path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke-linejoin="round" stroke-linecap="round"></path>
+                        </svg>
+                        <svg stroke-width="2" stroke="currentColor" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="swap-off">
+                            <path d="M10 19l-7-7m0 0l7-7m-7 7h18" stroke-linejoin="round" stroke-linecap="round"></path>
+                        </svg>
+                    </div>
+                    <button type="reset" class="close-btn">
+                        <svg viewBox="0 0 20 20" class="h-5 w-5" xmlns="http://www.w3.org/2000/svg">
+                            <path clip-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" fill-rule="evenodd"></path>
+                        </svg>
+                    </button>
+                </label>
+            </form>
+            <div class="map"><google-map height="100%" width="100%" [center]="center" [zoom]="zoom"
+                    (mapClick)="moveMap($event)" (mapMousemove)="move($event)">
+                </google-map></div>
+            <div class="cards">Cards</div>
+            <div class="navigation">Navigation Buttons</div>
+
+            <div>Latitude: {{display?.lat}}</div>
+            <div>Longitude: {{display?.lng}}</div>
+        </div>
     </div>
-    <div class="main-content">
-      <div class="map"><google-map height="100%"
-        width="100%"
-        [center]="center"
-        [zoom]="zoom"
-        (mapClick)="moveMap($event)"
-        (mapMousemove)="move($event)"
-        >
-    </google-map></div>
-      <div class="cards">Cards</div>
-      <div class="navigation">Navigation Buttons</div>
-
-<div>Latitude: {{display?.lat}}</div>
-<div>Longitude: {{display?.lng}}</div>
-    </div>
-  </div>
-  
-
-
-
-
+</div>
