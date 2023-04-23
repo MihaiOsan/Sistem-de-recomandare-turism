@@ -9,8 +9,11 @@ import { GoogleMap } from '@angular/google-maps';
 })
 export class AttractionsPageComponent implements OnInit {
 
-  @ViewChild('mapSearchField') mapSearchField!:ElementRef;
+  @ViewChild('mapSearchField') mapSearchField!: ElementRef;
   @ViewChild('GoogleMap') map!: GoogleMap;
+  range: string = '5';
+  circleCenter!: google.maps.LatLngLiteral;
+  radius: number = +this.range * 1000;
 
   constructor() { }
 
@@ -28,40 +31,53 @@ export class AttractionsPageComponent implements OnInit {
     scaleControl: true,
     streetViewControl: true,
     rotateControl: true,
-    fullscreenControl: true,};
+    fullscreenControl: true,
+  };
 
 
-    ngAfterViewInit() {
-      console.log('ngAfterViewInit');
-      const searchBox = new google.maps.places.SearchBox(this.mapSearchField.nativeElement);
-      this.map.controls.push(this.mapSearchField.nativeElement);
+  ngAfterViewInit() {
+    console.log('ngAfterViewInit');
+    const searchBox = new google.maps.places.SearchBox(this.mapSearchField.nativeElement);
+    this.map.controls.push(this.mapSearchField.nativeElement);
 
-      searchBox.addListener('places_changed', () => {
-        console.log('places_changed');
-        const places = searchBox.getPlaces();
-        if (!places || places.length === 0) {
+    searchBox.addListener('places_changed', () => {
+      console.log('places_changed');
+      const places = searchBox.getPlaces();
+      if (!places || places.length === 0) {
+        return;
+        console.log('No places found');
+      }
+
+      const bounds = new google.maps.LatLngBounds();
+      places.forEach((place) => {
+        if (!place.geometry || !place.geometry.location) {
+          console.log('Returned place contains no geometry');
           return;
-          console.log('No places found');
         }
-        console.log(searchBox);
-  
-        const bounds = new google.maps.LatLngBounds();
-        console.log(bounds);
-        places.forEach((place) => {
-          if (!place.geometry || !place.geometry.location) {
-            console.log('Returned place contains no geometry');
-            return;
-          }
-  
-          if (place.geometry.viewport) {
-            bounds.union(place.geometry.viewport);
-          } else {
-            bounds.extend(place.geometry.location);
-          }
-        });
-        this.map.fitBounds(bounds);
+
+        if (place.geometry.viewport) {
+          bounds.union(place.geometry.viewport);
+        } else {
+          bounds.extend(place.geometry.location);
+        }
       });
-    }
+      this.radius = +this.range * 1000;
+      this.circleCenter = bounds.getCenter().toJSON();
+      const circle = new google.maps.Circle({ center: this.circleCenter, radius: this.radius });
+      const circleBounds = this.getCircleBounds(this.circleCenter, this.radius);
+
+      // Update the map's bounds to include the circle if circleBounds is not null
+      if (circleBounds) {
+        this.map.fitBounds(circleBounds);
+      }
+    });
+  }
+
+  getCircleBounds(circleCenter: google.maps.LatLngLiteral, radius: number): google.maps.LatLngBounds | null {
+    const circle = new google.maps.Circle({ center: circleCenter, radius: radius });
+    const bounds = circle.getBounds();
+    return bounds ? bounds : null;
+  }
 
   ngOnInit(): void { }
 
