@@ -29,6 +29,7 @@ import { SliderComponent } from './home-page/slider/slider.component';
 import { SwiperModule } from 'swiper/angular';
 import { GoogleMap, GoogleMapsModule } from '@angular/google-maps';
 import { AttractionCardComponent } from './attraction-card/attraction-card.component'
+import { AttractionService } from './services/attraction.service';
 
 @NgModule({
   declarations: [
@@ -61,7 +62,7 @@ import { AttractionCardComponent } from './attraction-card/attraction-card.compo
     SwiperModule,
     GoogleMapsModule,
   ],
-  providers: [],
+  providers: [AttractionService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

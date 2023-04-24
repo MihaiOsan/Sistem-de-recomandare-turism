@@ -1,18 +1,17 @@
 <div class="card">
   <div class="image">
     <div class="image-wrapper">
-      <img class="real-image" src="https://media.insureyonder.com/wp-content/uploads/2018/04/25202710/Travel.png" alt="Features image">
+      <img class="real-image" [src]="attraction.icon">
     </div>
   </div> <div class="content">
-     <a href="#">
+     <a>
        <span class="title">
-         Lorem ipsum dolor sit amet consectetur adipisicing elit.
+        {{ attraction.name }}
        </span>
      </a>
  
      <p class="desc">
-       Lorem ipsum dolor sit amet, consectetur adipisicing elit. Recusandae
-       dolores, possimus pariatur animi temporibus nesciunt praesentium 
+      {{ attraction.description }}
      </p>
  
      <a href="#" class="action">

@@ -1,6 +1,9 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { GoogleMap } from '@angular/google-maps';
+import { Attraction } from '../models/attraction';
+import { AttractionService } from '../services/attraction.service';
+
 
 @Component({
   selector: 'app-attractions-page',
@@ -9,21 +12,25 @@ import { GoogleMap } from '@angular/google-maps';
 })
 export class AttractionsPageComponent implements OnInit {
 
-  @ViewChild('mapSearchField') mapSearchField!: ElementRef;
-  @ViewChild('GoogleMap') map!: GoogleMap;
-  range: string = '5';
-  circleCenter!: google.maps.LatLngLiteral;
-  radius: number = +this.range * 1000;
-
-  constructor() { }
-
   display: any;
   center: google.maps.LatLngLiteral = {
-    lat: 54,
-    lng: 12
+    lat: 45.75,
+    lng: 21.22
   };
+
+  @ViewChild('mapSearchField') mapSearchField!: ElementRef;
+  @ViewChild('GoogleMap') map!: GoogleMap;
+  range: string = '10';
+  circleCenter: google.maps.LatLngLiteral = this.center;
+  radius: number = +this.range * 1000;
+  attractions: Attraction[] = [
+];
+
+  constructor(private attractionService: AttractionService) { }
+
+  
   mapCongiguration = {
-    zoom: 4,
+    zoom: 10.5,
     center: this.center,
     mapTypeId: 'roadmap',
     disableDefaultUI: true,
@@ -34,6 +41,8 @@ export class AttractionsPageComponent implements OnInit {
     fullscreenControl: true,
   };
 
+  // Get the bounds of the circle
+  // map initialisation
 
   ngAfterViewInit() {
     console.log('ngAfterViewInit');
@@ -66,6 +75,8 @@ export class AttractionsPageComponent implements OnInit {
       const circle = new google.maps.Circle({ center: this.circleCenter, radius: this.radius });
       const circleBounds = this.getCircleBounds(this.circleCenter, this.radius);
 
+      this.fetchAttractions();
+
       // Update the map's bounds to include the circle if circleBounds is not null
       if (circleBounds) {
         this.map.fitBounds(circleBounds);
@@ -79,7 +90,16 @@ export class AttractionsPageComponent implements OnInit {
     return bounds ? bounds : null;
   }
 
-  ngOnInit(): void { }
+  ngOnInit(): void { 
+    const circleBounds = this.getCircleBounds(this.circleCenter, this.radius);
+
+      this.fetchAttractions();
+
+      // Update the map's bounds to include the circle if circleBounds is not null
+      if (circleBounds) {
+        this.map.fitBounds(circleBounds);
+      }
+  }
 
   moveMap(event: google.maps.MapMouseEvent) {
     if (event.latLng != null) this.center = (event.latLng.toJSON());
@@ -104,4 +124,15 @@ export class AttractionsPageComponent implements OnInit {
     }
   }
 
+  fetchAttractions(): void {
+    this.attractionService.getAttractions(this.circleCenter.lat, this.circleCenter.lng, this.radius).subscribe(
+      (data: Attraction[]) => {
+        console.log('API Response:', data);
+        this.attractions = data;
+      },
+      (error) => {
+        console.error('Error fetching attractions:', error);
+      }
+    );
+  }
 }

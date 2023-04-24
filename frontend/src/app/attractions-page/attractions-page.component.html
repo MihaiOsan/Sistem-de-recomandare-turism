@@ -67,7 +67,10 @@
                     [radius]="radius"></map-circle>
                 </google-map></div>
                 
-            <div class="cards">Cards</div>
+                <div class="cards" *ngIf="attractions.length > 0">
+                    <app-attraction-card *ngFor="let attraction of attractions" [attraction]="attraction"></app-attraction-card>
+                  </div>
+                  
             <div class="navigation">Navigation Buttons</div>
 
             <div>Latitude: {{display?.lat}}</div>

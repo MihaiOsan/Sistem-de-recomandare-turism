@@ -1,8 +1,8 @@
 .container {
-    display: flex;
-    height: 100vh;
-    font-weight: normal;
-  }
+  display: flex;
+  min-height: 100vh;
+  font-weight: normal;
+}
   
   .location-page {
     background-color: #f8f8f8;
@@ -130,7 +130,16 @@
     padding: 10px;
     flex-grow: 2;
     margin-bottom: 10px;
-  }
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      justify-content: center;
+    }
+  
+    .cards app-attraction-card {
+      flex: 0 0 calc(33.333% - 20px);
+      margin-bottom: 20px;
+    }
   
   .navigation {
     background-color: #a0a0a0;
