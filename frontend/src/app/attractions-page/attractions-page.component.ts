@@ -129,6 +129,16 @@ export class AttractionsPageComponent implements OnInit {
       (data: Attraction[]) => {
         console.log('API Response:', data);
         this.attractions = data;
+        for (let i = 0; i < this.attractions.length; i++) {
+          const apiKey = "AIzaSyAILm8lpjdZbGCyZOgmKAW0z0sARKzKM9g&libraries=places";
+          const maxWidth = 400;
+          if (this.attractions[i]){
+            if (this.attractions[i].photos[0]){
+            console.log(this.attractions[i].photos[0].photoReference);
+          }
+            this.attractions[i].imageUrl = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=${maxWidth}&photoreference=${this.attractions[i].photos[0].photoReference}&key=${apiKey}`;
+          }
+        }
       },
       (error) => {
         console.error('Error fetching attractions:', error);

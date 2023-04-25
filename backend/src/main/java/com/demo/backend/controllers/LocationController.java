@@ -3,10 +3,7 @@ package com.demo.backend.controllers;
 import com.google.maps.GeoApiContext;
 import com.google.maps.PlacesApi;
 import com.google.maps.errors.ApiException;
-import com.google.maps.model.LatLng;
-import com.google.maps.model.PlacesSearchResponse;
-import com.google.maps.model.PlacesSearchResult;
-import com.google.maps.model.RankBy;
+import com.google.maps.model.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,7 +26,7 @@ public class LocationController {
         LatLng location = new LatLng(lat, lng);
         PlacesSearchResponse response = PlacesApi.nearbySearchQuery(context, location)
                 .radius((int) radius)
-                .rankby(RankBy.PROMINENCE)
+                .type(PlaceType.TOURIST_ATTRACTION)
                 .await();
 
         return response.results;
