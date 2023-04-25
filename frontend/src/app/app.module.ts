@@ -30,6 +30,7 @@ import { SwiperModule } from 'swiper/angular';
 import { GoogleMap, GoogleMapsModule } from '@angular/google-maps';
 import { AttractionCardComponent } from './attraction-card/attraction-card.component'
 import { AttractionService } from './services/attraction.service';
+import { AttractionDetailsComponent } from './attraction-details/attraction-details.component';
 
 @NgModule({
   declarations: [
@@ -49,7 +50,8 @@ import { AttractionService } from './services/attraction.service';
     AccountPageComponent,
     CardComponent,
     SliderComponent,
-    AttractionCardComponent
+    AttractionCardComponent,
+    AttractionDetailsComponent
   ],
   imports: [
     BrowserModule,

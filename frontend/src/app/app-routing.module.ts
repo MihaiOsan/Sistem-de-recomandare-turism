@@ -24,6 +24,7 @@ const appRoutes: Routes = [
   { path: 'JoinPeople', component: JoinPeoplePageComponent },
   { path: 'Statistics', component: StatisticsPageComponent },
   { path: 'Account', component: AccountPageComponent },
+  { path: 'Attraction/:id', component: AttractionsPageComponent },
 ];
 
 @NgModule({

@@ -3,6 +3,7 @@ import { FormControl } from '@angular/forms';
 import { GoogleMap } from '@angular/google-maps';
 import { Attraction } from '../models/attraction';
 import { AttractionService } from '../services/attraction.service';
+import { AttractionsResponse } from '../models/attractions-response';
 
 
 @Component({
@@ -11,6 +12,7 @@ import { AttractionService } from '../services/attraction.service';
   styleUrls: ['./attractions-page.component.css']
 })
 export class AttractionsPageComponent implements OnInit {
+
 
   display: any;
   center: google.maps.LatLngLiteral = {
@@ -23,8 +25,10 @@ export class AttractionsPageComponent implements OnInit {
   range: string = '10';
   circleCenter: google.maps.LatLngLiteral = this.center;
   radius: number = +this.range * 1000;
-  attractions: Attraction[] = [
-];
+  attractions: Attraction[][] = [];
+  currentPage: number = 1;
+  nextPageToken: string = '';
+  pageAttractions: Attraction[] = [];
 
   constructor(private attractionService: AttractionService) { }
 
@@ -75,6 +79,7 @@ export class AttractionsPageComponent implements OnInit {
       const circle = new google.maps.Circle({ center: this.circleCenter, radius: this.radius });
       const circleBounds = this.getCircleBounds(this.circleCenter, this.radius);
 
+      //this.nextPageToken = '';
       this.fetchAttractions();
 
       // Update the map's bounds to include the circle if circleBounds is not null
@@ -83,6 +88,24 @@ export class AttractionsPageComponent implements OnInit {
       }
     });
   }
+
+  prevPage() {
+    if (this.currentPage == 1) return;
+    this.currentPage--;
+    this.pageAttractions = this.attractions[this.currentPage-1];
+
+}
+
+nextPage() {
+  console.log(this.nextPageToken);
+  if (this.attractions[this.currentPage]!=null) {
+    this.currentPage++;
+    this.pageAttractions = this.attractions[this.currentPage];
+  } else if (this.nextPageToken != '' && this.nextPageToken != null) {
+    this.currentPage++;
+    this.fetchAttractions();
+  }
+}
 
   getCircleBounds(circleCenter: google.maps.LatLngLiteral, radius: number): google.maps.LatLngBounds | null {
     const circle = new google.maps.Circle({ center: circleCenter, radius: radius });
@@ -125,20 +148,22 @@ export class AttractionsPageComponent implements OnInit {
   }
 
   fetchAttractions(): void {
-    this.attractionService.getAttractions(this.circleCenter.lat, this.circleCenter.lng, this.radius).subscribe(
-      (data: Attraction[]) => {
+    console.log('fetchAttractions');
+    this.attractionService.getAttractions(this.circleCenter.lat, this.circleCenter.lng, this.radius, this.nextPageToken).subscribe(
+      (data: AttractionsResponse) => {
         console.log('API Response:', data);
-        this.attractions = data;
-        for (let i = 0; i < this.attractions.length; i++) {
+        this.attractions.push(data.places);
+        console.log(this.attractions[this.currentPage-1]);
+        this.nextPageToken = data.pageToken;
+        console.log(this.nextPageToken);
+        for (let i = 0; i < this.attractions[this.currentPage-1].length; i++) {
           const apiKey = "AIzaSyAILm8lpjdZbGCyZOgmKAW0z0sARKzKM9g&libraries=places";
           const maxWidth = 400;
-          if (this.attractions[i]){
-            if (this.attractions[i].photos[0]){
-            console.log(this.attractions[i].photos[0].photoReference);
-          }
-            this.attractions[i].imageUrl = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=${maxWidth}&photoreference=${this.attractions[i].photos[0].photoReference}&key=${apiKey}`;
+          if (this.attractions[this.currentPage-1][i] && this.attractions[this.currentPage-1][i].photos && this.attractions[this.currentPage-1][i].photos[0]){
+            this.attractions[this.currentPage-1][i].imageUrl = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=${maxWidth}&photoreference=${this.attractions[this.currentPage-1][i].photos[0].photoReference}&key=${apiKey}`;
           }
         }
+        this.pageAttractions = this.attractions[this.currentPage-1];
       },
       (error) => {
         console.error('Error fetching attractions:', error);
