@@ -1,6 +1,7 @@
 import { Component, ElementRef, OnInit, Renderer2 } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthenticationService } from '../authentication.service';
+import { MapCenterService } from '../services/map-center-service.service';
 
 @Component({
   selector: 'app-header',
@@ -10,7 +11,7 @@ import { AuthenticationService } from '../authentication.service';
 export class HeaderComponent implements OnInit {
 
 
-  constructor(private authentificationService: AuthenticationService, private router: Router, private el: ElementRef, private renderer: Renderer2) { }
+  constructor(private authentificationService: AuthenticationService, private router: Router, private el: ElementRef, private renderer: Renderer2, private mapCenterService: MapCenterService) { }
 
   currentUser: any;
 
@@ -42,6 +43,9 @@ export class HeaderComponent implements OnInit {
       this.isOpen = !this.isOpen;
       const dropdownMenu = this.el.nativeElement.querySelector('.dropdown-menu');
       this.renderer.removeClass(dropdownMenu, 'show');
+    }
+    if(this.router.url != '/Attractions'){
+      console.log(this.router.url);
     }
   }
 }

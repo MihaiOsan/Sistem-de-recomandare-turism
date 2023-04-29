@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Attraction } from '../models/attraction';
 import { AttractionsResponse } from '../models/attractions-response';
+import { AttractionsDetails } from '../models/attractions-details';
 
 @Injectable({
   providedIn: 'root'
@@ -20,5 +21,9 @@ export class AttractionService {
       pageToken: pagetoken?.toString() || '',
     };
     return this.http.get<AttractionsResponse>(this.apiUrl, { params });
+  }
+
+  getAttractionDetails(id: string): Observable<AttractionsDetails> {
+    return this.http.get<AttractionsDetails>(`http://localhost:8080/location/api/details/${id}`);
   }
 }

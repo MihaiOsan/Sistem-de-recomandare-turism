@@ -10,6 +10,7 @@ import { LoginCodeValidationComponent } from './login-code-validation/login-code
 import { ManagePlansPageComponent } from './manage-plans-page/manage-plans-page.component';
 import { SignUpFormComponent } from './sign-up-form/sign-up-form.component';
 import { StatisticsPageComponent } from './statistics-page/statistics-page.component';
+import { AttractionDetailsComponent } from './attraction-details/attraction-details.component';
 const routes: Routes = [];
 
 const appRoutes: Routes = [
@@ -24,7 +25,7 @@ const appRoutes: Routes = [
   { path: 'JoinPeople', component: JoinPeoplePageComponent },
   { path: 'Statistics', component: StatisticsPageComponent },
   { path: 'Account', component: AccountPageComponent },
-  { path: 'Attraction/:id', component: AttractionsPageComponent },
+  { path: 'Attraction/:id', component: AttractionDetailsComponent },
 ];
 
 @NgModule({

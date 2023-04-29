@@ -1,1 +1,77 @@
-<p>attraction-details works!</p>
+<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+<section class="attraction-map">
+    <google-map #GoogleMap height="100%" width="100%" [options]="mapCongiguration">
+        <map-marker #MapMarker [position]="markerPositions" [options]="markerOptions"></map-marker>
+    </google-map>
+    <div id="map"></div>
+</section>
+
+<section class="attraction-details">
+    <div class="attraction-details-content">
+        <div class="image-column">
+            <div class="pictures">
+                <img class="big-picture" [src]="selectedPicture" alt="Selected picture" />
+                <div class="picture-selector">
+                    <img *ngFor="let picture of photos" [src]="picture" alt="Picture thumbnail"
+                        (click)="selectPicture(picture)" />
+                </div>
+            </div>
+        </div>
+        <div class="info-column">
+            <h1>{{ attraction?.place?.name }} </h1>
+            <h3>{{attractionType}}</h3>
+            <hr>
+            <div class="information-section">
+                <h3><i class="material-icons">location_on</i>Location</h3>
+                <p class="word-wrap"> {{ attraction?.place?.formattedAddress }}</p>
+            </div>
+            <div class="information-section" *ngIf="attraction?.place?.openingHours?.weekdayText">
+                <h3><i class="material-icons">access_time</i> Opening Hours</h3>
+                <ul>
+                    <li *ngFor="let program of attraction?.place?.openingHours?.weekdayText">{{ program }}</li>
+                </ul>
+            </div>
+            <div class="information-section" *ngIf="attraction?.place?.priceLevel">
+                <h3><i class="material-icons">attach_money</i> Price Level</h3>
+                <p class="word-wrap">{{ attraction?.place?.priceLevel }}</p>
+            </div>
+            <div class="information-section" *ngIf="attraction?.place?.formattedPhoneNumber">
+                <h3><i class="material-icons">phone</i> Phone Number</h3>
+                <p class="word-wrap">{{ attraction?.place?.formattedPhoneNumber }}</p>
+            </div>
+            <div class="information-section" *ngIf="attraction?.place?.website">
+                <h3><i class="material-icons">public</i> <a [href]="attraction?.place?.website">Website</a></h3>
+            </div>
+        </div>
+    </div>
+</section>
+<hr>
+<section class="description-section" *ngIf="attraction?.wikiDescription != 'No content found'">
+    <div class="attraction-details-content">
+        <div class="information-section">
+            <h2>Description</h2>
+            <p class="word-wrap">{{ attraction?.wikiDescription }}</p>
+        </div>
+    </div>
+</section>
+
+<hr>
+<section class="user-reviews">
+    <div class="attraction-details-content">
+        <div class="information-section">
+            <h2>User Reviews {{ attraction?.place?.rating }}<i class="material-icons">star</i></h2>
+            <div *ngFor="let review of attraction?.place?.reviews" class="review">
+                <div class="review-header">
+                    <div class="reviewer-profile">
+                        <img *ngIf="review.profilePhotoUrl" [src]="review.profilePhotoUrl" alt="Profile picture" class="profile-picture">
+                        <div class="reviewer-name">{{ review.authorName }}</div>
+                    </div>
+                    <div class="reviewer-rating">{{ review.rating }} / 5</div>
+                </div>
+                <div class="review-text">
+                    {{ review.text }}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

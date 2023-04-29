@@ -3,6 +3,7 @@ import { FormControl } from '@angular/forms';
 import { GoogleMap } from '@angular/google-maps';
 import { Attraction } from '../models/attraction';
 import { AttractionService } from '../services/attraction.service';
+import { MapCenterService } from '../services/map-center-service.service';
 import { AttractionsResponse } from '../models/attractions-response';
 
 
@@ -12,17 +13,21 @@ import { AttractionsResponse } from '../models/attractions-response';
   styleUrls: ['./attractions-page.component.css']
 })
 export class AttractionsPageComponent implements OnInit {
+toggleRating($event: MouseEvent) {
+throw new Error('Method not implemented.');
+}
+removeFilters() {
+}
+applyFilters() {
+}
 
 
   display: any;
-  center: google.maps.LatLngLiteral = {
-    lat: 45.75,
-    lng: 21.22
-  };
+  center: google.maps.LatLngLiteral = JSON.parse(localStorage.getItem('mapCenter') || '{"lat": 45.75, "lng": 21.22}');
+  range: string = JSON.parse(localStorage.getItem('mapRange') || '10');
 
   @ViewChild('mapSearchField') mapSearchField!: ElementRef;
   @ViewChild('GoogleMap') map!: GoogleMap;
-  range: string = '10';
   circleCenter: google.maps.LatLngLiteral = this.center;
   radius: number = +this.range * 1000;
   attractions: Attraction[][] = [];
@@ -30,12 +35,12 @@ export class AttractionsPageComponent implements OnInit {
   nextPageToken: string = '';
   pageAttractions: Attraction[] = [];
 
-  constructor(private attractionService: AttractionService) { }
+  constructor(private attractionService: AttractionService, private mapCenterService: MapCenterService) { }
 
-  
+
   mapCongiguration = {
-    zoom: 10.5,
     center: this.center,
+    zoom: 10,
     mapTypeId: 'roadmap',
     disableDefaultUI: true,
     zoomControl: true,
@@ -53,12 +58,12 @@ export class AttractionsPageComponent implements OnInit {
     const searchBox = new google.maps.places.SearchBox(this.mapSearchField.nativeElement);
     this.map.controls.push(this.mapSearchField.nativeElement);
 
+
     searchBox.addListener('places_changed', () => {
       console.log('places_changed');
       const places = searchBox.getPlaces();
       if (!places || places.length === 0) {
         return;
-        console.log('No places found');
       }
 
       const bounds = new google.maps.LatLngBounds();
@@ -76,8 +81,15 @@ export class AttractionsPageComponent implements OnInit {
       });
       this.radius = +this.range * 1000;
       this.circleCenter = bounds.getCenter().toJSON();
+      localStorage.setItem('mapCenter', JSON.stringify(this.circleCenter));
+      localStorage.setItem('mapRange', JSON.stringify(this.range));
       const circle = new google.maps.Circle({ center: this.circleCenter, radius: this.radius });
       const circleBounds = this.getCircleBounds(this.circleCenter, this.radius);
+
+      this.currentPage = 1
+      this.attractions = [];
+      this.pageAttractions = [];
+      this.nextPageToken = '';
 
       //this.nextPageToken = '';
       this.fetchAttractions();
@@ -86,26 +98,28 @@ export class AttractionsPageComponent implements OnInit {
       if (circleBounds) {
         this.map.fitBounds(circleBounds);
       }
+      else
+        this.map.fitBounds(bounds);
     });
   }
 
   prevPage() {
     if (this.currentPage == 1) return;
     this.currentPage--;
-    this.pageAttractions = this.attractions[this.currentPage-1];
+    this.pageAttractions = this.attractions[this.currentPage - 1];
 
-}
-
-nextPage() {
-  console.log(this.nextPageToken);
-  if (this.attractions[this.currentPage]!=null) {
-    this.currentPage++;
-    this.pageAttractions = this.attractions[this.currentPage];
-  } else if (this.nextPageToken != '' && this.nextPageToken != null) {
-    this.currentPage++;
-    this.fetchAttractions();
   }
-}
+
+  nextPage() {
+    console.log(this.nextPageToken);
+    if (this.attractions[this.currentPage] != null) {
+      this.currentPage++;
+      this.pageAttractions = this.attractions[this.currentPage];
+    } else if (this.nextPageToken != '' && this.nextPageToken != null) {
+      this.currentPage++;
+      this.fetchAttractions();
+    }
+  }
 
   getCircleBounds(circleCenter: google.maps.LatLngLiteral, radius: number): google.maps.LatLngBounds | null {
     const circle = new google.maps.Circle({ center: circleCenter, radius: radius });
@@ -113,15 +127,12 @@ nextPage() {
     return bounds ? bounds : null;
   }
 
-  ngOnInit(): void { 
+  ngOnInit(): void {
+    
     const circleBounds = this.getCircleBounds(this.circleCenter, this.radius);
 
-      this.fetchAttractions();
-
-      // Update the map's bounds to include the circle if circleBounds is not null
-      if (circleBounds) {
-        this.map.fitBounds(circleBounds);
-      }
+    this.fetchAttractions();
+   
   }
 
   moveMap(event: google.maps.MapMouseEvent) {
@@ -148,26 +159,36 @@ nextPage() {
   }
 
   fetchAttractions(): void {
-    console.log('fetchAttractions');
     this.attractionService.getAttractions(this.circleCenter.lat, this.circleCenter.lng, this.radius, this.nextPageToken).subscribe(
       (data: AttractionsResponse) => {
-        console.log('API Response:', data);
         this.attractions.push(data.places);
-        console.log(this.attractions[this.currentPage-1]);
         this.nextPageToken = data.pageToken;
-        console.log(this.nextPageToken);
-        for (let i = 0; i < this.attractions[this.currentPage-1].length; i++) {
+        for (let i = 0; i < this.attractions[this.currentPage - 1].length; i++) {
           const apiKey = "AIzaSyAILm8lpjdZbGCyZOgmKAW0z0sARKzKM9g&libraries=places";
           const maxWidth = 400;
-          if (this.attractions[this.currentPage-1][i] && this.attractions[this.currentPage-1][i].photos && this.attractions[this.currentPage-1][i].photos[0]){
-            this.attractions[this.currentPage-1][i].imageUrl = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=${maxWidth}&photoreference=${this.attractions[this.currentPage-1][i].photos[0].photoReference}&key=${apiKey}`;
+          if (this.attractions[this.currentPage - 1][i] && this.attractions[this.currentPage - 1][i].photos && this.attractions[this.currentPage - 1][i].photos[0]) {
+            this.attractions[this.currentPage - 1][i].imageUrl = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=${maxWidth}&photoreference=${this.attractions[this.currentPage - 1][i].photos[0].photoReference}&key=${apiKey}`;
           }
         }
-        this.pageAttractions = this.attractions[this.currentPage-1];
+        this.pageAttractions = this.attractions[this.currentPage - 1];
       },
       (error) => {
         console.error('Error fetching attractions:', error);
       }
     );
   }
+
+  onMapReady(map: GoogleMap) {
+    this.map = map;
+  
+    const circleBounds = this.getCircleBounds(this.circleCenter, this.radius);
+  
+    this.fetchAttractions();
+  
+    // Update the map's bounds to include the circle if circleBounds is not null
+    if (circleBounds) {
+      this.map.fitBounds(circleBounds);
+    }
+  }
+  
 }

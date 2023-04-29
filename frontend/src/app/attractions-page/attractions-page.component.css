@@ -2,6 +2,7 @@
   display: flex;
   min-height: 100vh;
   font-weight: normal;
+  max-width: 1080px;
 }
 
 .location-page {
@@ -10,8 +11,8 @@
 }
 
 .sidebar {
-  background-color: #fff;
-  padding: 10px;
+  padding-right: 10px;
+  padding-top: 10px;
   width: 20%;
   box-sizing: border-box;
   margin-right: 10px;
@@ -20,17 +21,21 @@
   height: auto;
 }
 
+.sidebar-content {
+  width: 100%;
+  margin: 0 auto;
+  box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.16);
+  border-radius: 10px;
+  background-color: #fff;
+  padding: 20px;
+}
+
 .section {
   color: #333;
   margin-bottom: 15px;
   margin-bottom: 25px;
-  /* Increase the margin-bottom value for more space */
   padding-bottom: 10px;
-  /* Add padding-bottom for better spacing of the border */
-  ;
-  /* Add a border-bottom line */
 }
-
 
 .section:first-child {
   padding-top: 5vh;
@@ -117,7 +122,6 @@
 
 .main-content {
   position: relative;
-  background-color: #fff;
   padding: 10px;
   width: 80%;
   box-sizing: border-box;
@@ -125,15 +129,42 @@
   flex-direction: column;
 }
 
+.main-content-content {
+  width: 100%;
+  margin: 0 auto;
+  box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.16);
+  border-radius: 10px;
+  background-color: #fff;
+  padding: 20px;
+}
+
+.box-map{
+  display: flex;
+  justify-content: center;
+  padding: 10px 0;
+  width: 100%;
+}
+
+.box-map-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  margin: 0 auto;
+  box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.16);
+  border-radius: 10px;
+  background-color: #fff;
+}
+
 .map {
   background-color: #fff;
   flex-grow: 1;
-  border-radius: 15px;
-  margin-bottom: 10px;
-  height: calc(50vh - 40px);
+  border-radius: 6px;
+  height: calc(50vh);
   /* Adjust the value as needed */
   overflow: hidden;
 }
+
 
 .cards {
   background-color: #fff;
@@ -144,6 +175,7 @@
   flex-wrap: wrap;
   gap: 1rem;
   justify-content: center;
+  align-items: stretch;
 }
 
 .cards app-attraction-card {
@@ -326,3 +358,91 @@
   transform: rotate(135deg);
   -webkit-transform: rotate(135deg);
 }
+
+.remove-filters-btn {
+  width: 100%;
+  padding: 10px 17px;
+  outline: none;
+  font-weight: 400;
+  font-size: 14px;
+  border-radius: 5px;
+  background: transparent;
+  border: 1px solid #3d3d3d;
+  color: #3d3d3d;
+  cursor: pointer;
+  margin-bottom: 10px;
+  transition: 0.5s;
+}
+
+.apply-filters-btn{
+  width: 100%;
+  padding: 10px 17px;
+  outline: none;
+  font-weight: 400;
+  font-size: 14px;
+  border-radius: 5px;
+  background: #FFA500;
+  border: 1px solid #FFA500;
+  color: #fff;
+  cursor: pointer;
+  margin-bottom: 10px;
+  transition: 0.5s;
+}
+
+
+.apply-filters-btn:hover{
+  letter-spacing: 1px;
+}
+
+.apply-filters-btn:hover,
+.remove-filters-btn:hover {
+  border: 1px solid #FFA500;
+  background: #FFA500;
+  border: 1px solid #FFA500;
+  color: #fff;
+  font-weight: 500;
+  cursor: pointer;
+  outline: none;
+  transition: 0.5s;
+}
+
+.rating-container {
+  display: flex;
+  justify-content: left;
+}
+
+.rating:not(:checked) > input {
+  position: absolute;
+  appearance: none;
+}
+
+.rating:not(:checked) > label {
+  float: right;
+  cursor: pointer;
+  font-size: 20px;
+  color: #666;
+}
+
+.rating:not(:checked) > label:before {
+  content: '★';
+}
+
+.rating > input:checked + label:hover,
+.rating > input:checked + label:hover ~ label,
+.rating > input:checked ~ label:hover,
+.rating > input:checked ~ label:hover ~ label,
+.rating > label:hover ~ input:checked ~ label {
+  color: #e58e09;
+}
+
+.rating:not(:checked) > label:hover,
+.rating:not(:checked) > label:hover ~ label {
+  color: #ff9e0b;
+}
+
+.rating > input:checked ~ label {
+  color: #ffa723;
+}
+
+
+
