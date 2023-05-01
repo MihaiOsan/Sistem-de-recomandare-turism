@@ -31,6 +31,11 @@ import { GoogleMap, GoogleMapsModule } from '@angular/google-maps';
 import { AttractionCardComponent } from './attraction-card/attraction-card.component'
 import { AttractionService } from './services/attraction.service';
 import { AttractionDetailsComponent } from './attraction-details/attraction-details.component';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatNativeDateModule } from '@angular/material/core';
+import { CreatAPlanCardComponent } from './creat-aplan-card/creat-aplan-card.component';
 
 @NgModule({
   declarations: [
@@ -51,7 +56,8 @@ import { AttractionDetailsComponent } from './attraction-details/attraction-deta
     CardComponent,
     SliderComponent,
     AttractionCardComponent,
-    AttractionDetailsComponent
+    AttractionDetailsComponent,
+    CreatAPlanCardComponent,
   ],
   imports: [
     BrowserModule,
@@ -63,6 +69,11 @@ import { AttractionDetailsComponent } from './attraction-details/attraction-deta
     CoolSocialLoginButtonsModule,
     SwiperModule,
     GoogleMapsModule,
+    MatDatepickerModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatNativeDateModule,
+    NgbModule,
   ],
   providers: [AttractionService],
   bootstrap: [AppComponent]

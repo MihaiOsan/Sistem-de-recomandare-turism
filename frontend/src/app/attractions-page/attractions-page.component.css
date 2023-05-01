@@ -115,6 +115,10 @@
   display: none;
 }
 
+.checkbox-button input[type="radio"] {
+  display: none;
+}
+
 .checkbox-button-selected {
   border-color: #FFA500;
   color: #FFA500;

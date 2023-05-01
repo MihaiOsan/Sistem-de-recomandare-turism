@@ -9,6 +9,24 @@
                 </div>
 
                 <div class="section">
+                    <label class="section-label">Sort by</label>
+                    <div class="checkbox-container">
+                        <div class="checkbox-button" (click)="toggleCheckboxSort($event)">
+                            <input type="radio" id="ratings" value="ratings">
+                            <label for="ratings">User ratings</label>
+                        </div>
+                        <div class="checkbox-button" (click)="toggleCheckboxSort($event)">
+                            <input type="radio" id="recommendation" value="recommendation">
+                            <label for="recommendation">Recommendation</label>
+                        </div>
+                        <div class="checkbox-button" (click)="toggleCheckboxSort($event)">
+                            <input type="radio" id="sightseeing" value="sightseeing">
+                            <label for="distance">Distance</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section">
                     <label class="section-label">Range</label>
                     <input type="number" list="range-options" class="range-input" min="0" placeholder="Enter range (km)"
                         [defaultValue]="2" [(ngModel)]="range">

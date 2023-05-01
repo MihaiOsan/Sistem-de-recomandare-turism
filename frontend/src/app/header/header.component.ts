@@ -44,8 +44,5 @@ export class HeaderComponent implements OnInit {
       const dropdownMenu = this.el.nativeElement.querySelector('.dropdown-menu');
       this.renderer.removeClass(dropdownMenu, 'show');
     }
-    if(this.router.url != '/Attractions'){
-      console.log(this.router.url);
-    }
   }
 }

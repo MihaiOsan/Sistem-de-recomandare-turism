@@ -13,18 +13,10 @@ import { AttractionsResponse } from '../models/attractions-response';
   styleUrls: ['./attractions-page.component.css']
 })
 export class AttractionsPageComponent implements OnInit {
-toggleRating($event: MouseEvent) {
-throw new Error('Method not implemented.');
-}
-removeFilters() {
-}
-applyFilters() {
-}
 
-
-  display: any;
+display: any;
   center: google.maps.LatLngLiteral = JSON.parse(localStorage.getItem('mapCenter') || '{"lat": 45.75, "lng": 21.22}');
-  range: string = JSON.parse(localStorage.getItem('mapRange') || '10');
+  range: string =  '10';
 
   @ViewChild('mapSearchField') mapSearchField!: ElementRef;
   @ViewChild('GoogleMap') map!: GoogleMap;
@@ -53,6 +45,10 @@ applyFilters() {
   // Get the bounds of the circle
   // map initialisation
 
+  removeFilters() {
+  }
+  applyFilters() {
+  }
   ngAfterViewInit() {
     console.log('ngAfterViewInit');
     const searchBox = new google.maps.places.SearchBox(this.mapSearchField.nativeElement);
@@ -147,6 +143,27 @@ applyFilters() {
     const target = event.target as HTMLElement;
     const checkboxButton = target.closest('.checkbox-button');
     const checkbox = checkboxButton?.querySelector('input[type="checkbox"]') as HTMLInputElement;
+
+    if (checkbox) {
+      checkbox.checked = !checkbox.checked;
+      if (checkbox.checked) {
+        checkboxButton?.classList.add('checkbox-button-selected');
+      } else {
+        checkboxButton?.classList.remove('checkbox-button-selected');
+      }
+    }
+  }
+
+  toggleCheckboxSort(event: Event) {
+    const target = event.target as HTMLElement;
+    const checkboxButton = target.closest('.checkbox-button');
+    const checkbox = checkboxButton?.querySelector('input[type="radio"]') as HTMLInputElement;
+    // foreach checkbox in group uncheck
+    const checkboxes = document.querySelectorAll('input[type="radio"]') as NodeListOf<HTMLInputElement>;
+    checkboxes.forEach((checkboxes) => {
+      checkboxes.checked = false;
+      checkboxes.closest('.checkbox-button')?.classList.remove('checkbox-button-selected');
+    });
 
     if (checkbox) {
       checkbox.checked = !checkbox.checked;

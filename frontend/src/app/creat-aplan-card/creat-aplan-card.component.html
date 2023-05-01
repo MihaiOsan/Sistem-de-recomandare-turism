@@ -1,0 +1,27 @@
+<div class="card">
+    <div class="image">
+      <div class="image-wrapper">
+        <img class="real-image" [src]="attraction.imageUrl">
+      </div>
+    </div> <div class="content">
+       <a>
+         <span class="title">
+          {{ attraction.name }}
+         </span>
+       </a>
+   
+       <p class="desc">
+        <!-- {{ attraction.description }} -->
+       </p>
+   
+       <a [routerLink]="['/Attraction', attraction.placeId]" class="action" target="blank">
+         Find out more
+         <span aria-hidden="true">
+           →
+         </span>
+       </a>
+       <a class="action" >
+        Select this attraction
+      </a>
+     </div>
+   </div>
