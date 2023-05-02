@@ -10,8 +10,8 @@
                         <form [formGroup]="tripForm" (ngSubmit)="onSubmit()" class="trip-form">
                             <div class="form-group">
                                 <label for="destination" class="form-label">Trip name</label>
-                                <input type="text" formControlName="tripName" id="destination" class="form-control"
-                                    required="true" />
+                                <input type="text" formControlName="tripName" id="tripNmae" class="form-control"
+                                    required="true" placeholder="New trip" />
                             </div>
                             <div class="form-group">
                                 <label for="startDate" class="form-label">Start Date</label>
@@ -27,14 +27,6 @@
                             <button class="add-time-slot-btn" (click)="onSubmit()">Set this infotmation</button>
                             <label>{{errorMessageOnSubmit}}</label>
                         </form>
-                    </div>
-                </div>
-            </div>
-
-            <div class="column" style="padding-left: 10px;">
-
-                <div class="box">
-                    <div class="box-inside-content">
                         <h2 class="box-title">Create a daily program</h2>
                         <div class="content-line">
                             <button class="nav-btn" (click)="prevDay()">
@@ -59,11 +51,13 @@
                             </div>
                             <div>
                                 <label for="type">Type:</label>
-                                <select id="type" [(ngModel)]="type" name="type">
-                                    <option value="Visiting time">Visiting time</option>
-                                    <option value="Eating time">Eating time</option>
-                                    <option value="Free time">Free time</option>
-                                </select>
+                                <div class="select">
+                                    <select id="type" [(ngModel)]="type" name="type" class="range-input">
+                                        <option value="Visiting time">Visiting time</option>
+                                        <option value="Eating time">Eating time</option>
+                                        <option value="Free time">Free time</option>
+                                    </select>
+                                </div>
                             </div>
                         </form>
                         <div class="time-slot-container"
@@ -77,59 +71,91 @@
                             </div>
                         </div>
                     </div>
+
                 </div>
             </div>
-            <div class="box-map">
-                <div class="box-inside-content">
-                    <h2 class="box-title">Select a location to explore</h2>
-                    <div class="map">
-                        <form class="form">
-                            <label for="search">
-                                <input required="" autocomplete="off" placeholder="search a place" id="search"
-                                    type="text" #mapSearchField>
-                                <div class="icon">
-                                    <svg stroke-width="2" stroke="currentColor" viewBox="0 0 24 24" fill="none"
-                                        xmlns="http://www.w3.org/2000/svg" class="swap-on">
-                                        <path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke-linejoin="round"
-                                            stroke-linecap="round"></path>
-                                    </svg>
-                                    <svg stroke-width="2" stroke="currentColor" viewBox="0 0 24 24" fill="none"
-                                        xmlns="http://www.w3.org/2000/svg" class="swap-off">
-                                        <path d="M10 19l-7-7m0 0l7-7m-7 7h18" stroke-linejoin="round"
-                                            stroke-linecap="round">
-                                        </path>
-                                    </svg>
-                                </div>
-                                <button type="reset" class="close-btn">
-                                    <svg viewBox="0 0 20 20" class="h-5 w-5" xmlns="http://www.w3.org/2000/svg">
-                                        <path clip-rule="evenodd"
-                                            d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-                                            fill-rule="evenodd"></path>
-                                    </svg>
-                                </button>
-                            </label>
-                        </form>
-                        <google-map #GoogleMap height="100%" width="100%" [options]="mapCongiguration">
-                            <map-circle [center]="circleCenter" [radius]="radius"></map-circle>
-                        </google-map>
+
+
+            <div class="column">
+                <div class="box-map">
+                    <div class="box-inside-content">
+                        <h2 class="box-title">Select the place of the trip</h2>
+                        <div class="map">
+                            <form class="form">
+                                <label for="search">
+                                    <input required="" autocomplete="off" placeholder="search a place" id="search"
+                                        type="text" #mapSearchField>
+                                    <div class="icon">
+                                        <svg stroke-width="2" stroke="currentColor" viewBox="0 0 24 24" fill="none"
+                                            xmlns="http://www.w3.org/2000/svg" class="swap-on">
+                                            <path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                                                stroke-linejoin="round" stroke-linecap="round"></path>
+                                        </svg>
+                                        <svg stroke-width="2" stroke="currentColor" viewBox="0 0 24 24" fill="none"
+                                            xmlns="http://www.w3.org/2000/svg" class="swap-off">
+                                            <path d="M10 19l-7-7m0 0l7-7m-7 7h18" stroke-linejoin="round"
+                                                stroke-linecap="round">
+                                            </path>
+                                        </svg>
+                                    </div>
+                                    <button type="reset" class="close-btn">
+                                        <svg viewBox="0 0 20 20" class="h-5 w-5" xmlns="http://www.w3.org/2000/svg">
+                                            <path clip-rule="evenodd"
+                                                d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                                                fill-rule="evenodd"></path>
+                                        </svg>
+                                    </button>
+                                </label>
+                            </form>
+                            <google-map #GoogleMap height="100%" width="100%" [options]="mapCongiguration">
+                                <map-circle [center]="circleCenter" [radius]="radius"></map-circle>
+                            </google-map>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="box">
+            <div class="box" *ngIf="displaySelectPlaces==true">
                 <div class="box-inside-content">
                     <h2 class="box-title">Select the places that you want to visit</h2>
-                    <div class="cards" *ngIf="attractions.length > 0">
+                    <!-- Filter Bar -->
+                    <div class="filter-bar">
+                        <div class="filter-item">
+                            <label for="orderBy">Order by:</label>
+                            <div class="select">
+                                <select class="range-input" (change)="onOrderByChange($event)">
+                                    <option value="name">Name</option>
+                                    <option value="rating">Rating</option>
+                                    <option value="distance">Distance</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="filter-item">
+                            <label for="attractionType">Attraction Type:</label>
+                            <div class="select">
+                                <select id="attractionType" (change)="onAttractionTypeChange($event)">
+                                    <option value="all">All</option>
+                                    <option value="museum">Museum</option>
+                                    <option value="park">Park</option>
+                                    <option value="monument">Monument</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- End Filter Bar -->
+
+                    
+                    <div class="cards">
                         <app-creat-aplan-card *ngFor="let attraction of pageAttractions"
                             [attraction]="attraction"></app-creat-aplan-card>
                     </div>
                     <div class="navigation"><button class="nav-btn" (click)="prevPage()">
-                        <i class="arrow left"></i>
-                    </button>
-                    <span class="page-number">{{currentPage}}</span>
-                    <button class="nav-btn" (click)="nextPage()">
-                        <i class="arrow right"></i>
-                    </button>
-                </div>
+                            <i class="arrow left"></i>
+                        </button>
+                        <span class="page-number">{{currentPage}}</span>
+                        <button class="nav-btn" (click)="nextPage()">
+                            <i class="arrow right"></i>
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>

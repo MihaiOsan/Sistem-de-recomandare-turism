@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { GoogleMap } from '@angular/google-maps';
 import { FormGroup, FormControl, Validators, FormBuilder } from '@angular/forms';
 import { Attraction } from '../models/attraction';
@@ -25,10 +25,10 @@ export class NewTripInfo {
   styleUrls: ['./create-aplan-page.component.css']
 })
 export class CreateAPlanPageComponent implements OnInit {
-prevPage() {
+onOrderByChange($event: Event) {
 throw new Error('Method not implemented.');
 }
-nextPage() {
+onAttractionTypeChange($event: Event) {
 throw new Error('Method not implemented.');
 }
   @ViewChild('mapSearchField') mapSearchField!: ElementRef;
@@ -36,9 +36,9 @@ throw new Error('Method not implemented.');
 
 
   attractions: Attraction[][] = [];
-  currentPage: number = 1;
-  nextPageToken: string = '';
   pageAttractions: Attraction[] = [];
+  nextPageToken: string = '';
+  currentPage: number = 1;
 
   radius!: number;
   circleCenter!: google.maps.LatLng | google.maps.LatLngLiteral;
@@ -50,10 +50,11 @@ throw new Error('Method not implemented.');
   }
   tripForm!: FormGroup;
   newTripInfo!: NewTripInfo;
-  new: any;
+  displaySelectPlaces: boolean = true;
+  displayGeneratePlan: boolean = false;
 
 
-  constructor(private formBuilder: FormBuilder, private attractionService: AttractionService) { }
+  constructor(private formBuilder: FormBuilder, private attractionService: AttractionService, private changeDetectorRef: ChangeDetectorRef) { }
 
   ngAfterViewInit() {
     const searchBox = new google.maps.places.SearchBox(this.mapSearchField.nativeElement);
@@ -64,6 +65,8 @@ throw new Error('Method not implemented.');
       if (!places || places.length === 0) {
         return;
       }
+
+      this.displaySelectPlaces = true;
 
       const bounds = new google.maps.LatLngBounds();
       places.forEach((place) => {
@@ -78,15 +81,31 @@ throw new Error('Method not implemented.');
           bounds.extend(place.geometry.location);
         }
       });
-      let radius = +this.newTripInfo.range * 1000;
-      let circleCenter = bounds.getCenter().toJSON();
-
-      this.fetchAttractions(circleCenter.lat, circleCenter.lng, radius, '');
+      this.radius = +this.newTripInfo.range * 1000;
+      this.circleCenter = bounds.getCenter().toJSON();
 
 
-      this.map.fitBounds(bounds);
+      this.currentPage = 1
+      this.attractions = [];
+      this.pageAttractions = [];
+      this.nextPageToken = '';
 
-    });
+      //this.nextPageToken = '';
+      const circle = new google.maps.Circle({ center: this.circleCenter, radius: this.radius });
+      const circleBounds = this.getCircleBounds(this.circleCenter, this.radius);
+      
+
+      // Update the map's bounds to include the circle if circleBounds is not null
+       if (circleBounds) {
+        this.map.fitBounds(circleBounds);
+      }
+      else
+        this.map.fitBounds(bounds);
+      
+      this.fetchAttractions(this.circleCenter.lat, this.circleCenter.lng, this.radius, this.nextPageToken);
+    }
+
+    );
   }
 
   getCircleBounds(circleCenter: google.maps.LatLngLiteral, radius: number): google.maps.LatLngBounds | null {
@@ -103,7 +122,7 @@ throw new Error('Method not implemented.');
     throw new Error('Method not implemented.');
   }
 
-  fetchAttractions(lat:number, lng:number, range:number, nextPageToken:string): void {
+  fetchAttractions(lat: number, lng: number, range: number, nextPageToken: string): void {
     this.attractionService.getAttractions(lat, lng, range, nextPageToken).subscribe(
       (data: AttractionsResponse) => {
         this.attractions.push(data.places);
@@ -116,6 +135,8 @@ throw new Error('Method not implemented.');
           }
         }
         this.pageAttractions = this.attractions[this.currentPage - 1];
+        this.changeDetectorRef.detectChanges();
+        
       },
       (error: any) => {
         console.error('Error fetching attractions:', error);
@@ -239,6 +260,22 @@ throw new Error('Method not implemented.');
     }
   }
 
-  
+  prevPage() {
+    if (this.currentPage == 1) return;
+    this.currentPage--;
+    this.pageAttractions = this.attractions[this.currentPage - 1];
+
+  }
+
+  nextPage() {
+    console.log(this.nextPageToken);
+    if (this.attractions[this.currentPage] != null) {
+      this.currentPage++;
+      this.pageAttractions = this.attractions[this.currentPage];
+    } else if (this.nextPageToken != '' && this.nextPageToken != null) {
+      this.currentPage++;
+      this.fetchAttractions(this.circleCenter.lat as number, this.circleCenter.lng as number, this.newTripInfo.range, this.nextPageToken);
+    }
+  }
 
 }

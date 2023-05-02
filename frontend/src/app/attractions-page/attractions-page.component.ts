@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { GoogleMap } from '@angular/google-maps';
 import { Attraction } from '../models/attraction';
@@ -27,7 +27,7 @@ display: any;
   nextPageToken: string = '';
   pageAttractions: Attraction[] = [];
 
-  constructor(private attractionService: AttractionService, private mapCenterService: MapCenterService) { }
+  constructor(private attractionService: AttractionService, private mapCenterService: MapCenterService, private changeDetectorRef: ChangeDetectorRef) { }
 
 
   mapCongiguration = {
@@ -87,9 +87,11 @@ display: any;
       this.pageAttractions = [];
       this.nextPageToken = '';
 
+      console.log("fetch attractions");
       //this.nextPageToken = '';
       this.fetchAttractions();
 
+      console.log("fit bounds");
       // Update the map's bounds to include the circle if circleBounds is not null
       if (circleBounds) {
         this.map.fitBounds(circleBounds);
