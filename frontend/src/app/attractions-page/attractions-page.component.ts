@@ -5,6 +5,7 @@ import { Attraction } from '../models/attraction';
 import { AttractionService } from '../services/attraction.service';
 import { MapCenterService } from '../services/map-center-service.service';
 import { AttractionsResponse } from '../models/attractions-response';
+import { AuthenticationService } from '../authentication.service';
 
 
 @Component({
@@ -26,9 +27,12 @@ display: any;
   currentPage: number = 1;
   nextPageToken: string = '';
   pageAttractions: Attraction[] = [];
+  currentUser: any;
 
-  constructor(private attractionService: AttractionService, private mapCenterService: MapCenterService, private changeDetectorRef: ChangeDetectorRef) { }
+  filterSort: string = 'prominence';
+  filterType: string = 'tourist_attraction';
 
+  constructor(private attractionService: AttractionService, private mapCenterService: MapCenterService, private changeDetectorRef: ChangeDetectorRef,private authentificationService: AuthenticationService) { }
 
   mapCongiguration = {
     center: this.center,
@@ -42,18 +46,32 @@ display: any;
     fullscreenControl: true,
   };
 
-  // Get the bounds of the circle
-  // map initialisation
-
   removeFilters() {
+    this.filterSort = 'prominence';
+    this.filterType = 'tourist_attraction';
+    this.range = '10';
+    this.applyFilters();
   }
+
   applyFilters() {
+    this.radius = +this.range * 1000;
+    const circleBounds = this.getCircleBounds(this.circleCenter, this.radius);
+    this.fetchAttractions();
+    // Update the map's bounds to include the circle if circleBounds is not null
+    if (circleBounds) {
+      this.map.fitBounds(circleBounds);
+    }
+    this.currentPage = 1
+    this.attractions = [];
+    this.pageAttractions = [];
+    this.nextPageToken = '';
+    this.fetchAttractions();
   }
+
   ngAfterViewInit() {
     console.log('ngAfterViewInit');
     const searchBox = new google.maps.places.SearchBox(this.mapSearchField.nativeElement);
     this.map.controls.push(this.mapSearchField.nativeElement);
-
 
     searchBox.addListener('places_changed', () => {
       console.log('places_changed');
@@ -86,12 +104,7 @@ display: any;
       this.attractions = [];
       this.pageAttractions = [];
       this.nextPageToken = '';
-
-      console.log("fetch attractions");
-      //this.nextPageToken = '';
       this.fetchAttractions();
-
-      console.log("fit bounds");
       // Update the map's bounds to include the circle if circleBounds is not null
       if (circleBounds) {
         this.map.fitBounds(circleBounds);
@@ -128,6 +141,7 @@ display: any;
   ngOnInit(): void {
     
     const circleBounds = this.getCircleBounds(this.circleCenter, this.radius);
+    this.currentUser = this.authentificationService.currentUserValue;
 
     this.fetchAttractions();
    
@@ -146,10 +160,19 @@ display: any;
     const checkboxButton = target.closest('.checkbox-button');
     const checkbox = checkboxButton?.querySelector('input[type="checkbox"]') as HTMLInputElement;
 
+    // foreach checkbox in group uncheck
+    const checkboxes = document.querySelectorAll('input[type="checkbox"]') as NodeListOf<HTMLInputElement>;
+    checkboxes.forEach((checkboxes) => {
+      checkboxes.checked = false;
+      checkboxes.closest('.checkbox-button')?.classList.remove('checkbox-button-selected');
+    });
+
     if (checkbox) {
       checkbox.checked = !checkbox.checked;
       if (checkbox.checked) {
         checkboxButton?.classList.add('checkbox-button-selected');
+        this.filterType = checkbox.value;
+        console.log(this.filterType);
       } else {
         checkboxButton?.classList.remove('checkbox-button-selected');
       }
@@ -171,6 +194,8 @@ display: any;
       checkbox.checked = !checkbox.checked;
       if (checkbox.checked) {
         checkboxButton?.classList.add('checkbox-button-selected');
+        this.filterSort = checkbox.value;
+        console.log(this.filterSort);
       } else {
         checkboxButton?.classList.remove('checkbox-button-selected');
       }
@@ -178,7 +203,7 @@ display: any;
   }
 
   fetchAttractions(): void {
-    this.attractionService.getAttractions(this.circleCenter.lat, this.circleCenter.lng, this.radius, this.nextPageToken).subscribe(
+    this.attractionService.getAttractions(this.circleCenter.lat, this.circleCenter.lng, this.radius, this.nextPageToken, this.filterType, this.filterSort).subscribe(
       (data: AttractionsResponse) => {
         this.attractions.push(data.places);
         this.nextPageToken = data.pageToken;
@@ -190,6 +215,7 @@ display: any;
           }
         }
         this.pageAttractions = this.attractions[this.currentPage - 1];
+        this.changeDetectorRef.detectChanges();
       },
       (error) => {
         console.error('Error fetching attractions:', error);
@@ -199,11 +225,8 @@ display: any;
 
   onMapReady(map: GoogleMap) {
     this.map = map;
-  
     const circleBounds = this.getCircleBounds(this.circleCenter, this.radius);
-  
     this.fetchAttractions();
-  
     // Update the map's bounds to include the circle if circleBounds is not null
     if (circleBounds) {
       this.map.fitBounds(circleBounds);

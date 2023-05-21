@@ -40,7 +40,11 @@ public class Plan {
     @JsonIgnore
     private User user;
 
-    @ManyToMany
-    @JoinColumn(name = "iduser", referencedColumnName = "user_id")
-    private List<User> userGoing;
+    @Column(nullable = false)
+    double lat;
+    @Column(nullable = false)
+    double lng;
+
+    @Column(nullable = false)
+    double radius;
 }

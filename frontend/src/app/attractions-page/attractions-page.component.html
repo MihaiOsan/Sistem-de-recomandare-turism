@@ -11,17 +11,17 @@
                 <div class="section">
                     <label class="section-label">Sort by</label>
                     <div class="checkbox-container">
-                        <div class="checkbox-button" (click)="toggleCheckboxSort($event)">
-                            <input type="radio" id="ratings" value="ratings">
-                            <label for="ratings">User ratings</label>
+                        <div class="checkbox-button checkbox-button-selected" (click)="toggleCheckboxSort($event)">
+                            <input type="radio" id="prominence" value="prominence">
+                            <label for="prominence"><i class="material-icons">visibility</i> Prominence</label>
                         </div>
                         <div class="checkbox-button" (click)="toggleCheckboxSort($event)">
+                            <input type="radio" id="distance" value="distance">
+                            <label for="distance"><i class="material-icons">location_on</i> Distance</label>
+                        </div>
+                        <div *ngIf="currentUser" class="checkbox-button" (click)="toggleCheckboxSort($event)">
                             <input type="radio" id="recommendation" value="recommendation">
-                            <label for="recommendation">Recommendation</label>
-                        </div>
-                        <div class="checkbox-button" (click)="toggleCheckboxSort($event)">
-                            <input type="radio" id="sightseeing" value="sightseeing">
-                            <label for="distance">Distance</label>
+                            <label for="recommendation"><i class="material-icons">star_rate</i> Recommendation</label>
                         </div>
                     </div>
                 </div>
@@ -42,22 +42,42 @@
                 <div class="section">
                     <label class="section-label">Type</label>
                     <div class="checkbox-container">
+                        <div class="checkbox-button checkbox-button-selected" (click)="toggleCheckbox($event)">
+                            <input type="checkbox" id="tourist_attraction" value="tourist_attraction">
+                            <label for="tourist_attraction"><i class="material-icons">local_see</i> Tourist attractions</label>
+                        </div>
                         <div class="checkbox-button" (click)="toggleCheckbox($event)">
                             <input type="checkbox" id="museum" value="museum">
-                            <label for="museum">Museum</label>
+                            <label for="museum"><i class="material-icons">museum</i> Museums</label>
+                        </div>
+                        <div class="checkbox-button" (click)="toggleCheckbox($event)">
+                            <input type="checkbox" id="art_gallery" value="art_gallery">
+                            <label for="art_gallery"><i class="material-icons">palette</i> Art gallery</label>
+                        </div>
+                        <div class="checkbox-button" (click)="toggleCheckbox($event)">
+                            <input type="checkbox" id="place_of_worship" value="place_of_worship">
+                            <label for="place_of_worship"><i class="material-icons">place</i> Places of worship</label>
+                        </div>
+                        <div class="checkbox-button" (click)="toggleCheckbox($event)">
+                            <input type="checkbox" id="park" value="park">
+                            <label for="park"><i class="material-icons">nature_people</i> Parks and nature</label>
                         </div>
                         <div class="checkbox-button" (click)="toggleCheckbox($event)">
                             <input type="checkbox" id="restaurant" value="restaurant">
-                            <label for="restaurant">Restaurant</label>
+                            <label for="restaurant"><i class="material-icons">restaurant</i> Restaurants</label>
                         </div>
                         <div class="checkbox-button" (click)="toggleCheckbox($event)">
-                            <input type="checkbox" id="sightseeing" value="sightseeing">
-                            <label for="sightseeing">Sightseeing</label>
+                            <input type="checkbox" id="cafe" value="cafe">
+                            <label for="cafe"><i class="material-icons">local_cafe</i> Cafe</label>
+                        </div>
+                        <div class="checkbox-button" (click)="toggleCheckbox($event)">
+                            <input type="checkbox" id="shopping_mall" value="shopping_mall">
+                            <label for="shopping_mall"><i class="material-icons">shopping_cart</i> Shoppung</label>
                         </div>
                     </div>
                 </div>
 
-                <div class="section">
+                <!-- <div class="section">
                     <label class="section-label">Minimum Rating</label>
                     <div class="rating-container">
                         <div class="rating">
@@ -73,7 +93,7 @@
                             <label for="star1" title="text"></label>
                         </div>
                     </div>
-                </div>
+                </div> -->
 
 
                 <div class="section filter-buttons">

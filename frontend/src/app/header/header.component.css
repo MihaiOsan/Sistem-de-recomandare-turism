@@ -11,17 +11,24 @@
 .navbar-brand:hover{
     color: #FFA500;
     transition: 0.3s ease-in-out;
-    background-color: #1A1A1A
+    background-color: #1A1A1A;
 }
 
 .navbar-button{
     color: #cfcfcf;
+    background-color: #1A1A1A;
 }
 
 .navbar-button:hover{
     color: #fff;
     transition: 0.3s ease-in-out;
-    background-color: #1A1A1A
+    background-color: #1A1A1A;
     /* border-bottom: #FFA500 4px solid; */
-
 }
+
+.navbar-button:active, .navbar-button:focus {
+    color: #fff;
+    background-color: #1A1A1A!important;
+}
+
+

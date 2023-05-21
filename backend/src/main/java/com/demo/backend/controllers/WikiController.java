@@ -25,6 +25,6 @@ public class WikiController {
 
     @GetMapping("/wikipedia")
     public String searchForPlace(@RequestParam("query") String query) throws IOException {
-        return locationDetailService.searchForPlaceDetails(query);
+        return locationDetailService.searchForPlaceDescriptin(query);
     }
 }

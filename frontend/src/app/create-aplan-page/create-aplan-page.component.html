@@ -3,7 +3,7 @@
         <div class="box-content">
 
             <h2 class="box-title">Trip informations</h2>
-            <div class="column" style="padding-right: 10px;"> <!-- Add this column wrapper -->
+            <div class="column column-left"> <!-- Add this column wrapper -->
                 <div class="box">
                     <div class="box-inside-content">
                         <h2 class="box-title">General information</h2>
@@ -15,8 +15,7 @@
                             </div>
                             <div class="form-group">
                                 <label for="startDate" class="form-label">Start Date</label>
-                                <input type="date" formControlName="startDate" id="startDate" class="form-control"
-                                    [defaultValue]="" />
+                                <input type="date" formControlName="startDate" id="startDate" class="form-control" />
                                 <label for="endDate" class="form-label" aria-required="true">End Date</label>
                                 <input type="date" formControlName="endDate" id="endDate" class="form-control" />
 
@@ -24,7 +23,7 @@
                                 <input type="number" formControlName="range" id="range" class="form-control"
                                     placeholder="10" defaultValue="10" />
                             </div>
-                            <button class="add-time-slot-btn" (click)="onSubmit()">Set this infotmation</button>
+                            <button class="add-time-slot-btn" (click)="onSubmit()">Save infotmation</button>
                             <label>{{errorMessageOnSubmit}}</label>
                         </form>
                         <h2 class="box-title">Create a daily program</h2>
@@ -41,11 +40,11 @@
                             <p>{{errorMessageTimeSlot}}</p>
                         </div>
                         <form class="content-line" style="padding-top: 0px;">
-                            <div>
+                            <div class="time-input">
                                 <label for="startTime">Start Time:</label>
                                 <input type="time" id="startTime" [(ngModel)]="startTime" name="startTime">
                             </div>
-                            <div>
+                            <div class="time-input">
                                 <label for="endTime">End Time:</label>
                                 <input type="time" id="endTime" [(ngModel)]="endTime" name="endTime">
                             </div>
@@ -76,7 +75,7 @@
             </div>
 
 
-            <div class="column">
+            <div class="column column-right" >
                 <div class="box-map">
                     <div class="box-inside-content">
                         <h2 class="box-title">Select the place of the trip</h2>
@@ -143,7 +142,7 @@
                     </div>
                     <!-- End Filter Bar -->
 
-                    
+
                     <div class="cards">
                         <app-creat-aplan-card *ngFor="let attraction of pageAttractions"
                             [attraction]="attraction"></app-creat-aplan-card>
@@ -162,12 +161,21 @@
     </div>
     <div class="boxes-container box">
         <div class="box-content">
-            <h2 class="box-title">Generate plan</h2>
-            <div class="box">
-                <div class="box-inside-content">
-                    <h2 class="box-title">Create plans</h2>
+
+            <h2 class="box-title">Trip informations</h2>
+            <div class="column column-left" style="padding-right: 10px;"> 
+                <div class="box">
+                    <div class="box-inside-content">
+                        <h2 class="box-title">Daily plan</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="column column-right" style="padding-left: 10px;">
+                <div class="box">
+                    <div class="box-inside-content">
+                        <h2 class="box-title">Selected locations</h2>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div>

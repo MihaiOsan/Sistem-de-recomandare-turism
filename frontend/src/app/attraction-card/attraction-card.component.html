@@ -3,22 +3,23 @@
     <div class="image-wrapper">
       <img class="real-image" [src]="attraction.imageUrl">
     </div>
-  </div> <div class="content">
-     <a>
-       <span class="title">
+  </div>
+  <div class="content">
+    <a>
+      <span class="title">
         {{ attraction.name }}
-       </span>
-     </a>
- 
-     <p class="desc">
+      </span>
+    </a>
+
+    <p class="desc">
       <!-- {{ attraction.description }} -->
-     </p>
- 
-     <a [routerLink]="['/Attraction', attraction.placeId]" class="action" target="blank">
-       Find out more
-       <span aria-hidden="true">
-         →
-       </span>
-     </a>
-   </div>
- </div>
+    </p>
+
+    <a class="action" [routerLink]="['/Attraction', attraction.placeId]" >
+      Find out more
+      <span aria-hidden="true">
+            <i class="material-icons">arrow_forward</i>
+         </span>
+        </a>
+  </div>
+</div>

@@ -4,14 +4,11 @@ import com.demo.backend.models.DTO.LocationDetailsDTO;
 import com.demo.backend.models.DTO.LocationsDTO;
 import com.demo.backend.services.LocationDetailService;
 import com.google.maps.GeoApiContext;
-import com.google.maps.NearbySearchRequest;
-import com.google.maps.PlaceDetailsRequest;
 import com.google.maps.PlacesApi;
 import com.google.maps.errors.ApiException;
 import com.google.maps.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
@@ -47,48 +44,15 @@ public class LocationController {
             @RequestParam double lat,
             @RequestParam double lng,
             @RequestParam double radius,
-            @RequestParam(required = false) String pageToken
+            @RequestParam(required = false) String pageToken,
+            @RequestParam(required = false, defaultValue = "TOURIST_ATTRACTION") PlaceType locationType,
+            @RequestParam(required = false, defaultValue = "prominence") String sortBy
     ) throws InterruptedException, ApiException, IOException {
-        GeoApiContext context = new GeoApiContext.Builder()
-                .apiKey(googleMapsApiKey)
-                .build();
-
-        LatLng location = new LatLng(lat, lng);
-        NearbySearchRequest request = PlacesApi.nearbySearchQuery(context, location)
-                .radius((int) radius)
-                .type(PlaceType.TOURIST_ATTRACTION);
-
-        System.out.println(pageToken);
-        if (pageToken != "" && pageToken != null) {
-            request = request.pageToken(pageToken);
-        }
-
-        PlacesSearchResponse response = request.await();
-        LocationsDTO responseLocationAndToken = new LocationsDTO();
-        responseLocationAndToken.setPageToken(response.nextPageToken);
-        responseLocationAndToken.setPlaces(response.results);
-        return responseLocationAndToken;
+        return locationDetailService.getLocationsInRadius(lat,lng,radius,pageToken,locationType,sortBy);
     }
 
     @GetMapping("/api/details/{placeId}")
     public LocationDetailsDTO getPlaceDetails(@PathVariable String placeId) throws IOException, InterruptedException, ApiException {
-        GeoApiContext context = new GeoApiContext.Builder()
-                .apiKey(googleMapsApiKey)
-                .build();
-
-        PlaceDetailsRequest request = new PlaceDetailsRequest(context);
-        PlaceDetails placeDetails = request.placeId(placeId).await();
-
-        LocationDetailsDTO locationDetailsDTO = new LocationDetailsDTO();
-        String country="";
-        for (int i = 0; i<placeDetails.addressComponents.length;i++){
-            for (AddressComponentType type : placeDetails.addressComponents[i].types){
-                if (type.toString().toLowerCase().equals("country"))
-                    country = placeDetails.addressComponents[i].longName.toString();
-            }
-        }
-        locationDetailsDTO.setWikiDescription(locationDetailService.searchForPlaceDetails(placeDetails.name+ " " + country));
-        locationDetailsDTO.setPlace(placeDetails);
-        return locationDetailsDTO;
+        return locationDetailService.getPlaceDetails(placeId);
     }
 }

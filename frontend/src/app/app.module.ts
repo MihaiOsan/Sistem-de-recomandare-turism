@@ -36,6 +36,16 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatNativeDateModule } from '@angular/material/core';
 import { CreatAPlanCardComponent } from './creat-aplan-card/creat-aplan-card.component';
+import { Ng2GoogleChartsModule } from 'ng2-google-charts';
+
+import { FusionChartsModule } from 'angular-fusioncharts';
+
+import * as FusionCharts from 'fusioncharts';
+import * as Charts from 'fusioncharts/fusioncharts.charts';
+
+import * as FusionTheme from 'fusioncharts/themes/fusioncharts.theme.fusion';
+
+FusionChartsModule.fcRoot(FusionCharts, Charts, FusionTheme);
 
 @NgModule({
   declarations: [
@@ -74,6 +84,8 @@ import { CreatAPlanCardComponent } from './creat-aplan-card/creat-aplan-card.com
     MatInputModule,
     MatNativeDateModule,
     NgbModule,
+    FusionChartsModule,
+    Ng2GoogleChartsModule,
   ],
   providers: [AttractionService],
   bootstrap: [AppComponent]

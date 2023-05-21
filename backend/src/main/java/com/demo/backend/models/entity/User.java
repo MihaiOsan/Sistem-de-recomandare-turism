@@ -53,7 +53,4 @@ public class User {
     @JsonIgnore
     private List<Plan> plansCreated;
 
-    @ManyToMany(mappedBy = "user")
-    @JsonIgnore
-    private List<Plan> plansWithFriends;
 }

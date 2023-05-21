@@ -5,9 +5,12 @@ import com.demo.backend.exceptions.EmailExistException;
 import com.demo.backend.exceptions.UserNotFoundException;
 import com.demo.backend.exceptions.ValidationCodeDontMatchException;
 import com.demo.backend.models.AuthenticationProvider;
+import com.demo.backend.models.entity.Objective;
+import com.demo.backend.models.entity.Plan;
 import com.demo.backend.models.entity.User;
 import com.demo.backend.models.DTO.UserLocalLoginInfo;
 import com.demo.backend.models.DTO.UserLocalRegisterInfo;
+import com.demo.backend.repository.PlanRepository;
 import com.demo.backend.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
@@ -15,8 +18,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.ZonedDateTime;
+import java.util.List;
 import java.util.Optional;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 @Service
 public class UserService {
@@ -26,6 +31,8 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private PlanRepository planRepository;
     @Lazy
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -110,7 +117,6 @@ public class UserService {
     }
 
     public void updateUserVerificationCode(String userEmail){
-        System.out.println(userEmail);
         Optional<User> userO = userRepository.getUserByEmail(userEmail);
         if (userO.isPresent() && userO.get().getAuthProvider() == AuthenticationProvider.LOCAL) {
             User user = userO.get();
@@ -138,4 +144,13 @@ public class UserService {
         }
         return codeBuilder.toString();
     }
+
+    public List<Objective> getVisitedPlaces(Long userId) {
+        List<Plan> visitedPlans = planRepository.findVisitedPlansByUserId(userId);
+        return visitedPlans.stream()
+                .flatMap(plan -> plan.getObjectives().stream())
+                .collect(Collectors.toList());
+    }
+
+
 }

@@ -1,3 +1,4 @@
+<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 <div class="card">
     <div class="image">
       <div class="image-wrapper">
@@ -17,11 +18,14 @@
        <a [routerLink]="['/Attraction', attraction.placeId]" class="action" target="blank">
          Find out more
          <span aria-hidden="true">
-           →
+            <i class="material-icons">arrow_forward</i>
          </span>
        </a>
        <a class="action" >
         Select this attraction
+        <span aria-hidden="true">
+<i class="material-icons">add</i>
+        </span>
       </a>
      </div>
    </div>

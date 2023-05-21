@@ -21,6 +21,7 @@ public class Objective {
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
+
     @Column(nullable = false)
     private String title;
 
@@ -30,6 +31,7 @@ public class Objective {
     @Column(nullable = false)
     private ZonedDateTime endTime;
 
+    @Column(nullable = false)
     private String idLocaction;
 
     @ManyToOne

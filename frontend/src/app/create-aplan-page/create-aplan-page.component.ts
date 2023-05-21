@@ -50,7 +50,7 @@ throw new Error('Method not implemented.');
   }
   tripForm!: FormGroup;
   newTripInfo!: NewTripInfo;
-  displaySelectPlaces: boolean = true;
+  displaySelectPlaces: boolean = false;
   displayGeneratePlan: boolean = false;
 
 
@@ -146,10 +146,10 @@ throw new Error('Method not implemented.');
 
   ngOnInit() {
     this.tripForm = this.formBuilder.group({
-      tripName: ['', Validators.required],
-      startDate: ['', Validators.required],
-      endDate: ['', Validators.required],
-      range: ['', [Validators.required, Validators.min(1)]],
+      tripName: ['New trip', Validators.required],
+      startDate: [new Date(), Validators.required],
+      endDate: [new Date(), Validators.required],
+      range: ['10', [Validators.required, Validators.min(1)]],
     });
     this.newTripInfo = new NewTripInfo();
     this.newTripInfo.range = 10;
@@ -164,7 +164,10 @@ throw new Error('Method not implemented.');
     let day = date.getDate();
     let month = date.getMonth() + 1;
     let year = date.getFullYear();
-    return year + "-" + month + "-" + day;
+    let formattedDay = day<10? 0 + day.toString(): day.toString();
+    let formattedMonth = month<10? 0 + month.toString(): month.toString();
+    return formattedDay + "-" + formattedMonth + "-" + year;
+    
   }
 
   onSubmit() {

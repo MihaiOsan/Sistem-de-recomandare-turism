@@ -1,5 +1,61 @@
-<div class="box">
-    <div class="box-content">
-        <p>statistics-page works!</p>
+<div class="createplan-page">
+    <div class="boxes-container">
+        <div class="box-content">
+
+            <div class="column column-left">
+                <div class="box">
+                    <div class="box-content">
+                        <div>
+                            <h2>Trips statistics</h2>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="column column-right">
+                <div class="box">
+                    <div class="box-content">
+                        <div>
+                            <h2>Trips statistics</h2>
+                            <div class="chart-selector">
+                                <button (click)="changeChart('attractions')">Attractions Visited</button>
+                                <button (click)="changeChart('country')">Country Visited</button>
+                                <button (click)="changeChart('city')">City Visited</button>
+                            </div>
+                            <fusioncharts class="responsive-chart" [type]="chartConfig.type" [width]="chartConfig.width"
+                                [height]="chartConfig.height" [dataFormat]="chartConfig.dataFormat"
+                                [dataSource]="chartConfig.dataSource" [width]="chartConfig.width"></fusioncharts>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="boxes-container box-cards">
+        <div class="box-content">
+            <div class="cards-container">
+                <div class="card">
+                    <h3><i class="material-icons">map</i></h3>
+                    <h3>20</h3>
+                    <p>Plans created</p>
+                </div>
+                <div class="card">
+                    <h3><i class="material-icons">flag</i></h3>
+                    <h3>13</h3>
+                    <p>Visited countries</p>
+                </div>
+                <div class="card">
+                    <h3><i class="material-icons">location_city</i></h3>
+                    <h3>18</h3>
+                    <p>Explored cities</p>
+                </div>
+                <div class="card">
+                    <h3><i class="material-icons">place</i></h3>
+                    <h3>64</h3>
+                    <p>Discoverd places</p>
+                </div>
+            </div>
+        </div>
     </div>
 </div>

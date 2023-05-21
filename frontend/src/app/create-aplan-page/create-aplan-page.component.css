@@ -14,7 +14,6 @@
     display: flex;
     justify-content: center;
     width: 100%;
-    height: 100%;
     padding: 10px 0;
 }
 
@@ -22,7 +21,7 @@
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
-    align-items: center;
+    align-items: stretch;
     max-width: 1080px;
     width: 100%;
     margin: 0 auto;
@@ -66,7 +65,6 @@
     justify-content: center;
     padding: 10px 0;
     width: 100%;
-    height: 100%;
 }
 
 .column {
@@ -74,6 +72,16 @@
     flex: 1;
     min-width: 50%;
 }
+
+.column-left{
+    padding-right: 10px;
+}
+
+.column-right{
+    padding-left: 10px;
+}
+
+
 
 .content-line {
     display: flex;
@@ -92,6 +100,10 @@
     outline: none;
 }
 
+label{
+    padding-right: 5px;
+}
+
 .select {
     position: relative;
     display: inline-block;
@@ -102,15 +114,14 @@
     cursor: pointer;
     padding: 5px 15px;
     outline: 0;
-    border: 0;
-    border-radius: 0;
     background: #fff;
-    box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.16);
+    border: 1px solid #cccccc;
     border-radius: 3px;
     appearance: none;
     -webkit-appearance: none;
     -moz-appearance: none;
   }
+
   .select select::-ms-expand {
     display: none;
   }
@@ -118,7 +129,7 @@
   .select select:focus {
     background: #fff;
   }
-  
+
   .select select:hover ~ .select__arrow,
   .select select:focus ~ .select__arrow {
     border-top-color: #000;
@@ -235,13 +246,29 @@
 
 @media (max-width: 768px) {
     .column {
-        min-width: 100%;
+        flex: none;
+        width: 100%;
+      }
+
+    .box-content{
+        align-items: center;
+    }
+
+    .column-left{
+        padding-right: 0;
+    }
+
+    .column-right{
+        padding-left: 0;
+    }
+
+    .map {
+        height: 50vh;
     }
 }
 
 .box-inside-content {
     width: 100%;
-    height: 100%;
     /* Add this line */
     margin: 0 auto;
     box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.16);
@@ -263,7 +290,8 @@
     background-color: #fff;
     flex-grow: 1;
     border-radius: 6px;
-    height: 69vh;
+    height: 88%;
+    min-height: 50vh;
     /* Adjust the value as needed */
     overflow: hidden;
 }
@@ -432,4 +460,13 @@
 .submit-btn:disabled {
     background-color: #adb5bd;
     cursor: not-allowed;
+}
+
+.time-input input {
+    padding: 0.25rem;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    background-color: #fff;
+    font-size: 14px;
+    outline: none;
 }

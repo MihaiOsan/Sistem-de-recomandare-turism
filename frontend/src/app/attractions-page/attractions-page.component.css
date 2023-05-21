@@ -98,16 +98,14 @@
 
 .checkbox-button {
   width: 100%;
-  padding: 5px;
   box-sizing: border-box;
   font-size: 13px;
   border-radius: 4px;
   color: #b0b0b0;
   display: inline-flex;
   align-items: center;
-  border: 1px solid #ccc;
-  padding: 5px;
-  margin-bottom: 5px;
+  border: 1px solid transparent;
+  margin-bottom: 2px;
   cursor: pointer;
 }
 
@@ -120,7 +118,6 @@
 }
 
 .checkbox-button-selected {
-  border-color: #FFA500;
   color: #FFA500;
 }
 
@@ -450,3 +447,7 @@
 
 
 
+
+.checkbox-button i.material-icons {
+  font-size: 16px;  /* Adjust as needed */
+  vertical-align: middle;}

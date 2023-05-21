@@ -5,6 +5,8 @@
     box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.16);
     border-radius: 6px;
     border: 1px solid transparent;
+    flex-wrap: wrap;
+    align-items: stretch;
   }
   
   .content {

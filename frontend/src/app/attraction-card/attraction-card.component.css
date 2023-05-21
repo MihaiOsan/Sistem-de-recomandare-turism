@@ -63,6 +63,12 @@
   border-radius: 4px;
 }
 
+.action:hover {
+  background-color: #fff;
+  color: #FFA500;
+}
+
+
 .action span {
   transition: .3s ease;
 }
