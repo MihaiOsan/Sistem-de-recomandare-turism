@@ -24,49 +24,53 @@
                                     placeholder="10" defaultValue="10" />
                             </div>
                             <button class="add-time-slot-btn" (click)="onSubmit()">Save infotmation</button>
-                            <label>{{errorMessageOnSubmit}}</label>
+                            <label style="padding-left: 5px;">{{errorMessageOnSubmit}}</label>
                         </form>
-                        <h2 class="box-title">Create a daily program</h2>
-                        <div class="content-line">
-                            <button class="nav-btn" (click)="prevDay()">
-                                <i class="arrow left"></i>
-                            </button>
-                            <span class="date-text">{{displayedDateString}}</span>
-
-                            <button class="nav-btn" (click)="nextDay()">
-                                <i class="arrow right"></i>
-                            </button>
-                            <button class="add-time-slot-btn" (click)="addTimeElement()">Add Time Slot</button>
-                            <p>{{errorMessageTimeSlot}}</p>
+                        <div [ngClass]="{'disabled': dailyProgramEnable}">
+                            <h2 class="box-title">Create a daily program</h2>
+                            <div class="content-line">
+                                <button class="nav-btn" (click)="prevDay()">
+                                    <i class="arrow left"></i>
+                                </button>
+                                <span class="date-text">{{ displayedDateString }}</span>
+                                <button class="nav-btn" (click)="nextDay()">
+                                    <i class="arrow right"></i>
+                                </button>
+                                <button class="add-time-slot-btn" (click)="addTimeElement()" [disabled]="dailyProgramEnable">Add Time Slot</button>
+                                <button class="add-time-slot-btn" (click)="clearTimeElements()" [disabled]="dailyProgramEnable">Clear</button>
+                                <p>{{ errorMessageTimeSlot }}</p>
+                            </div>
+                            <form class="content-line" style="padding-top: 0px;">
+                                <div class="time-input">
+                                    <label for="startTime">Start Time:</label>
+                                    <input type="time" id="startTime" [(ngModel)]="startTime" name="startTime" [disabled]="dailyProgramEnable">
+                                </div>
+                                <div class="time-input">
+                                    <label for="endTime">End Time:</label>
+                                    <input type="time" id="endTime" [(ngModel)]="endTime" name="endTime" [disabled]="dailyProgramEnable">
+                                </div>
+                                <div>
+                                    <label for="type">Type:</label>
+                                    <div class="select">
+                                        <select id="type" [(ngModel)]="type" name="type" class="range-input" [disabled]="dailyProgramEnable">
+                                            <option value="Visiting time">Visiting time</option>
+                                            <option value="Eating time">Eating time</option>
+                                            <option value="Free time">Free time</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </form>
                         </div>
-                        <form class="content-line" style="padding-top: 0px;">
-                            <div class="time-input">
-                                <label for="startTime">Start Time:</label>
-                                <input type="time" id="startTime" [(ngModel)]="startTime" name="startTime">
-                            </div>
-                            <div class="time-input">
-                                <label for="endTime">End Time:</label>
-                                <input type="time" id="endTime" [(ngModel)]="endTime" name="endTime">
-                            </div>
-                            <div>
-                                <label for="type">Type:</label>
-                                <div class="select">
-                                    <select id="type" [(ngModel)]="type" name="type" class="range-input">
-                                        <option value="Visiting time">Visiting time</option>
-                                        <option value="Eating time">Eating time</option>
-                                        <option value="Free time">Free time</option>
-                                    </select>
+                        <div class="content-time-slot" [ngClass]="{'disabled': dailyProgramEnable}">
+                            <div class="time-slot-container"
+                                *ngFor="let slot of newTripInfo.tripTimeSlots[currentDay-1]; let i = index">
+                                <div class="time-slot">
+                                    <div class="time-slot-info">
+                                        <p>{{ slot.start }} - {{ slot.end }} <span class="time-slot-type">{{ slot.type
+                                                }}</span></p>
+                                    </div>
+                                    <button class="time-slot-delete" (click)="removeTimeSlot(i)" [disabled]="dailyProgramEnable">x</button>
                                 </div>
-                            </div>
-                        </form>
-                        <div class="time-slot-container"
-                            *ngFor="let slot of newTripInfo.tripTimeSlots[currentDay-1]; let i = index">
-                            <div class="time-slot">
-                                <div class="time-slot-info">
-                                    <p>{{ slot.start }} - {{ slot.end }} <span class="time-slot-type">{{ slot.type
-                                            }}</span></p>
-                                </div>
-                                <button class="time-slot-delete" (click)="removeTimeSlot(i)">x</button>
                             </div>
                         </div>
                     </div>
@@ -75,7 +79,7 @@
             </div>
 
 
-            <div class="column column-right" >
+            <div class="column column-right">
                 <div class="box-map">
                     <div class="box-inside-content">
                         <h2 class="box-title">Select the place of the trip</h2>
@@ -123,8 +127,9 @@
                             <div class="select">
                                 <select class="range-input" (change)="onOrderByChange($event)">
                                     <option value="name">Name</option>
-                                    <option value="rating">Rating</option>
+                                    <option value="prominence">Prominence</option>
                                     <option value="distance">Distance</option>
+                                    <option value="recommendation">Recommendation</option>
                                 </select>
                             </div>
                         </div>
@@ -133,6 +138,9 @@
                             <div class="select">
                                 <select id="attractionType" (change)="onAttractionTypeChange($event)">
                                     <option value="all">All</option>
+                                    <option value="museum">Museum</option>
+                                    <option value="art_gallery">Art gallery</option>
+                                    <option value="place_of_worship">Places of worship</option>
                                     <option value="museum">Museum</option>
                                     <option value="park">Park</option>
                                     <option value="monument">Monument</option>
@@ -144,8 +152,8 @@
 
 
                     <div class="cards">
-                        <app-creat-aplan-card *ngFor="let attraction of pageAttractions"
-                            [attraction]="attraction"></app-creat-aplan-card>
+                        <app-creat-aplan-card *ngFor="let attraction of pageAttractions" [attraction]="attraction" [isSelected]="isAttractionSelected(attraction)"
+                            (selectItemEvent)="onSelectItem($event)"></app-creat-aplan-card>
                     </div>
                     <div class="navigation"><button class="nav-btn" (click)="prevPage()">
                             <i class="arrow left"></i>
@@ -157,25 +165,30 @@
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
-    <div class="boxes-container box">
-        <div class="box-content">
 
-            <h2 class="box-title">Trip informations</h2>
-            <div class="column column-left" style="padding-right: 10px;"> 
-                <div class="box">
-                    <div class="box-inside-content">
-                        <h2 class="box-title">Daily plan</h2>
+            <div class="boxes-container box" *ngIf="selectedAttractions.length!=0">
+                <div class="box-content">
+                    <h2 class="box-title">Selected attractions</h2>
+                    <div class="content-selected-attractions">
+                        <div class="selected-attractions-container"
+                            *ngFor="let attraction of selectedAttractions; let i = index">
+                            <div class="selected-attractions">
+                                <div class="selected-attractions-info">
+                                    <img [src]="attraction.imageUrl" alt="Attraction Image"
+                                        class="selected-attractions-image" />
+                                    <div class="selected-attractions-details">
+                                        <h3 class="selected-attractions-title">{{ attraction.name }}</h3>
+                                    </div>
+                                </div>
+                                <button class="selected-attractions-delete" (click)="removeAttraction(i)">x</button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="column column-right" style="padding-left: 10px;">
-                <div class="box">
-                    <div class="box-inside-content">
-                        <h2 class="box-title">Selected locations</h2>
-                    </div>
-                </div>
-            </div>
+
+            
         </div>
     </div>
+    <app-generate-plan-page></app-generate-plan-page>
+</div>

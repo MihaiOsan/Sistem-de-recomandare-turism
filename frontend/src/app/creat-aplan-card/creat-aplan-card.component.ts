@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Attraction } from '../models/attraction';
 
 @Component({
@@ -9,7 +9,13 @@ import { Attraction } from '../models/attraction';
 export class CreatAPlanCardComponent implements OnInit {
 
   @Input() attraction!: Attraction;
-  
+  @Input() isSelected: boolean | undefined;
+  @Output() selectItemEvent = new EventEmitter<Attraction>();
+
+  selectItem() {
+    this.isSelected = !this.isSelected;
+    this.selectItemEvent.emit(this.attraction);
+  }
 
   constructor() { }
 

@@ -168,20 +168,26 @@
 
 
 .cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); 
+  gap: 1rem;
+  justify-items: stretch;
   background-color: #fff;
   padding: 10px;
-  flex-grow: 2;
   margin-bottom: 10px;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1rem;
-  justify-content: center;
-  align-items: stretch;
 }
 
 .cards app-attraction-card {
-  flex: 0 0 calc(33.333% - 20px);
   margin-bottom: 20px;
+}
+
+app-attraction-card {
+  display: flex;
+  flex-direction: column;
+}
+
+app-attraction-card .card-content {
+  flex-grow: 1;
 }
 
 .navigation {

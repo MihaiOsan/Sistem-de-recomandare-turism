@@ -29,8 +29,8 @@ display: any;
   pageAttractions: Attraction[] = [];
   currentUser: any;
 
-  filterSort: string = 'prominence';
-  filterType: string = 'tourist_attraction';
+  filterSort: string = localStorage.getItem('filterSort') || 'prominence';
+  filterType: string = localStorage.getItem('filterType') || 'tourist_attraction';
 
   constructor(private attractionService: AttractionService, private mapCenterService: MapCenterService, private changeDetectorRef: ChangeDetectorRef,private authentificationService: AuthenticationService) { }
 
@@ -66,6 +66,7 @@ display: any;
     this.pageAttractions = [];
     this.nextPageToken = '';
     this.fetchAttractions();
+    this.changeDetectorRef.detectChanges();
   }
 
   ngAfterViewInit() {
@@ -112,12 +113,14 @@ display: any;
       else
         this.map.fitBounds(bounds);
     });
+    this.changeDetectorRef.detectChanges();
   }
 
   prevPage() {
     if (this.currentPage == 1) return;
     this.currentPage--;
     this.pageAttractions = this.attractions[this.currentPage - 1];
+    this.changeDetectorRef.detectChanges();
 
   }
 
@@ -129,6 +132,7 @@ display: any;
     } else if (this.nextPageToken != '' && this.nextPageToken != null) {
       this.currentPage++;
       this.fetchAttractions();
+      this.changeDetectorRef.detectChanges();
     }
   }
 
@@ -172,11 +176,12 @@ display: any;
       if (checkbox.checked) {
         checkboxButton?.classList.add('checkbox-button-selected');
         this.filterType = checkbox.value;
-        console.log(this.filterType);
+        localStorage.setItem('filterType', this.filterType);
       } else {
         checkboxButton?.classList.remove('checkbox-button-selected');
       }
     }
+    this.changeDetectorRef.detectChanges();
   }
 
   toggleCheckboxSort(event: Event) {
@@ -195,11 +200,12 @@ display: any;
       if (checkbox.checked) {
         checkboxButton?.classList.add('checkbox-button-selected');
         this.filterSort = checkbox.value;
-        console.log(this.filterSort);
+        localStorage.setItem('filterSort', this.filterSort);
       } else {
         checkboxButton?.classList.remove('checkbox-button-selected');
       }
     }
+    this.changeDetectorRef.detectChanges();
   }
 
   fetchAttractions(): void {

@@ -46,3 +46,6 @@ google:
     maps:
         api:
             key: AIzaSyAILm8lpjdZbGCyZOgmKAW0z0sARKzKM9g&libraries=places
+openweather:
+    api:
+        key: 110462fcfdd6f8aed8bf4a424ff122f8

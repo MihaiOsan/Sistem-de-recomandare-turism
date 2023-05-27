@@ -204,6 +204,10 @@ label{
     width: 100%;
 }
 
+.content-time-slot{
+  height: 150px; /* Adjust the desired height */
+  overflow-y: auto;
+}
 
 .time-slot {
     display: flex;
@@ -230,11 +234,8 @@ label{
     gap: 1rem;
     justify-content: center;
     align-items: stretch;
-}
+  }
 
-.time-slot-type {
-    padding-left: 20px;
-}
 
 .time-slot-delete {
     background-color: transparent;
@@ -243,6 +244,66 @@ label{
     cursor: pointer;
 }
 
+ /* selected attractions */
+
+ .selected-attractions-container {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    padding-left: 20px;
+    padding-right: 20px;
+    width: 100%;
+  }
+  
+  .content-selected-attractions {
+    height: 250px;
+    overflow-y: auto;
+    width: 100%;
+  }
+  
+  .selected-attractions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    border-bottom: 1px solid #ccc;
+    padding: 10px;
+  }
+  
+  .selected-attractions-info {
+    display: flex;
+    align-items: center;
+    flex-grow: 1;
+  }
+  
+  .selected-attractions-details {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .selected-attractions-title {
+    margin-bottom: 5px;
+  }
+  
+  .selected-attractions-delete {
+    background-color: transparent;
+    border: none;
+    font-weight: bold;
+    cursor: pointer;
+  }
+  
+  .selected-attractions-image {
+    width: 40px;
+    height: 40px;
+    border-radius: 5px;
+    object-fit: cover;
+    margin-right: 10px;
+  }
+  
+  .disabled {
+    pointer-events: none;
+    opacity: 0.5;
+}
 
 @media (max-width: 768px) {
     .column {
@@ -263,7 +324,7 @@ label{
     }
 
     .map {
-        height: 50vh;
+        height: 53vh;
     }
 }
 
@@ -290,8 +351,8 @@ label{
     background-color: #fff;
     flex-grow: 1;
     border-radius: 6px;
-    height: 88%;
     min-height: 50vh;
+    height: 90%;
     /* Adjust the value as needed */
     overflow: hidden;
 }

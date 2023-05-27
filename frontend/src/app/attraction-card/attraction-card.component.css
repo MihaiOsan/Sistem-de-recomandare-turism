@@ -5,6 +5,8 @@
   box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.16);
   border-radius: 6px;
   border: 1px solid transparent;
+  flex-wrap: wrap;
+    align-items: stretch;
 }
 
 .content {
@@ -61,11 +63,13 @@
   background-color: #FFA500;
   padding: 4px 8px;
   border-radius: 4px;
+  border: 1px solid #FFA500;
 }
 
 .action:hover {
   background-color: #fff;
   color: #FFA500;
+  border: 1px solid #FFA500;
 }
 
 

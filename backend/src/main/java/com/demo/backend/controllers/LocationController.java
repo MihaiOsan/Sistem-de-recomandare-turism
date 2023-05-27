@@ -48,6 +48,7 @@ public class LocationController {
             @RequestParam(required = false, defaultValue = "TOURIST_ATTRACTION") PlaceType locationType,
             @RequestParam(required = false, defaultValue = "prominence") String sortBy
     ) throws InterruptedException, ApiException, IOException {
+        System.out.println(locationType.toString());
         return locationDetailService.getLocationsInRadius(lat,lng,radius,pageToken,locationType,sortBy);
     }
 

@@ -6,8 +6,8 @@ import { AttractionsResponse } from '../models/attractions-response';
 import { AttractionService } from '../services/attraction.service';
 
 export class TimeInterval {
-  start!: String;
-  end!: String;
+  start!: string;
+  end!: string;
   type!: string;
 }
 
@@ -25,18 +25,22 @@ export class NewTripInfo {
   styleUrls: ['./create-aplan-page.component.css']
 })
 export class CreateAPlanPageComponent implements OnInit {
-onOrderByChange($event: Event) {
-throw new Error('Method not implemented.');
-}
-onAttractionTypeChange($event: Event) {
-throw new Error('Method not implemented.');
-}
+
+
+
+  onOrderByChange($event: Event) {
+    throw new Error('Method not implemented.');
+  }
+  onAttractionTypeChange($event: Event) {
+    throw new Error('Method not implemented.');
+  }
   @ViewChild('mapSearchField') mapSearchField!: ElementRef;
   @ViewChild('GoogleMap') map!: GoogleMap;
 
 
   attractions: Attraction[][] = [];
   pageAttractions: Attraction[] = [];
+  selectedAttractions: Attraction[] = [];
   nextPageToken: string = '';
   currentPage: number = 1;
 
@@ -52,6 +56,7 @@ throw new Error('Method not implemented.');
   newTripInfo!: NewTripInfo;
   displaySelectPlaces: boolean = false;
   displayGeneratePlan: boolean = false;
+  dailyProgramEnable: boolean = true;
 
 
   constructor(private formBuilder: FormBuilder, private attractionService: AttractionService, private changeDetectorRef: ChangeDetectorRef) { }
@@ -93,19 +98,20 @@ throw new Error('Method not implemented.');
       //this.nextPageToken = '';
       const circle = new google.maps.Circle({ center: this.circleCenter, radius: this.radius });
       const circleBounds = this.getCircleBounds(this.circleCenter, this.radius);
-      
+
 
       // Update the map's bounds to include the circle if circleBounds is not null
-       if (circleBounds) {
+      if (circleBounds) {
         this.map.fitBounds(circleBounds);
       }
       else
         this.map.fitBounds(bounds);
-      
+
       this.fetchAttractions(this.circleCenter.lat, this.circleCenter.lng, this.radius, this.nextPageToken);
     }
 
     );
+    this.selectedAttractions = [];
   }
 
   getCircleBounds(circleCenter: google.maps.LatLngLiteral, radius: number): google.maps.LatLngBounds | null {
@@ -136,7 +142,7 @@ throw new Error('Method not implemented.');
         }
         this.pageAttractions = this.attractions[this.currentPage - 1];
         this.changeDetectorRef.detectChanges();
-        
+
       },
       (error: any) => {
         console.error('Error fetching attractions:', error);
@@ -153,7 +159,7 @@ throw new Error('Method not implemented.');
     });
     this.newTripInfo = new NewTripInfo();
     this.newTripInfo.range = 10;
-    this.newTripInfo.tripTimeSlots = [];
+    this.newTripInfo.tripTimeSlots = new Array(1).fill(null).map(() => this.createDefaultTimeSlots());
   }
 
   errorMessageOnSubmit: string = '';
@@ -164,10 +170,10 @@ throw new Error('Method not implemented.');
     let day = date.getDate();
     let month = date.getMonth() + 1;
     let year = date.getFullYear();
-    let formattedDay = day<10? 0 + day.toString(): day.toString();
-    let formattedMonth = month<10? 0 + month.toString(): month.toString();
+    let formattedDay = day < 10 ? 0 + day.toString() : day.toString();
+    let formattedMonth = month < 10 ? 0 + month.toString() : month.toString();
     return formattedDay + "-" + formattedMonth + "-" + year;
-    
+
   }
 
   onSubmit() {
@@ -199,15 +205,27 @@ throw new Error('Method not implemented.');
         startDate: this.tripForm.value['startDate'],
         endDate: this.tripForm.value['endDate'],
         range: this.tripForm.value['range'],
-        tripTimeSlots: new Array(Difference_In_Days),
+        tripTimeSlots: new Array(Difference_In_Days + 1).fill(null).map(() => this.createDefaultTimeSlots()),
       };
-
-      this.newTripInfo.tripTimeSlots[0] = [];
+      this.dailyProgramEnable = false;
     }
     else {
       this.errorMessageOnSubmit = "Please fill all fields";
       return;
     }
+  }
+
+  createDefaultTimeSlots(): TimeInterval[] {
+    // Here, create your default program for a day.
+    // This is just an example, modify it according to your needs.
+    return [
+      { start: '09:00', end: '11:00', type: 'Visiting time' },
+      { start: '11:30', end: '13:30', type: 'Visiting time' },
+      { start: '14:00', end: '15:00', type: 'Eating break' },
+      { start: '15:30', end: '17:30', type: 'Visiting time' },
+      { start: '18:00', end: '19:00', type: 'Eating break' },
+      { start: '19:00', end: '21:00', type: 'Free time' },
+    ];
   }
 
   startTime!: string;
@@ -219,7 +237,10 @@ throw new Error('Method not implemented.');
 
   //time slot functions
   addTimeElement() {
-    if (this.startTime == '' || this.endTime == '' || this.type == '') {
+    console.log(this.startTime);
+    console.log(this.endTime);
+    console.log(this.type);
+    if (this.startTime == '' || this.endTime == '' || this.type == '' || this.startTime == null || this.endTime == null || this.type == null || this.startTime == undefined || this.endTime == undefined || this.type == undefined) {
       this.errorMessageTimeSlot = "Please fill all fields";
       return;
     }
@@ -227,12 +248,30 @@ throw new Error('Method not implemented.');
       this.errorMessageTimeSlot = "Start time must be before end time";
       return;
     }
+
+    // Check if new time slot interferes with any existing slot
+    for (let slot of this.newTripInfo.tripTimeSlots[this.currentDay - 1]) {
+      if ((this.startTime >= slot.start && this.startTime < slot.end) ||
+        (this.endTime > slot.start && this.endTime <= slot.end) ||
+        (this.startTime <= slot.start && this.endTime >= slot.end)) {
+        this.errorMessageTimeSlot = "Time slot interferes with an existing slot";
+        return;
+      }
+    }
+
+    // If we reach here, the new slot does not interfere with any existing slot
     this.errorMessageTimeSlot = "";
     this.newTripInfo.tripTimeSlots[this.currentDay - 1].push({
       start: this.startTime,
       end: this.endTime,
       type: this.type,
     });
+
+    // Sort time slots by start time
+    this.newTripInfo.tripTimeSlots[this.currentDay - 1].sort((a, b) => {
+      return a.start.localeCompare(b.start);
+    });
+
     this.startTime = '';
     this.endTime = '';
     this.type = '';
@@ -267,7 +306,7 @@ throw new Error('Method not implemented.');
     if (this.currentPage == 1) return;
     this.currentPage--;
     this.pageAttractions = this.attractions[this.currentPage - 1];
-
+    this.changeDetectorRef.detectChanges();
   }
 
   nextPage() {
@@ -279,6 +318,32 @@ throw new Error('Method not implemented.');
       this.currentPage++;
       this.fetchAttractions(this.circleCenter.lat as number, this.circleCenter.lng as number, this.newTripInfo.range, this.nextPageToken);
     }
+    this.changeDetectorRef.detectChanges();
+  }
+
+  onSelectItem(attraction: Attraction) {
+    if (this.selectedAttractions.includes(attraction)) {
+      this.selectedAttractions.splice(this.selectedAttractions.indexOf(attraction), 1);
+    }
+    else {
+      this.selectedAttractions.push(attraction);
+    }
+
+    console.log(this.selectedAttractions);
+    this.changeDetectorRef.detectChanges();
+  }
+
+  clearTimeElements() {
+    this.newTripInfo.tripTimeSlots[this.currentDay - 1] = [];
+  }
+
+  removeAttraction(index: number) {
+    this.selectedAttractions.splice(index, 1);
+    this.changeDetectorRef.detectChanges();
+  }
+
+  isAttractionSelected(attractionS: Attraction): boolean {
+    return this.selectedAttractions.some(attraction => attraction === attractionS);
   }
 
 }

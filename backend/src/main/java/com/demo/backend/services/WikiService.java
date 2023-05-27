@@ -42,7 +42,8 @@ public class WikiService {
     public String searchForPlace(String query) throws IOException {
         String encodedQuery = URLEncoder.encode(query, StandardCharsets.UTF_8);
         String url = WIKIPEDIA_API_BASE_URL +
-                "?action=query&list=search&format=json&srsearch=" + encodedQuery + "&utf8=&formatversion=2";
+                "?action=query&list=search&format=json&srsearch=" + encodedQuery +
+                "&utf8=&formatversion=2&redirects=1&intitle=" + encodedQuery;
 
         UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url);
 

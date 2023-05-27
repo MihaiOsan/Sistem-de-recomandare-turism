@@ -1,9 +1,10 @@
+import { OpeningHours } from "./attractions-details";
 import { Geometry } from "./geometry";
 import { Photo } from "./photo";
 
 
 export interface Attraction {
-  formattedAddress: string | null;
+  formattedAddress: string;
   geometry: Geometry;
   name: string;
   icon: string;
@@ -11,11 +12,11 @@ export interface Attraction {
   scope: string;
   rating: number;
   types: string[];
-  openingHours: null;
+  openingHours: OpeningHours;
   photos: Photo[];
   vicinity: string;
   permanentlyClosed: boolean;
   userRatingsTotal: number;
-  businessStatus: null;
+  businessStatus: string;
   imageUrl: string;
 }

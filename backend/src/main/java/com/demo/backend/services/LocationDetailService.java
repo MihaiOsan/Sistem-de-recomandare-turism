@@ -25,9 +25,9 @@ public class LocationDetailService {
 
     public String searchForPlaceDescriptin(String query) throws IOException {
         String info;
-        try{
+        try {
             info = wikipediaService.searchForPlace(query);
-        }catch (Exception e){
+        } catch (Exception e) {
             info = "No content found";
         }
         if (info == "No content found")
@@ -54,7 +54,7 @@ public class LocationDetailService {
                 .map(ac -> ac.longName)
                 .orElse("");
 
-        locationDetailsDTO.setWikiDescription(searchForPlaceDescriptin(placeDetails.name+ " " + country));
+        locationDetailsDTO.setWikiDescription(searchForPlaceDescriptin(placeDetails.name + " " + country));
         locationDetailsDTO.setPlace(placeDetails);
         return locationDetailsDTO;
     }
@@ -76,6 +76,11 @@ public class LocationDetailService {
 
         NearbySearchRequest request = PlacesApi.nearbySearchQuery(context, location)
                 .type(locationType);
+        if(locationType != PlaceType.TOURIST_ATTRACTION)
+            request.keyword(locationType.toString());
+        if (locationType == PlaceType.PLACE_OF_WORSHIP) {
+            request.keyword("church");
+        }
 
         switch (sortBy.toLowerCase()) {
             case "distance":
@@ -100,27 +105,27 @@ public class LocationDetailService {
         responseLocationAndToken.setPageToken(response.nextPageToken);
         responseLocationAndToken.setPlaces(response.results);
 
-        PlacesSearchResult lastPlace = responseLocationAndToken.getPlaces()[responseLocationAndToken.getPlaces().length-1];
-
-        if (sortBy == "distance" && calculateDistance(new LatLng(lat,lng), new LatLng(lastPlace.geometry.location.lat,lastPlace.geometry.location.lng)) > (radius/1000))
-            responseLocationAndToken.setPageToken(null);
+        if (responseLocationAndToken.getPlaces().length != 0) {
+            PlacesSearchResult lastPlace = responseLocationAndToken.getPlaces()[responseLocationAndToken.getPlaces().length - 1];
+            if ("distance".equals(sortBy) && calculateDistance(new LatLng(lat, lng), new LatLng(lastPlace.geometry.location.lat, lastPlace.geometry.location.lng)) > (radius / 1000))
+                responseLocationAndToken.setPageToken(null);
+        }
         return responseLocationAndToken;
     }
 
     public static double calculateDistance(LatLng point1, LatLng point2) {
         final int EARTH_RADIUS = 6371; // Approx Earth radius in KM
 
-        double dLat  = Math.toRadians((point2.lat - point1.lat));
+        double dLat = Math.toRadians((point2.lat - point1.lat));
         double dLong = Math.toRadians((point2.lng - point1.lng));
 
-        double a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+        double a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
                 Math.cos(Math.toRadians(point1.lat)) * Math.cos(Math.toRadians(point2.lat)) *
-                        Math.sin(dLong/2) * Math.sin(dLong/2);
-        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+                        Math.sin(dLong / 2) * Math.sin(dLong / 2);
+        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 
         return EARTH_RADIUS * c;
     }
-
 
 
 }

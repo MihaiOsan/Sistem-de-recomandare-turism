@@ -23,7 +23,7 @@ public class Objective {
 
 
     @Column(nullable = false)
-    private String title;
+    private String type;
 
     @Column(nullable = false)
     private ZonedDateTime startTime;
