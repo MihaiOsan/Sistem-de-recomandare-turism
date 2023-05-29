@@ -186,8 +186,7 @@
                     </div>
                 </div>
             </div>
-
-            
+            <button class="add-time-slot-btn" (click)="onGenerateTrip()" [ngClass]="{'disabled': dailyProgramEnable}" [disabled]="dailyProgramEnable && mapChange">generate</button>
         </div>
     </div>
     <app-generate-plan-page></app-generate-plan-page>

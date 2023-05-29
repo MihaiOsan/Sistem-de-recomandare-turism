@@ -4,20 +4,8 @@ import { FormGroup, FormControl, Validators, FormBuilder } from '@angular/forms'
 import { Attraction } from '../models/attraction';
 import { AttractionsResponse } from '../models/attractions-response';
 import { AttractionService } from '../services/attraction.service';
-
-export class TimeInterval {
-  start!: string;
-  end!: string;
-  type!: string;
-}
-
-export class NewTripInfo {
-  tripName!: string;
-  startDate!: Date;
-  endDate!: Date;
-  range!: number;
-  tripTimeSlots!: TimeInterval[][];
-}
+import { NewTripInfo } from '../models/new-trip-info';
+import { TimeInterval } from '../models/time-interval';
 
 @Component({
   selector: 'app-create-aplan-page',
@@ -25,8 +13,9 @@ export class NewTripInfo {
   styleUrls: ['./create-aplan-page.component.css']
 })
 export class CreateAPlanPageComponent implements OnInit {
-
-
+onGenerateTrip() {
+throw new Error('Method not implemented.');
+}
 
   onOrderByChange($event: Event) {
     throw new Error('Method not implemented.');
@@ -57,7 +46,7 @@ export class CreateAPlanPageComponent implements OnInit {
   displaySelectPlaces: boolean = false;
   displayGeneratePlan: boolean = false;
   dailyProgramEnable: boolean = true;
-
+  mapChange: boolean = false;
 
   constructor(private formBuilder: FormBuilder, private attractionService: AttractionService, private changeDetectorRef: ChangeDetectorRef) { }
 
@@ -111,7 +100,9 @@ export class CreateAPlanPageComponent implements OnInit {
     }
 
     );
+    this.mapChange = true;
     this.selectedAttractions = [];
+    this.changeDetectorRef.detectChanges();
   }
 
   getCircleBounds(circleCenter: google.maps.LatLngLiteral, radius: number): google.maps.LatLngBounds | null {
@@ -122,10 +113,6 @@ export class CreateAPlanPageComponent implements OnInit {
 
   get f() {
     return this.tripForm.controls;
-  }
-
-  range(range: any): string {
-    throw new Error('Method not implemented.');
   }
 
   fetchAttractions(lat: number, lng: number, range: number, nextPageToken: string): void {
@@ -160,6 +147,7 @@ export class CreateAPlanPageComponent implements OnInit {
     this.newTripInfo = new NewTripInfo();
     this.newTripInfo.range = 10;
     this.newTripInfo.tripTimeSlots = new Array(1).fill(null).map(() => this.createDefaultTimeSlots());
+    this.changeDetectorRef.detectChanges();
   }
 
   errorMessageOnSubmit: string = '';
@@ -213,6 +201,7 @@ export class CreateAPlanPageComponent implements OnInit {
       this.errorMessageOnSubmit = "Please fill all fields";
       return;
     }
+    this.changeDetectorRef.detectChanges();
   }
 
   createDefaultTimeSlots(): TimeInterval[] {
@@ -224,7 +213,6 @@ export class CreateAPlanPageComponent implements OnInit {
       { start: '14:00', end: '15:00', type: 'Eating break' },
       { start: '15:30', end: '17:30', type: 'Visiting time' },
       { start: '18:00', end: '19:00', type: 'Eating break' },
-      { start: '19:00', end: '21:00', type: 'Free time' },
     ];
   }
 
@@ -275,6 +263,7 @@ export class CreateAPlanPageComponent implements OnInit {
     this.startTime = '';
     this.endTime = '';
     this.type = '';
+    this.changeDetectorRef.detectChanges();
   }
 
   removeTimeSlot(index: number) {
@@ -288,7 +277,7 @@ export class CreateAPlanPageComponent implements OnInit {
       this.displayedDateString = this.formatDate(this.displayedDate);
       this.currentDay--;
     }
-
+    this.changeDetectorRef.detectChanges();
   }
 
   nextDay() {
@@ -300,6 +289,7 @@ export class CreateAPlanPageComponent implements OnInit {
         this.newTripInfo.tripTimeSlots[this.currentDay - 1] = [];
       }
     }
+    this.changeDetectorRef.detectChanges();
   }
 
   prevPage() {

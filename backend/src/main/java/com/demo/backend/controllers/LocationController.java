@@ -54,6 +54,6 @@ public class LocationController {
 
     @GetMapping("/api/details/{placeId}")
     public LocationDetailsDTO getPlaceDetails(@PathVariable String placeId) throws IOException, InterruptedException, ApiException {
-        return locationDetailService.getPlaceDetails(placeId);
+        return locationDetailService.getPlaceDetailsWithWiki(placeId);
     }
 }

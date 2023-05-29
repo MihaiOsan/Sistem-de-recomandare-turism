@@ -2,7 +2,17 @@
     <div class="boxes-container box">
         <div class="box-content">
 
-            <h2 class="box-title">Trip informations</h2>
+
+            <h2 class="box-title">Trip planning</h2>
+            <div class="box">
+                <div class="box-inside-content">
+                    <div class="map">
+                        <google-map #GoogleMap height="100%" width="100%" [options]="mapCongiguration">
+                            <map-circle></map-circle>
+                        </google-map>
+                    </div>
+                </div>
+            </div>
             <div class="column column-left" style="padding-right: 10px;">
                 <div class="box">
                     <div class="box-inside-content">

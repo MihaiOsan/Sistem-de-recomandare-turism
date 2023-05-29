@@ -63,3 +63,10 @@
 .column-right{
     padding-left: 10px;
 }
+
+.map {
+    height: 400px;
+    overflow: hidden;
+    position: relative;
+    border-radius: 10px;
+}

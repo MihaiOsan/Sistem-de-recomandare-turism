@@ -37,7 +37,7 @@ public class LocationDetailService {
         return info;
     }
 
-    public LocationDetailsDTO getPlaceDetails(String placeId) throws IOException, InterruptedException, ApiException {
+    public LocationDetailsDTO getPlaceDetailsWithWiki(String placeId) throws IOException, InterruptedException, ApiException {
         GeoApiContext context = new GeoApiContext.Builder()
                 .apiKey(googleMapsApiKey)
                 .build();
@@ -57,6 +57,17 @@ public class LocationDetailService {
         locationDetailsDTO.setWikiDescription(searchForPlaceDescriptin(placeDetails.name + " " + country));
         locationDetailsDTO.setPlace(placeDetails);
         return locationDetailsDTO;
+    }
+
+    public PlaceDetails getPlaceDetail(String placeId) throws IOException, InterruptedException, ApiException {
+        GeoApiContext context = new GeoApiContext.Builder()
+                .apiKey(googleMapsApiKey)
+                .build();
+
+        PlaceDetailsRequest request = new PlaceDetailsRequest(context);
+        PlaceDetails placeDetails = request.placeId(placeId).await();
+
+        return placeDetails;
     }
 
 

@@ -236,6 +236,10 @@ label{
     align-items: stretch;
   }
 
+  .cards app-creat-aplan-card {
+    margin-bottom: 20px;
+  }
+
 
 .time-slot-delete {
     background-color: transparent;

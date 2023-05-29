@@ -37,7 +37,7 @@ public class DataPreparationService {
         List<LocationToVisitDTO> visitedPlaces = new ArrayList<>();
         for(Objective o: visitedObjectives){
             LocationToVisitDTO ltv = new LocationToVisitDTO();
-            LocationDetailsDTO ld = locationDetailService.getPlaceDetails(o.getIdLocaction());
+            LocationDetailsDTO ld = locationDetailService.getPlaceDetailsWithWiki(o.getIdLocaction());
             ltv.setPlace(ld.getPlace());
             ltv.setWikiDescription(ld.getWikiDescription());
             visitedPlaces.add(ltv);

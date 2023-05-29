@@ -150,7 +150,7 @@ public class RecommendationService {
         LocationsDTO locationsDTO = locationDetailService.getLocationsInRadius(35.6895,139.6917, 10000, null, PlaceType.TOURIST_ATTRACTION,"prominence");
         List<LocationToVisitDTO> locationToVisitDTOS = new ArrayList<>();
         for(PlacesSearchResult psr:locationsDTO.getPlaces()){
-            LocationDetailsDTO locationDetails = locationDetailService.getPlaceDetails(psr.placeId);
+            LocationDetailsDTO locationDetails = locationDetailService.getPlaceDetailsWithWiki(psr.placeId);
             LocationToVisitDTO location = new LocationToVisitDTO();
             location.setPlace(locationDetails.getPlace());
             location.setWikiDescription(locationDetails.getWikiDescription());
