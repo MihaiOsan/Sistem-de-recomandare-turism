@@ -189,5 +189,5 @@
             <button class="add-time-slot-btn" (click)="onGenerateTrip()" [ngClass]="{'disabled': dailyProgramEnable}" [disabled]="dailyProgramEnable && mapChange" >generate</button>
         </div>
     </div>
-    <app-generate-plan-page *ngIf="generatePlanVisible" [selectedAttractions]="selectedAttractions" [newTripInfo]="newTripInfo"></app-generate-plan-page>
+    <app-generate-plan-page *ngIf="generatePlanVisible" [selectedAttractions]="selectedAttractions" [newTripInfo]="newTripInfo" [schedulePlacesResponse]="schedulePlaceResponse"></app-generate-plan-page>
 </div>

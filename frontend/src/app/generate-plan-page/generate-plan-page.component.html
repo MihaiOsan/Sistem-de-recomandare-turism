@@ -2,8 +2,6 @@
     <div class="boxes-container box">
         <div class="box-content">
 
-
-            <h2 class="box-title">Trip planning</h2>
             <div class="box">
                 <div class="box-inside-content">
                     <div class="map">
@@ -25,18 +23,23 @@
                             <i class="arrow right"></i>
                         </button>
                         <div class="height50vh">
-                            <div class="content-time-slot">
-                                <div class="time-slot-container"
+                            <div class="selected-attractions-container"
                                     *ngFor="let slot of newTripInfo.tripTimeSlots[currentDay-1]; let i = index">
-                                    <div class="time-slot">
-                                        <div class="time-slot-info">
-                                            <p>{{ slot.start }} - {{ slot.end }} <span class="time-slot-type">{{ slot.type
-                                                    }}</span></p>
+                                    <div class="selected-attractions">
+                                        <div class="selected-attractions-info">
+                                            <img [src]="slot.asignedPlace?.imageUrl" alt="Attraction Image"
+                                                class="selected-attractions-image" />
+                                            <div class="selected-attractions-details">
+                                                <h3 class="selected-attractions-title">{{ slot.start }} - {{ slot.end }} <span class="time-slot-type">{{
+                                                    slot.type
+                                                    }}</span></h3>
+                                                <p *ngIf="slot.asignedPlace">{{ slot.asignedPlace.name }}</p>
+                                            </div>
                                         </div>
-                                        <button class="time-slot-delete">x</button>
+                                        <button class="selected-attractions-delete">x</button>
                                     </div>
                                 </div>
-                            </div>
+                            
                         </div>
                     </div>
                 </div>
@@ -51,12 +54,12 @@
                               </label> -->
                         </h2>
                         <p><label class="switch">
-                            <input type="checkbox" [(ngModel)]="allowDuplicates">
-                            <span class="slider round"></span>
-                          </label>  {{allowDuplicates ? 'Duplicates are allowed' : 'Duplicates are not allowed'}}</p>
+                                <input type="checkbox" [(ngModel)]="allowDuplicates">
+                                <span class="slider round"></span>
+                            </label> {{allowDuplicates ? 'Duplicates are allowed' : 'Duplicates are not allowed'}}</p>
                         <div class="height50vh">
 
-                            
+
                             <div class="content-selected-attractions">
                                 <div class="selected-attractions-container"
                                     *ngFor="let attraction of selectedAttractions; let i = index">

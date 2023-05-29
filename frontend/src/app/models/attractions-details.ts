@@ -33,6 +33,7 @@ export class AddressComponent {
   }
   
   export class Place {
+    imageUrl?:string;
     addressComponents!: AddressComponent[];
     adrAddress!: string;
     formattedAddress!: string;

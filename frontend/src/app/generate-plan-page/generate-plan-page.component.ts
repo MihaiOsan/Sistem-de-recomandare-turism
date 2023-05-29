@@ -1,6 +1,7 @@
 import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { Attraction } from '../models/attraction';
 import { NewTripInfo } from '../models/new-trip-info';
+import { SchedulePlacesResponse } from '../models/schedule-places-response';
 
 @Component({
   selector: 'app-generate-plan-page',
@@ -24,6 +25,7 @@ export class GeneratePlanPageComponent implements OnInit, OnChanges {
   displayedDate: Date = new Date();
   displayedDateString: string = this.formatDate(this.displayedDate);
   currentDay: any = 1;
+  @Input() schedulePlacesResponse!: SchedulePlacesResponse[][];
   
   constructor() { }
 
@@ -42,6 +44,7 @@ export class GeneratePlanPageComponent implements OnInit, OnChanges {
       this.displayedDate.setDate(this.displayedDate.getDate() - 1);
       this.displayedDateString = this.formatDate(this.displayedDate);
       this.currentDay--;
+      console.log(this.schedulePlacesResponse);
     }
   }
 
@@ -66,6 +69,6 @@ export class GeneratePlanPageComponent implements OnInit, OnChanges {
     return formattedDay + "-" + formattedMonth + "-" + year;
   }
 
-  
+
 
 }

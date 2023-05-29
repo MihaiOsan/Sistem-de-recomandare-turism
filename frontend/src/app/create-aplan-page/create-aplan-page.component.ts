@@ -9,6 +9,7 @@ import { TimeInterval } from '../models/time-interval';
 import { GeneratePlanPageComponent } from '../generate-plan-page/generate-plan-page.component';
 import { GenerateTripPlanService } from '../services/generate-trip-plan.service';
 import { SchedulePlacesRequest } from '../models/schedule-places-request';
+import { SchedulePlacesResponse } from '../models/schedule-places-response';
 
 @Component({
   selector: 'app-create-aplan-page',
@@ -16,7 +17,7 @@ import { SchedulePlacesRequest } from '../models/schedule-places-request';
   styleUrls: ['./create-aplan-page.component.css']
 })
 export class CreateAPlanPageComponent implements OnInit {
-generatePlanVisible: boolean = false
+  generatePlanVisible: boolean = false
 
 
   onOrderByChange($event: Event) {
@@ -340,23 +341,39 @@ generatePlanVisible: boolean = false
     return this.selectedAttractions.some(attraction => attraction === attractionS);
   }
 
+  schedulePlaceResponse!: SchedulePlacesResponse[][];
+
   onGenerateTrip() {
-      this.generatePlanVisible=!this.generatePlanVisible;
-      let listPlanceId: string[] = [];
-      for (let attraction of this.selectedAttractions) {
-        listPlanceId.push(attraction.placeId);
+    this.generatePlanVisible = !this.generatePlanVisible;
+    let listPlanceId: string[] = [];
+    for (let attraction of this.selectedAttractions) {
+      listPlanceId.push(attraction.placeId);
+    }
+    let request: SchedulePlacesRequest = {
+      tripInfo: this.newTripInfo,
+      places: listPlanceId,
+    };
+    console.log(request);
+    this.tripService.schedulePlaces(request).subscribe(response => {
+      this.schedulePlaceResponse = response;
+      for (let i = 0; i < this.schedulePlaceResponse.length; i++) {
+        for (let j = 0; j < this.schedulePlaceResponse[i].length; j++) {
+          const apiKey = "AIzaSyAILm8lpjdZbGCyZOgmKAW0z0sARKzKM9g&libraries=places";
+          const maxWidth = 400;
+          if (this.schedulePlaceResponse[i][j].place && this.schedulePlaceResponse[i][j].place.photos && this.schedulePlaceResponse[i][j].place.photos[0]) {
+            this.schedulePlaceResponse[i][j].place.imageUrl = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=${maxWidth}&photoreference=${this.schedulePlaceResponse[i][j].place.photos[0].photoReference}&key=${apiKey}`;
+          }
+          for (let z = 0; z < this.newTripInfo.tripTimeSlots[i].length; z++) {
+            if (this.newTripInfo.tripTimeSlots[i][z].start == this.schedulePlaceResponse[i][j].timeSlot.start && this.newTripInfo.tripTimeSlots[i][z].end == this.schedulePlaceResponse[i][j].timeSlot.end) {
+              this.newTripInfo.tripTimeSlots[i][z].asignedPlace = this.schedulePlaceResponse[i][j].place;
+            }
+          }
+        }
       }
-      let request: SchedulePlacesRequest = {
-        tripInfo: this.newTripInfo,
-        places: listPlanceId,
-      };
-      console.log(request);
-      this.tripService.schedulePlaces(request).subscribe(response => {
-        console.log(response);  // Or handle the response as needed
-      },
+    },
       error => {
         console.error(error);  // Handle errors here
       });
-    }
+  }
 
 }
