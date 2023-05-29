@@ -6,6 +6,9 @@ import { AttractionsResponse } from '../models/attractions-response';
 import { AttractionService } from '../services/attraction.service';
 import { NewTripInfo } from '../models/new-trip-info';
 import { TimeInterval } from '../models/time-interval';
+import { GeneratePlanPageComponent } from '../generate-plan-page/generate-plan-page.component';
+import { GenerateTripPlanService } from '../services/generate-trip-plan.service';
+import { SchedulePlacesRequest } from '../models/schedule-places-request';
 
 @Component({
   selector: 'app-create-aplan-page',
@@ -13,9 +16,8 @@ import { TimeInterval } from '../models/time-interval';
   styleUrls: ['./create-aplan-page.component.css']
 })
 export class CreateAPlanPageComponent implements OnInit {
-onGenerateTrip() {
-throw new Error('Method not implemented.');
-}
+generatePlanVisible: boolean = false
+
 
   onOrderByChange($event: Event) {
     throw new Error('Method not implemented.');
@@ -25,6 +27,7 @@ throw new Error('Method not implemented.');
   }
   @ViewChild('mapSearchField') mapSearchField!: ElementRef;
   @ViewChild('GoogleMap') map!: GoogleMap;
+  @ViewChild('GeneratePlan') generatePlan!: GeneratePlanPageComponent;
 
 
   attractions: Attraction[][] = [];
@@ -48,7 +51,7 @@ throw new Error('Method not implemented.');
   dailyProgramEnable: boolean = true;
   mapChange: boolean = false;
 
-  constructor(private formBuilder: FormBuilder, private attractionService: AttractionService, private changeDetectorRef: ChangeDetectorRef) { }
+  constructor(private formBuilder: FormBuilder, private attractionService: AttractionService, private changeDetectorRef: ChangeDetectorRef, private tripService: GenerateTripPlanService) { }
 
   ngAfterViewInit() {
     const searchBox = new google.maps.places.SearchBox(this.mapSearchField.nativeElement);
@@ -193,6 +196,7 @@ throw new Error('Method not implemented.');
         startDate: this.tripForm.value['startDate'],
         endDate: this.tripForm.value['endDate'],
         range: this.tripForm.value['range'],
+        startLocation: this.circleCenter,
         tripTimeSlots: new Array(Difference_In_Days + 1).fill(null).map(() => this.createDefaultTimeSlots()),
       };
       this.dailyProgramEnable = false;
@@ -335,5 +339,24 @@ throw new Error('Method not implemented.');
   isAttractionSelected(attractionS: Attraction): boolean {
     return this.selectedAttractions.some(attraction => attraction === attractionS);
   }
+
+  onGenerateTrip() {
+      this.generatePlanVisible=!this.generatePlanVisible;
+      let listPlanceId: string[] = [];
+      for (let attraction of this.selectedAttractions) {
+        listPlanceId.push(attraction.placeId);
+      }
+      let request: SchedulePlacesRequest = {
+        tripInfo: this.newTripInfo,
+        places: listPlanceId,
+      };
+      console.log(request);
+      this.tripService.schedulePlaces(request).subscribe(response => {
+        console.log(response);  // Or handle the response as needed
+      },
+      error => {
+        console.error(error);  // Handle errors here
+      });
+    }
 
 }

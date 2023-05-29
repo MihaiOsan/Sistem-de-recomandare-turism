@@ -65,8 +65,183 @@
 }
 
 .map {
-    height: 400px;
+    height: 45vh;
     overflow: hidden;
     position: relative;
     border-radius: 10px;
+}
+
+.height50vh {
+    height: 50vh; /* 50% of viewport height */
+    overflow: auto; /* If content is larger than 50vh, it'll become scrollable */
+  }
+
+  .switch {
+    position: relative;
+    display: inline-block;
+    width: 40px;
+    height: 20px;
+}
+  
+.switch input { 
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+  
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: .4s;
+}
+  
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 16px;
+    width: 16px;
+    left: 2px;
+    bottom: 2px;
+    background-color: white;
+    transition: .4s;
+}
+  
+input:checked + .slider {
+    background-color: #FFA500;
+}
+  
+input:focus + .slider {
+    box-shadow: 0 0 1px #FFA500;
+}
+  
+input:checked + .slider:before {
+    transform: translateX(20px);
+}
+  
+.slider.round {
+    border-radius: 20px;
+}
+  
+.slider.round:before {
+    border-radius: 50%;
+}
+
+  
+  .selected-attractions-container {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    padding-left: 20px;
+    padding-right: 20px;
+    width: 100%;
+  }
+  
+
+  .content-selected-attractions {
+    height: 100%;
+    overflow-y: auto;
+    width: 100%;
+  }
+  
+  .selected-attractions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    border-bottom: 1px solid #ccc;
+    padding: 10px;
+  }
+  
+  .selected-attractions-info {
+    display: flex;
+    align-items: center;
+    flex-grow: 1;
+  }
+  
+  .selected-attractions-details {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .selected-attractions-title {
+    margin-bottom: 5px;
+  }
+  
+  .selected-attractions-delete {
+    background-color: transparent;
+    border: none;
+    font-weight: bold;
+    cursor: pointer;
+  }
+  
+  .selected-attractions-image {
+    width: 40px;
+    height: 40px;
+    border-radius: 5px;
+    object-fit: cover;
+    margin-right: 10px;
+  }
+
+  .nav-btn {
+    outline: none;
+    border: none;
+    background-color: transparent;
+}
+
+.arrow {
+    border: solid black;
+    border-width: 0 3px 3px 0;
+    display: inline-block;
+    padding: 3px;
+    transition: 0.3s ease-in-out;
+}
+
+.arrow:hover {
+    border: solid #FFA500;
+    border-width: 0 3px 3px 0;
+}
+
+.right {
+    transform: rotate(-45deg);
+    -webkit-transform: rotate(-45deg);
+}
+
+.left {
+    transform: rotate(135deg);
+    -webkit-transform: rotate(135deg);
+}
+
+.time-slot-container {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding-left: 20px;
+    padding-right: 20px;
+    width: 100%;
+}
+
+.content-time-slot{
+    height: 100%;
+    overflow-y: auto;
+    width: 100%;
+}
+
+.time-slot {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    border-bottom: 1px solid #ccc;
+}
+
+.time-slot-info {
+    display: flex;
+    align-items: center;
+    flex-grow: 1;
+    justify-content: space-between;
 }

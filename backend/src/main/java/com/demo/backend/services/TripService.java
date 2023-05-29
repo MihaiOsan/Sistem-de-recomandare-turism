@@ -37,45 +37,35 @@ public class TripService {
                 .atZone(ZoneId.systemDefault())
                 .toLocalDate();
 
-        Map<TimeInterval, Boolean> assignedTimeSlots = new HashMap<>();
-        for (List<TimeInterval> timeSlotLists : tripInfo.getTripTimeSlots()) {
-            for (TimeInterval timeSlot : timeSlotLists) {
-                assignedTimeSlots.put(timeSlot, false);
-            }
-        }
-
         List<PlaceDetails> remainingPlaces = new ArrayList<>(places);  // create a copy of places list
 
         for (int i = 0; i < tripInfo.getTripTimeSlots().size(); i++) {
+            System.out.println("day" + i);
             List<PlaceAssignment> timeSlot = new ArrayList<>();
             LocalDate currentDate = startDate.plusDays(i);
             LatLng currentLatLng = tripInfo.getStartLocation();
             List<PlaceDetails> placesCopy = new ArrayList<>(remainingPlaces);
 
-            while (true) {
-                LatLng nextLatLng = findNextLatLng(currentLatLng, dijkstraAlg, placesCopy);
+            for (TimeInterval interval : tripInfo.getTripTimeSlots().get(i)) {
+                LatLng nextLatLng = findNextLatLng(currentLatLng, dijkstraAlg, placesCopy, interval, currentDate);
+                System.out.println(interval.getType());
                 if (nextLatLng == null) {
-                    break;
+                    continue;
                 }
-
+                System.out.println("00");
                 PlaceDetails nextPlace = placeDetailsMap.get(nextLatLng);
-                TimeInterval nextTimeInterval = findSuitableTimeSlot(nextPlace, tripInfo.getTripTimeSlots().get(i), currentDate, assignedTimeSlots);
-                if (nextTimeInterval == null) {
-                    placesCopy.remove(nextPlace);  // remove from placesCopy, not places
-                } else {
-                    timeSlot.add(new PlaceAssignment(nextPlace, nextTimeInterval, currentDate));
-                    System.out.println("yes");
-                    currentLatLng = nextLatLng;
-                    remainingPlaces.remove(nextPlace);  // remove visited place from remainingPlaces\
-                    placesCopy.remove(nextPlace);  // remove from placesCopy, not places
-                }
+                System.out.println(nextPlace.name);
+                timeSlot.add(new PlaceAssignment(nextPlace, interval, currentDate));
+                currentLatLng = nextLatLng;
+                remainingPlaces.remove(nextPlace);  // remove visited place from remainingPlaces
+                placesCopy.remove(nextPlace);  // remove from placesCopy, not places
             }
+
             timeSlots.add(timeSlot);
         }
 
         return timeSlots;
     }
-
 
     private SimpleWeightedGraph<LatLng, DefaultWeightedEdge> createGraph(List<PlaceDetails> places, LatLng startLocation) {
         SimpleWeightedGraph<LatLng, DefaultWeightedEdge> graph =
@@ -107,34 +97,45 @@ public class TripService {
         return graph;
     }
 
-    private LatLng findNextLatLng(LatLng currentLatLng, DijkstraShortestPath<LatLng, DefaultWeightedEdge> dijkstraAlg, List<PlaceDetails> places) {
+    private LatLng findNextLatLng(LatLng currentLatLng, DijkstraShortestPath<LatLng, DefaultWeightedEdge> dijkstraAlg, List<PlaceDetails> places, TimeInterval interval, LocalDate currentDate) {
         double shortestDistance = Double.MAX_VALUE;
-        System.out.println("4");
         LatLng nextLatLng = null;
         for (PlaceDetails place : places) {
             LatLng latLng = place.geometry.location;
-            System.out.println("currentLatLng: " + currentLatLng + ", latLng: " + latLng);
             GraphPath<LatLng, DefaultWeightedEdge> path = dijkstraAlg.getPath(currentLatLng, latLng);
             if (path == null) {
                 continue; // or handle this situation in another appropriate way
             }
-            double distance = path.getWeight();
 
+            boolean placeTypeMatches = false;
+            for (AddressType type : place.types) {
+                if ((interval.getType().toLowerCase().equals("eating break") && (type == AddressType.RESTAURANT || type == AddressType.CAFE)) ||
+                        (interval.getType().toLowerCase().equals("shopping spree") && type == AddressType.SHOPPING_MALL) ||
+                        (interval.getType().toLowerCase().equals("visiting time"))) {
+                    placeTypeMatches = true;
+                }
+            }
+            if (!placeTypeMatches) {
+                continue;
+            }
+
+            if(!isTimeSlotSuitable(place,interval,currentDate)){
+                continue;
+            }
+
+            double distance = path.getWeight();
             if (distance < shortestDistance && distance !=0) {
                 shortestDistance = distance;
                 nextLatLng = latLng;
             }
         }
-        if (nextLatLng == null) {
-            System.out.println("No next location found");
-        }
         return nextLatLng;
     }
 
-    private TimeInterval findSuitableTimeSlot(PlaceDetails place, List<TimeInterval> timeSlots, LocalDate currentDate,Map<TimeInterval, Boolean> assignedTimeSlots) {
-        System.out.println("5");
+    public boolean isTimeSlotSuitable(PlaceDetails place, TimeInterval timeSlot, LocalDate currentDate) {
         String currentDayOfWeek = currentDate.getDayOfWeek().toString().toLowerCase();
         String currentDayOpeningHours="";
+
         if (place.openingHours != null) {
             currentDayOpeningHours = Arrays.stream(place.openingHours.weekdayText)
                     .filter(s -> s.toLowerCase().startsWith(currentDayOfWeek))
@@ -142,63 +143,53 @@ public class TripService {
                     .orElse(null);
         }
 
-        DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("h:mm a", Locale.ENGLISH);
-        LocalTime placeStart;
-        LocalTime placeEnd;
+        DateTimeFormatter timeFormatter12 = DateTimeFormatter.ofPattern("h:mm a", Locale.ENGLISH);
+        DateTimeFormatter timeFormatter24 = DateTimeFormatter.ofPattern("H:mm");
+        LocalTime placeStart, placeEnd;
 
-        if (currentDayOpeningHours != null && !currentDayOpeningHours.contains("closed") && currentDayOpeningHours != "") {
-            System.out.println(currentDayOpeningHours);
+        if (currentDayOpeningHours != null && !currentDayOpeningHours.contains("closed") && !currentDayOpeningHours.isEmpty()) {
             String[] splitOpeningHours = currentDayOpeningHours.split(": ")[1].split("–");
             if (splitOpeningHours.length < 2) {
                 placeStart = LocalTime.of(0, 0);
                 placeEnd = LocalTime.of(23, 59);
             } else {
-                // Replace non-breaking and thin spaces with regular spaces
                 String openingTime = splitOpeningHours[0].replaceAll("[\u202F\u2009]", " ").trim();
                 String closingTime = splitOpeningHours[1].replaceAll("[\u202F\u2009]", " ").trim();
 
-                placeStart = LocalTime.parse(openingTime, timeFormatter);
-                placeEnd = LocalTime.parse(closingTime, timeFormatter);
+                if (openingTime.contains("AM") || openingTime.contains("PM")) {
+                    placeStart = LocalTime.parse(openingTime, timeFormatter12);
+                } else {
+                    placeStart = LocalTime.parse(openingTime, timeFormatter24);
+                }
+
+                if (closingTime.contains("AM") || closingTime.contains("PM")) {
+                    placeEnd = LocalTime.parse(closingTime, timeFormatter12);
+                } else {
+                    placeEnd = LocalTime.parse(closingTime, timeFormatter24);
+                }
             }
         } else {
             placeStart = LocalTime.of(0, 0);
             placeEnd = LocalTime.of(23, 59);
         }
 
-        for (TimeInterval timeSlot : timeSlots) {
-            if (assignedTimeSlots.get(timeSlot)) {
-                continue;
-            }
-            LocalTime slotStart = LocalTime.parse(timeSlot.getStart(), DateTimeFormatter.ofPattern("HH:mm"));
-            LocalTime slotEnd = LocalTime.parse(timeSlot.getEnd(), DateTimeFormatter.ofPattern("HH:mm"));
+        LocalTime slotStart = LocalTime.parse(timeSlot.getStart(), DateTimeFormatter.ofPattern("HH:mm"));
+        LocalTime slotEnd = LocalTime.parse(timeSlot.getEnd(), DateTimeFormatter.ofPattern("HH:mm"));
 
-            if ((slotStart.isAfter(placeStart) || slotStart.equals(placeStart)) &&
-                    (slotEnd.isBefore(placeEnd) || slotEnd.equals(placeEnd))) {
-                AddressType[] placeTypes = place.types;
-                if (timeSlot.getType().equals("eating break")) {
-                    for (AddressType type : placeTypes) {
-                        if (type == AddressType.RESTAURANT || type == AddressType.CAFE) {
-                            assignedTimeSlots.put(timeSlot, true);
-                            return timeSlot;
-                        }
-                    }
-                }
-                if (timeSlot.getType().equals("shopping spree")) {
-                    for (AddressType type : placeTypes) {
-                        if (type == AddressType.SHOPPING_MALL) {
-                            assignedTimeSlots.put(timeSlot, true);
-                            return timeSlot;
-                        }
-                    }
-                }
-                if (timeSlot.getType().equals("visiting time"))
-                    assignedTimeSlots.put(timeSlot, true);
-                    return timeSlot;
+        if ((slotStart.isAfter(placeStart) || slotStart.equals(placeStart)) &&
+                (slotEnd.isBefore(placeEnd) || slotEnd.equals(placeEnd))) {
+
+            if (Arrays.asList(place.types).contains(AddressType.PARK)) {
+                // Do something if the place is a park
+                System.out.println("The place is a park");
             }
+
+            return true;
         }
-        System.out.println("5null");
-        return null;
+
+        return false;
     }
+
 
 
     public static double calculateDistance(LatLng point1, LatLng point2) {

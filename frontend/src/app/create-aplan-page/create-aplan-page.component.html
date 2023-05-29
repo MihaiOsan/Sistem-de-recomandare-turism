@@ -1,5 +1,5 @@
 <div class="createplan-page">
-    <div class="boxes-container box">
+    <div class="boxes-container box" *ngIf="!generatePlanVisible">
         <div class="box-content">
 
             <h2 class="box-title">Trip informations</h2>
@@ -186,8 +186,8 @@
                     </div>
                 </div>
             </div>
-            <button class="add-time-slot-btn" (click)="onGenerateTrip()" [ngClass]="{'disabled': dailyProgramEnable}" [disabled]="dailyProgramEnable && mapChange">generate</button>
+            <button class="add-time-slot-btn" (click)="onGenerateTrip()" [ngClass]="{'disabled': dailyProgramEnable}" [disabled]="dailyProgramEnable && mapChange" >generate</button>
         </div>
     </div>
-    <app-generate-plan-page></app-generate-plan-page>
+    <app-generate-plan-page *ngIf="generatePlanVisible" [selectedAttractions]="selectedAttractions" [newTripInfo]="newTripInfo"></app-generate-plan-page>
 </div>

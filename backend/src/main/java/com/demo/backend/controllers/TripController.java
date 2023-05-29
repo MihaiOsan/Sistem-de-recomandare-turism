@@ -28,6 +28,7 @@ public class TripController {
     public List<List<PlaceAssignment>> schedulePlaces(@RequestBody SchedulePlacesRequest request) throws IOException, InterruptedException, ApiException {
         List<PlaceDetails> placeDetails = new ArrayList<>();
         for (String id : request.getPlaces()){
+            System.out.println(id);
             placeDetails.add(locationDetailService.getPlaceDetail(id));
         }
         return tripService.schedulePlaces(request.getTripInfo(), placeDetails);

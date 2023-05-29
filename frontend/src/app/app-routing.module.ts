@@ -11,6 +11,7 @@ import { ManagePlansPageComponent } from './manage-plans-page/manage-plans-page.
 import { SignUpFormComponent } from './sign-up-form/sign-up-form.component';
 import { StatisticsPageComponent } from './statistics-page/statistics-page.component';
 import { AttractionDetailsComponent } from './attraction-details/attraction-details.component';
+import { GeneratePlanPageComponent } from './generate-plan-page/generate-plan-page.component';
 const routes: Routes = [];
 
 const appRoutes: Routes = [
@@ -26,6 +27,7 @@ const appRoutes: Routes = [
   { path: 'Statistics', component: StatisticsPageComponent },
   { path: 'Account', component: AccountPageComponent },
   { path: 'Attraction/:id', component: AttractionDetailsComponent },
+  { path: 'GeneratePlan', component: GeneratePlanPageComponent},
 ];
 
 @NgModule({

@@ -12,8 +12,6 @@ import { AttractionsPageComponent } from './attractions-page/attractions-page.co
 import { CreateAPlanPageComponent } from './create-aplan-page/create-aplan-page.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { MatSliderModule } from '@angular/material/slider';
 
 
 import { CoolSocialLoginButtonsModule } from '@angular-cool/social-login-buttons';
