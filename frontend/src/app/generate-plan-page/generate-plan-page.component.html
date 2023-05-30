@@ -6,7 +6,7 @@
                 <div class="box-inside-content">
                     <div class="map">
                         <google-map #GoogleMap height="100%" width="100%" [options]="mapCongiguration">
-                            <map-circle></map-circle>
+                           
                         </google-map>
                     </div>
                 </div>
@@ -27,8 +27,10 @@
                                     *ngFor="let slot of newTripInfo.tripTimeSlots[currentDay-1]; let i = index">
                                     <div class="selected-attractions">
                                         <div class="selected-attractions-info">
-                                            <img [src]="slot.asignedPlace?.imageUrl" alt="Attraction Image"
-                                                class="selected-attractions-image" />
+                                            <img *ngIf="slot.asignedPlace?.imageUrl" [src]="slot.asignedPlace?.imageUrl" alt="Attraction Image"
+                                                class="selected-attractions-image"/>
+                                            <img *ngIf="!slot.asignedPlace?.imageUrl" src="https://static.vecteezy.com/system/resources/thumbnails/004/141/669/small/no-photo-or-blank-image-icon-loading-images-or-missing-image-mark-image-not-available-or-image-coming-soon-sign-simple-nature-silhouette-in-frame-isolated-illustration-vector.jpg" alt="Attraction Image"
+                                                class="selected-attractions-image"  />
                                             <div class="selected-attractions-details">
                                                 <h3 class="selected-attractions-title">{{ slot.start }} - {{ slot.end }} <span class="time-slot-type">{{
                                                     slot.type
@@ -36,7 +38,6 @@
                                                 <p *ngIf="slot.asignedPlace">{{ slot.asignedPlace.name }}</p>
                                             </div>
                                         </div>
-                                        <button class="selected-attractions-delete">x</button>
                                     </div>
                                 </div>
                             
@@ -71,7 +72,6 @@
                                                 <h3 class="selected-attractions-title">{{ attraction.name }}</h3>
                                             </div>
                                         </div>
-                                        <button class="selected-attractions-delete">x</button>
                                     </div>
                                 </div>
                             </div>

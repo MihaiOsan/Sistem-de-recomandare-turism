@@ -111,8 +111,9 @@ public class TripService {
             for (AddressType type : place.types) {
                 if ((interval.getType().toLowerCase().equals("eating break") && (type == AddressType.RESTAURANT || type == AddressType.CAFE)) ||
                         (interval.getType().toLowerCase().equals("shopping spree") && type == AddressType.SHOPPING_MALL) ||
-                        (interval.getType().toLowerCase().equals("visiting time"))) {
+                        (interval.getType().toLowerCase().equals("visiting time") && (type == AddressType.TOURIST_ATTRACTION || type == AddressType.MUSEUM || type == AddressType.ART_GALLERY || type == AddressType.PARK))) {
                     placeTypeMatches = true;
+                    break;
                 }
             }
             if (!placeTypeMatches) {
@@ -153,6 +154,7 @@ public class TripService {
                 placeStart = LocalTime.of(0, 0);
                 placeEnd = LocalTime.of(23, 59);
             } else {
+                try{
                 String openingTime = splitOpeningHours[0].replaceAll("[\u202F\u2009]", " ").trim();
                 String closingTime = splitOpeningHours[1].replaceAll("[\u202F\u2009]", " ").trim();
 
@@ -166,6 +168,10 @@ public class TripService {
                     placeEnd = LocalTime.parse(closingTime, timeFormatter12);
                 } else {
                     placeEnd = LocalTime.parse(closingTime, timeFormatter24);
+                }
+                }catch (Exception e){
+                    placeStart = LocalTime.of(0, 0);
+                    placeEnd = LocalTime.of(23, 59);
                 }
             }
         } else {

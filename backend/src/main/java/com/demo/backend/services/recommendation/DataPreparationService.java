@@ -22,6 +22,8 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -34,14 +36,25 @@ public class DataPreparationService {
 
     public List<LocationToVisitDTO> fetchVisitedLocationsFromGooglePlaces(Long userId) throws IOException, InterruptedException, ApiException {
         List<Objective> visitedObjectives = userService.getVisitedPlaces(userId);
-        List<LocationToVisitDTO> visitedPlaces = new ArrayList<>();
-        for(Objective o: visitedObjectives){
-            LocationToVisitDTO ltv = new LocationToVisitDTO();
-            LocationDetailsDTO ld = locationDetailService.getPlaceDetailsWithWiki(o.getIdLocaction());
-            ltv.setPlace(ld.getPlace());
-            ltv.setWikiDescription(ld.getWikiDescription());
-            visitedPlaces.add(ltv);
-        }
+        List<CompletableFuture<LocationToVisitDTO>> futures = visitedObjectives.stream()
+                .map(o -> CompletableFuture.supplyAsync(() -> {
+                    LocationToVisitDTO ltv = new LocationToVisitDTO();
+                    try {
+                        LocationDetailsDTO ld = locationDetailService.getPlaceDetailsWithWiki(o.getIdLocaction());
+                        ltv.setPlace(ld.getPlace());
+                        ltv.setWikiDescription(ld.getWikiDescription());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        // Handle exception here
+                    }
+                    return ltv;
+                }))
+                .collect(Collectors.toList());
+
+        List<LocationToVisitDTO> visitedPlaces = futures.stream()
+                .map(CompletableFuture::join)
+                .collect(Collectors.toList());
+
         return visitedPlaces;
     }
 

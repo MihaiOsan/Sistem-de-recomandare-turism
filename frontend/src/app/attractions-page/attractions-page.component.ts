@@ -56,7 +56,6 @@ display: any;
   applyFilters() {
     this.radius = +this.range * 1000;
     const circleBounds = this.getCircleBounds(this.circleCenter, this.radius);
-    this.fetchAttractions();
     // Update the map's bounds to include the circle if circleBounds is not null
     if (circleBounds) {
       this.map.fitBounds(circleBounds);
@@ -105,6 +104,11 @@ display: any;
       this.attractions = [];
       this.pageAttractions = [];
       this.nextPageToken = '';
+      this.filterSort = 'prominence';
+      this.filterType = 'tourist_attraction';
+      localStorage.setItem('filterSort', this.filterSort);
+      localStorage.setItem('filterType', this.filterType);
+      this.setFiltersCheck();
       this.fetchAttractions();
       // Update the map's bounds to include the circle if circleBounds is not null
       if (circleBounds) {
@@ -142,12 +146,40 @@ display: any;
     return bounds ? bounds : null;
   }
 
+  setFiltersCheck() {
+    this.filterType = localStorage.getItem('filterType') || 'turist_attraction';
+    const checkboxes = document.querySelectorAll('input[type="checkbox"]') as NodeListOf<HTMLInputElement>;
+    checkboxes.forEach((checkboxes) => {
+      checkboxes.checked = false;
+      checkboxes.closest('.checkbox-button')?.classList.remove('checkbox-button-selected');
+      if (checkboxes.value === this.filterType) {
+        checkboxes.checked = true;
+        checkboxes.closest('.checkbox-button')?.classList.add('checkbox-button-selected');
+      }
+    });
+
+    this.filterSort = localStorage.getItem('filterSort') || 'prominence';
+    const radioButtons = document.querySelectorAll('input[type="radio"]') as NodeListOf<HTMLInputElement>;
+    radioButtons.forEach((radioButtons) => {
+      radioButtons.checked = false;
+      radioButtons.closest('.radio-button')?.classList.remove('radio-button-selected');
+      if (radioButtons.value === this.filterSort) {
+        radioButtons.checked = true;
+        radioButtons.closest('.radio-button')?.classList.add('radio-button-selected');
+      }
+    });
+  }
+
   ngOnInit(): void {
     
     const circleBounds = this.getCircleBounds(this.circleCenter, this.radius);
     this.currentUser = this.authentificationService.currentUserValue;
 
+    this.setFiltersCheck();
+
     this.fetchAttractions();
+
+    this.changeDetectorRef.detectChanges();
    
   }
 

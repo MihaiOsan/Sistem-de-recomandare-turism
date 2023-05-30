@@ -20,12 +20,7 @@ export class CreateAPlanPageComponent implements OnInit {
   generatePlanVisible: boolean = false
 
 
-  onOrderByChange($event: Event) {
-    throw new Error('Method not implemented.');
-  }
-  onAttractionTypeChange($event: Event) {
-    throw new Error('Method not implemented.');
-  }
+  
   @ViewChild('mapSearchField') mapSearchField!: ElementRef;
   @ViewChild('GoogleMap') map!: GoogleMap;
   @ViewChild('GeneratePlan') generatePlan!: GeneratePlanPageComponent;
@@ -38,7 +33,7 @@ export class CreateAPlanPageComponent implements OnInit {
   currentPage: number = 1;
 
   radius!: number;
-  circleCenter!: google.maps.LatLng | google.maps.LatLngLiteral;
+  circleCenter!: google.maps.LatLngLiteral;
   mapCongiguration: google.maps.MapOptions = {
     center: this.circleCenter,
     zoom: 10,
@@ -51,6 +46,9 @@ export class CreateAPlanPageComponent implements OnInit {
   displayGeneratePlan: boolean = false;
   dailyProgramEnable: boolean = true;
   mapChange: boolean = false;
+
+  filterSort: string =  'prominence';
+  filterType: string =  'tourist_attraction';
 
   constructor(private formBuilder: FormBuilder, private attractionService: AttractionService, private changeDetectorRef: ChangeDetectorRef, private tripService: GenerateTripPlanService) { }
 
@@ -81,7 +79,7 @@ export class CreateAPlanPageComponent implements OnInit {
       });
       this.radius = +this.newTripInfo.range * 1000;
       this.circleCenter = bounds.getCenter().toJSON();
-
+      this.newTripInfo.startLocation = this.circleCenter;
 
       this.currentPage = 1
       this.attractions = [];
@@ -100,7 +98,7 @@ export class CreateAPlanPageComponent implements OnInit {
       else
         this.map.fitBounds(bounds);
 
-      this.fetchAttractions(this.circleCenter.lat, this.circleCenter.lng, this.radius, this.nextPageToken);
+      this.fetchAttractions2();
     }
 
     );
@@ -119,8 +117,35 @@ export class CreateAPlanPageComponent implements OnInit {
     return this.tripForm.controls;
   }
 
-  fetchAttractions(lat: number, lng: number, range: number, nextPageToken: string): void {
-    this.attractionService.getAttractions(lat, lng, range, nextPageToken).subscribe(
+  onOrderByChange(event: Event) {
+    const selectedValue = (event.target as HTMLSelectElement).value;
+    if (selectedValue !== null) {
+      this.filterSort = selectedValue;
+    }
+    console.log(this.filterSort);
+    this.currentPage = 1
+    this.attractions = [];
+    this.pageAttractions = [];
+    this.nextPageToken = '';
+    this.fetchAttractions2();
+    this.changeDetectorRef.detectChanges();
+  }
+
+  onAttractionTypeChange(event: Event) {
+    const selectedValue = (event.target as HTMLSelectElement).value;
+    if (selectedValue !== null) {
+      this.filterType = selectedValue;
+    }
+    this.currentPage = 1
+    this.attractions = [];
+    this.pageAttractions = [];
+    this.nextPageToken = '';
+    this.fetchAttractions2();
+    this.changeDetectorRef.detectChanges();
+  }
+
+  fetchAttractions2(): void {
+    this.attractionService.getAttractions(this.circleCenter.lat, this.circleCenter.lng, this.radius, this.nextPageToken, this.filterType, this.filterSort).subscribe(
       (data: AttractionsResponse) => {
         this.attractions.push(data.places);
         this.nextPageToken = data.pageToken;
@@ -133,9 +158,8 @@ export class CreateAPlanPageComponent implements OnInit {
         }
         this.pageAttractions = this.attractions[this.currentPage - 1];
         this.changeDetectorRef.detectChanges();
-
       },
-      (error: any) => {
+      (error) => {
         console.error('Error fetching attractions:', error);
       }
     );
@@ -311,7 +335,7 @@ export class CreateAPlanPageComponent implements OnInit {
       this.pageAttractions = this.attractions[this.currentPage];
     } else if (this.nextPageToken != '' && this.nextPageToken != null) {
       this.currentPage++;
-      this.fetchAttractions(this.circleCenter.lat as number, this.circleCenter.lng as number, this.newTripInfo.range, this.nextPageToken);
+      this.fetchAttractions2();
     }
     this.changeDetectorRef.detectChanges();
   }
@@ -374,6 +398,7 @@ export class CreateAPlanPageComponent implements OnInit {
       error => {
         console.error(error);  // Handle errors here
       });
+    this.generatePlan.calculateAndDisplayRoute();
   }
 
 }

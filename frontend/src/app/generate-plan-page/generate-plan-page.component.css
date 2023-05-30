@@ -50,6 +50,14 @@
     width: 100%;
 }
 
+.box-title h2 {
+    font-size: 24px;
+}
+
+.box-title h1 {
+    font-size: 32px;
+}
+
 .column {
     display: flex;
     flex: 1;

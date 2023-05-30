@@ -52,6 +52,10 @@ export class AuthenticationService {
 
     logout() {
         localStorage.removeItem('currentUser');
+        localStorage.removeItem('filterSort');
+        localStorage.removeItem('filterType');
+        localStorage.removeItem('mapCenter');
+        localStorage.removeItem('mapRange');
         this.currentUserSubject.next(null!);
     }
 

@@ -2,11 +2,11 @@
     <div class="boxes-container box" *ngIf="!generatePlanVisible">
         <div class="box-content">
 
-            <h2 class="box-title">Trip informations</h2>
+            <h1 class="box-title">Create an unforgettable travel itinerary</h1>
             <div class="column column-left"> <!-- Add this column wrapper -->
                 <div class="box">
                     <div class="box-inside-content">
-                        <h2 class="box-title">General information</h2>
+                        <h2 class="box-title">Essential general information</h2>
                         <form [formGroup]="tripForm" (ngSubmit)="onSubmit()" class="trip-form">
                             <div class="form-group">
                                 <label for="destination" class="form-label">Trip name</label>
@@ -27,7 +27,7 @@
                             <label style="padding-left: 5px;">{{errorMessageOnSubmit}}</label>
                         </form>
                         <div [ngClass]="{'disabled': dailyProgramEnable}">
-                            <h2 class="box-title">Create a daily program</h2>
+                            <h2 class="box-title">Daily hour-by-hour itinerary plan</h2>
                             <div class="content-line">
                                 <button class="nav-btn" (click)="prevDay()">
                                     <i class="arrow left"></i>
@@ -126,7 +126,7 @@
                             <label for="orderBy">Order by:</label>
                             <div class="select">
                                 <select class="range-input" (change)="onOrderByChange($event)">
-                                    <option value="name">Name</option>
+                                    <!-- <option value="name">Name</option> -->
                                     <option value="prominence">Prominence</option>
                                     <option value="distance">Distance</option>
                                     <option value="recommendation">Recommendation</option>
@@ -137,13 +137,13 @@
                             <label for="attractionType">Attraction Type:</label>
                             <div class="select">
                                 <select id="attractionType" (change)="onAttractionTypeChange($event)">
-                                    <option value="all">All</option>
+                                    <option value="tourist_attraction">Tourist attractions</option>
                                     <option value="museum">Museum</option>
                                     <option value="art_gallery">Art gallery</option>
                                     <option value="place_of_worship">Places of worship</option>
-                                    <option value="museum">Museum</option>
-                                    <option value="park">Park</option>
-                                    <option value="monument">Monument</option>
+                                    <option value="park">Parks</option>
+                                    <option value="restaurant">Restaurants</option>
+                                    <option value="cafe">Cafe</option>
                                 </select>
                             </div>
                         </div>

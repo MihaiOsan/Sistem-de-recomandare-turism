@@ -16,14 +16,14 @@
           <!-- {{ attraction.description }} -->
         </p>
       
-        <div class="actions">
-          <a [routerLink]="['/Attraction', attraction.placeId]" class="action" target="_blank">
+        <div class="actions" >
+          <a [routerLink]="['/Attraction', attraction.placeId]" class="action" target="_blank" style="margin-right:4px">
             Find out more
             <span aria-hidden="true">
               <i class="material-icons">arrow_forward</i>
             </span>
           </a>
-          <a class="action" (click)="selectItem()">
+          <a class="action" (click)="selectItem()" style="margin-left: 4px;">
             Select this attraction
             <span aria-hidden="true">
               <i class="material-icons">add</i>
