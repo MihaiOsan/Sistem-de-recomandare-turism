@@ -125,7 +125,6 @@ display: any;
     this.currentPage--;
     this.pageAttractions = this.attractions[this.currentPage - 1];
     this.changeDetectorRef.detectChanges();
-
   }
 
   nextPage() {
@@ -133,7 +132,9 @@ display: any;
     if (this.attractions[this.currentPage] != null) {
       this.currentPage++;
       this.pageAttractions = this.attractions[this.currentPage];
+      this.goToTop();
     } else if (this.nextPageToken != '' && this.nextPageToken != null) {
+      this.goToTop();
       this.currentPage++;
       this.fetchAttractions();
       this.changeDetectorRef.detectChanges();
@@ -175,6 +176,7 @@ display: any;
     const circleBounds = this.getCircleBounds(this.circleCenter, this.radius);
     this.currentUser = this.authentificationService.currentUserValue;
 
+    this.filterType = localStorage.getItem('filterType') || 'tourist_attraction';
     this.setFiltersCheck();
 
     this.fetchAttractions();
@@ -270,5 +272,12 @@ display: any;
       this.map.fitBounds(circleBounds);
     }
   }
+
+  goToTop() {
+    window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+    });
+}
   
 }

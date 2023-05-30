@@ -23,7 +23,7 @@
                                 <input type="number" formControlName="range" id="range" class="form-control"
                                     placeholder="10" defaultValue="10" />
                             </div>
-                            <button class="add-time-slot-btn" (click)="onSubmit()">Save infotmation</button>
+                            <button class="add-time-slot-btn" (click)="onSubmit()">Save information</button>
                             <label style="padding-left: 5px;">{{errorMessageOnSubmit}}</label>
                         </form>
                         <div [ngClass]="{'disabled': dailyProgramEnable}">
@@ -36,23 +36,28 @@
                                 <button class="nav-btn" (click)="nextDay()">
                                     <i class="arrow right"></i>
                                 </button>
-                                <button class="add-time-slot-btn" (click)="addTimeElement()" [disabled]="dailyProgramEnable">Add Time Slot</button>
-                                <button class="add-time-slot-btn" (click)="clearTimeElements()" [disabled]="dailyProgramEnable">Clear</button>
+                                <button class="add-time-slot-btn" (click)="addTimeElement()"
+                                    [disabled]="dailyProgramEnable">Add Time Slot</button>
+                                <button class="add-time-slot-btn" (click)="clearTimeElements()"
+                                    [disabled]="dailyProgramEnable">Clear</button>
                                 <p>{{ errorMessageTimeSlot }}</p>
                             </div>
                             <form class="content-line" style="padding-top: 0px;">
                                 <div class="time-input">
                                     <label for="startTime">Start Time:</label>
-                                    <input type="time" id="startTime" [(ngModel)]="startTime" name="startTime" [disabled]="dailyProgramEnable">
+                                    <input type="time" id="startTime" [(ngModel)]="startTime" name="startTime"
+                                        [disabled]="dailyProgramEnable">
                                 </div>
                                 <div class="time-input">
                                     <label for="endTime">End Time:</label>
-                                    <input type="time" id="endTime" [(ngModel)]="endTime" name="endTime" [disabled]="dailyProgramEnable">
+                                    <input type="time" id="endTime" [(ngModel)]="endTime" name="endTime"
+                                        [disabled]="dailyProgramEnable">
                                 </div>
                                 <div>
                                     <label for="type">Type:</label>
                                     <div class="select">
-                                        <select id="type" [(ngModel)]="type" name="type" class="range-input" [disabled]="dailyProgramEnable">
+                                        <select id="type" [(ngModel)]="type" name="type" class="range-input"
+                                            [disabled]="dailyProgramEnable">
                                             <option value="Visiting time">Visiting time</option>
                                             <option value="Eating time">Eating time</option>
                                             <option value="Free time">Free time</option>
@@ -69,7 +74,8 @@
                                         <p>{{ slot.start }} - {{ slot.end }} <span class="time-slot-type">{{ slot.type
                                                 }}</span></p>
                                     </div>
-                                    <button class="time-slot-delete" (click)="removeTimeSlot(i)" [disabled]="dailyProgramEnable">x</button>
+                                    <button class="time-slot-delete" (click)="removeTimeSlot(i)"
+                                        [disabled]="dailyProgramEnable">x</button>
                                 </div>
                             </div>
                         </div>
@@ -152,7 +158,8 @@
 
 
                     <div class="cards">
-                        <app-creat-aplan-card *ngFor="let attraction of pageAttractions" [attraction]="attraction" [isSelected]="isAttractionSelected(attraction)"
+                        <app-creat-aplan-card *ngFor="let attraction of pageAttractions" [attraction]="attraction"
+                            [isSelected]="isAttractionSelected(attraction)"
                             (selectItemEvent)="onSelectItem($event)"></app-creat-aplan-card>
                     </div>
                     <div class="navigation"><button class="nav-btn" (click)="prevPage()">
@@ -174,8 +181,11 @@
                             *ngFor="let attraction of selectedAttractions; let i = index">
                             <div class="selected-attractions">
                                 <div class="selected-attractions-info">
-                                    <img [src]="attraction.imageUrl" alt="Attraction Image"
+                                    <img *ngIf="attraction.imageUrl" [src]="attraction.imageUrl" alt="Attraction Image"
                                         class="selected-attractions-image" />
+                                    <img *ngIf="!attraction.imageUrl"
+                                        src="https://static.vecteezy.com/system/resources/thumbnails/004/141/669/small/no-photo-or-blank-image-icon-loading-images-or-missing-image-mark-image-not-available-or-image-coming-soon-sign-simple-nature-silhouette-in-frame-isolated-illustration-vector.jpg"
+                                        alt="Attraction Image" class="selected-attractions-image" />
                                     <div class="selected-attractions-details">
                                         <h3 class="selected-attractions-title">{{ attraction.name }}</h3>
                                     </div>
@@ -186,8 +196,16 @@
                     </div>
                 </div>
             </div>
-            <button class="add-time-slot-btn" (click)="onGenerateTrip()" [ngClass]="{'disabled': dailyProgramEnable}" [disabled]="dailyProgramEnable && mapChange" >generate</button>
+            <div class="align-right">
+                <button class="remove-filters remove-filters-btn" [ngClass]="{'disabled': dailyProgramEnable}" [disabled]="dailyProgramEnable && mapChange">Clear Selection</button>
+                <button class="remove-filters remove-filters-btn" [ngClass]="{'disabled': dailyProgramEnable}" [disabled]="dailyProgramEnable && mapChange">Manual Plan Creation</button>
+                <button class="apply-filters apply-filters-btn" (click)="onGenerateTrip()" 
+                        [ngClass]="{'disabled': dailyProgramEnable}" [disabled]="dailyProgramEnable && mapChange">
+                        Automated Plan Generation
+                </button>
+            </div>
         </div>
     </div>
-    <app-generate-plan-page *ngIf="generatePlanVisible" [selectedAttractions]="selectedAttractions" [newTripInfo]="newTripInfo" [schedulePlacesResponse]="schedulePlaceResponse"></app-generate-plan-page>
+    <app-generate-plan-page *ngIf="generatePlanVisible" [selectedAttractions]="selectedAttractions"
+        [newTripInfo]="newTripInfo" [schedulePlacesResponse]="schedulePlaceResponse" (toggleVisibility)="toggleGeneratePlan()"></app-generate-plan-page>
 </div>

@@ -398,7 +398,11 @@ export class CreateAPlanPageComponent implements OnInit {
       error => {
         console.error(error);  // Handle errors here
       });
-    this.generatePlan.calculateAndDisplayRoute();
   }
+
+  toggleGeneratePlan() {
+    this.generatePlanVisible = !this.generatePlanVisible;
+  }
+  
 
 }

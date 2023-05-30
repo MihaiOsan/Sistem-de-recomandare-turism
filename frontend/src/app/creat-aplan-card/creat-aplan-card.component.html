@@ -2,7 +2,10 @@
 <div [class.selected]="isSelected" class="card">
     <div class="image">
       <div class="image-wrapper">
-        <img class="real-image" [src]="attraction.imageUrl">
+        <img *ngIf="attraction.imageUrl" class="real-image" [src]="attraction.imageUrl">
+      <img *ngIf="!attraction.imageUrl"
+      src="https://static.vecteezy.com/system/resources/thumbnails/004/141/669/small/no-photo-or-blank-image-icon-loading-images-or-missing-image-mark-image-not-available-or-image-coming-soon-sign-simple-nature-silhouette-in-frame-isolated-illustration-vector.jpg"
+      alt="Attraction Image" class="real-image">
       </div>
     </div> <div class="content">
       <div class="content">

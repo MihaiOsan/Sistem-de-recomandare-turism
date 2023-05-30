@@ -9,6 +9,16 @@ export class ManagePlansPageComponent implements OnInit {
 
   constructor() { }
 
+  mapCongiguration = {
+    mapTypeId: 'roadmap',
+    disableDefaultUI: true,
+    zoomControl: true,
+    scaleControl: true,
+    streetViewControl: true,
+    rotateControl: true,
+    fullscreenControl: true,
+  };
+
   ngOnInit(): void {
   }
 

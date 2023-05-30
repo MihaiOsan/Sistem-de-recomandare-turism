@@ -45,7 +45,7 @@ public class LocationController {
             @RequestParam double lng,
             @RequestParam double radius,
             @RequestParam(required = false) String pageToken,
-            @RequestParam(required = false, defaultValue = "TOURIST_ATTRACTION") PlaceType locationType,
+            @RequestParam(required = false, defaultValue = "turist_attraction") PlaceType locationType,
             @RequestParam(required = false, defaultValue = "prominence") String sortBy
     ) throws InterruptedException, ApiException, IOException {
         System.out.println(locationType.toString());

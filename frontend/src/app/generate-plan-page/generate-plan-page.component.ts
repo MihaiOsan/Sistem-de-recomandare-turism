@@ -1,10 +1,12 @@
-import { Component, Input, OnChanges, OnInit, SimpleChanges, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
 import { Attraction } from '../models/attraction';
 import { NewTripInfo } from '../models/new-trip-info';
 import { SchedulePlacesResponse } from '../models/schedule-places-response';
 import { GoogleMap } from '@angular/google-maps';
 import { timeInterval } from 'rxjs';
 import { TimeInterval } from '../models/time-interval';
+import { Location } from '@angular/common';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-generate-plan-page',
@@ -36,23 +38,27 @@ export class GeneratePlanPageComponent implements OnInit, OnChanges {
 
   @Input() selectedAttractions: Attraction[] = [];
   @Input() newTripInfo!: NewTripInfo;
+  @Output() toggleVisibility = new EventEmitter<void>();
   displayedDate: Date = new Date();
   displayedDateString: string = this.formatDate(this.displayedDate);
   currentDay: any = 1;
   @Input() schedulePlacesResponse!: SchedulePlacesResponse[][];
 
-  constructor() { }
+  constructor(private location: Location, private router: Router) { }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['newTripInfo'] && changes['newTripInfo'].currentValue) {
       this.displayedDate = new Date(changes['newTripInfo'].currentValue.startDate);
-
-      this.newTripInfo = changes['newTripInfo'].currentValue;
-      this.calculateAndDisplayRoute();
+      
     }
   }
 
   ngOnInit(): void {
+    this.location.subscribe(() => {
+      this.router.navigateByUrl(this.location.path(), { skipLocationChange: true });
+      console.log('back button pressed');
+      this.toggleVisibility.emit();
+    });
   }
 
   calculateAndDisplayRoute() {

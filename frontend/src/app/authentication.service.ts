@@ -53,7 +53,7 @@ export class AuthenticationService {
     logout() {
         localStorage.removeItem('currentUser');
         localStorage.removeItem('filterSort');
-        localStorage.removeItem('filterType');
+        localStorage.setItem('filterType','tourist_attraction');
         localStorage.removeItem('mapCenter');
         localStorage.removeItem('mapRange');
         this.currentUserSubject.next(null!);

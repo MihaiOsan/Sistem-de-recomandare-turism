@@ -14,7 +14,6 @@ SwiperCore.use([Navigation, Pagination, Scrollbar, A11y]);
 export class SliderComponent implements AfterViewInit {
   constructor() {}
   ngAfterViewInit(): void {
-    throw new Error('Method not implemented.');
   }
 
   onInit() {}

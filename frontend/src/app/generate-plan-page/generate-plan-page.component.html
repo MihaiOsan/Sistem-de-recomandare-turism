@@ -15,13 +15,15 @@
                 <div class="box">
                     <div class="box-inside-content">
                         <h2 class="box-title">Daily plan</h2>
-                        <button class="nav-btn" (click)="prevDay()">
-                            <i class="arrow left"></i>
-                        </button>
-                        <span class="date-text">{{ displayedDateString }}</span>
-                        <button class="nav-btn" (click)="nextDay()">
-                            <i class="arrow right"></i>
-                        </button>
+                        <div class="date-navigation" style="display: flex; justify-content: center; align-items: center; padding-bottom: 5px;">
+                            <button class="nav-btn" (click)="prevDay()">
+                                <i class="arrow left"></i>
+                            </button>
+                            <span class="date-text">{{ displayedDateString }}</span>
+                            <button class="nav-btn" (click)="nextDay()">
+                                <i class="arrow right"></i>
+                            </button>
+                        </div>
                         <div class="height50vh">
                             <div class="selected-attractions-container"
                                     *ngFor="let slot of newTripInfo.tripTimeSlots[currentDay-1]; let i = index">
