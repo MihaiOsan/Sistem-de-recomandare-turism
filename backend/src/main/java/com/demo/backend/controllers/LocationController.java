@@ -2,7 +2,9 @@ package com.demo.backend.controllers;
 
 import com.demo.backend.models.DTO.LocationDetailsDTO;
 import com.demo.backend.models.DTO.LocationsDTO;
+import com.demo.backend.models.DTO.WeatherData;
 import com.demo.backend.services.LocationDetailService;
+import com.demo.backend.services.WeatherService;
 import com.google.maps.GeoApiContext;
 import com.google.maps.PlacesApi;
 import com.google.maps.errors.ApiException;
@@ -12,6 +14,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.util.List;
 
 @RestController
 @RequestMapping("/location")
@@ -20,6 +23,9 @@ public class LocationController {
 
     @Autowired
     LocationDetailService locationDetailService;
+
+    @Autowired
+    WeatherService weatherService;
 
     @Value("${google.maps.api.key}")
     private String googleMapsApiKey;
@@ -55,5 +61,10 @@ public class LocationController {
     @GetMapping("/api/details/{placeId}")
     public LocationDetailsDTO getPlaceDetails(@PathVariable String placeId) throws IOException, InterruptedException, ApiException {
         return locationDetailService.getPlaceDetailsWithWiki(placeId);
+    }
+
+    @GetMapping("/api/weather")
+    public List<WeatherData> getWeather(@RequestParam double lat, @RequestParam double lng) throws IOException, InterruptedException {
+        return weatherService.getWeatherData(lat,lng);
     }
 }

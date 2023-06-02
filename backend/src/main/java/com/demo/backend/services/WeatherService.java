@@ -28,7 +28,7 @@ public class WeatherService {
     private RestTemplate restTemplate = new RestTemplate();
 
     public List<WeatherData> getWeatherData(Double lat, Double lng) throws IOException, InterruptedException {
-        String url = "https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/" + lat + "%2C"+ lng +"?unitGroup=metric&key=9UEKDFHPWD6QX7953NR4JPGNA&contentType=json&dailyWeather=true";
+        String url = "https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/" + lat + "%2C"+ lng +"/next30days?unitGroup=metric&include=days&key=9UEKDFHPWD6QX7953NR4JPGNA&contentType=json";
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(url))
                 .method("GET", HttpRequest.BodyPublishers.noBody())
@@ -51,6 +51,12 @@ public class WeatherService {
             weatherData.setTemperature(day.path("tempmax").asDouble());
             weatherData.setHumidity(day.path("humidity").asDouble());
             weatherData.setIcon(day.path("conditions").asText());
+            weatherData.setDescription(day.path("description").asText());
+            weatherData.setPrecProb(day.path("precipprob").asDouble());
+            weatherData.setPrecipType(day.path("preciptype").asText());
+            weatherData.setTemperatureMax(day.path("tempmax").asDouble());
+            weatherData.setTemperatureMin(day.path("tempmin").asDouble());
+            weatherData.setHumidity(day.path("humidity").asDouble());
             weatherDataList.add(weatherData);
         }
         return weatherDataList;

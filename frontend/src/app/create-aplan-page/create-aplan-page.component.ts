@@ -1,6 +1,6 @@
 import { ChangeDetectorRef, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { GoogleMap } from '@angular/google-maps';
-import { FormGroup, FormControl, Validators, FormBuilder } from '@angular/forms';
+import { FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { Attraction } from '../models/attraction';
 import { AttractionsResponse } from '../models/attractions-response';
 import { AttractionService } from '../services/attraction.service';
@@ -17,14 +17,14 @@ import { SchedulePlacesResponse } from '../models/schedule-places-response';
   styleUrls: ['./create-aplan-page.component.css']
 })
 export class CreateAPlanPageComponent implements OnInit {
+
   generatePlanVisible: boolean = false
 
-
-  
   @ViewChild('mapSearchField') mapSearchField!: ElementRef;
   @ViewChild('GoogleMap') map!: GoogleMap;
   @ViewChild('GeneratePlan') generatePlan!: GeneratePlanPageComponent;
 
+  receivedChildFunction!: Function;
 
   attractions: Attraction[][] = [];
   pageAttractions: Attraction[] = [];
@@ -47,8 +47,8 @@ export class CreateAPlanPageComponent implements OnInit {
   dailyProgramEnable: boolean = true;
   mapChange: boolean = false;
 
-  filterSort: string =  'prominence';
-  filterType: string =  'tourist_attraction';
+  filterSort: string = 'prominence';
+  filterType: string = 'tourist_attraction';
 
   constructor(private formBuilder: FormBuilder, private attractionService: AttractionService, private changeDetectorRef: ChangeDetectorRef, private tripService: GenerateTripPlanService) { }
 
@@ -62,7 +62,6 @@ export class CreateAPlanPageComponent implements OnInit {
         return;
       }
 
-      this.displaySelectPlaces = true;
 
       const bounds = new google.maps.LatLngBounds();
       places.forEach((place) => {
@@ -79,6 +78,7 @@ export class CreateAPlanPageComponent implements OnInit {
       });
       this.radius = +this.newTripInfo.range * 1000;
       this.circleCenter = bounds.getCenter().toJSON();
+      this.mapCongiguration.center = this.circleCenter;
       this.newTripInfo.startLocation = this.circleCenter;
 
       this.currentPage = 1
@@ -97,7 +97,8 @@ export class CreateAPlanPageComponent implements OnInit {
       }
       else
         this.map.fitBounds(bounds);
-
+      
+        this.displaySelectPlaces = true;
       this.fetchAttractions2();
     }
 
@@ -225,6 +226,22 @@ export class CreateAPlanPageComponent implements OnInit {
         tripTimeSlots: new Array(Difference_In_Days + 1).fill(null).map(() => this.createDefaultTimeSlots()),
       };
       this.dailyProgramEnable = false;
+      if (this.radius != this.tripForm.value['range'] * 1000) {
+        this.radius = this.tripForm.value['range'] * 1000;
+        this.currentPage = 1
+        this.attractions = [];
+        this.pageAttractions = [];
+        this.nextPageToken = '';
+        this.fetchAttractions2();
+        this.changeDetectorRef.detectChanges();
+      
+
+        const circle = new google.maps.Circle({ center: this.circleCenter, radius: this.radius });
+        const circleBounds = this.getCircleBounds(this.circleCenter, this.radius);
+        if (circleBounds) {
+          this.map.fitBounds(circleBounds);
+        }
+      }
     }
     else {
       this.errorMessageOnSubmit = "Please fill all fields";
@@ -367,6 +384,7 @@ export class CreateAPlanPageComponent implements OnInit {
 
   schedulePlaceResponse!: SchedulePlacesResponse[][];
 
+
   onGenerateTrip() {
     this.generatePlanVisible = !this.generatePlanVisible;
     let listPlanceId: string[] = [];
@@ -394,15 +412,40 @@ export class CreateAPlanPageComponent implements OnInit {
           }
         }
       }
+      if (this.receivedChildFunction) {
+        this.receivedChildFunction();
+      }
     },
       error => {
         console.error(error);  // Handle errors here
       });
   }
 
+  onManualPlanCreation() {
+    this.generatePlanVisible = !this.generatePlanVisible;
+    if (this.receivedChildFunction) {
+      this.receivedChildFunction();
+    }
+  }
+
+  onClearSelection() {
+    this.selectedAttractions = [];
+    this.tripForm = this.formBuilder.group({
+      tripName: ['New trip', Validators.required],
+      startDate: [new Date(), Validators.required],
+      endDate: [new Date(), Validators.required],
+      range: ['10', [Validators.required, Validators.min(1)]],
+    });
+    this.newTripInfo = new NewTripInfo();
+    this.newTripInfo.range = 10;
+    this.newTripInfo.tripTimeSlots = new Array(1).fill(null).map(() => this.createDefaultTimeSlots());
+    this.changeDetectorRef.detectChanges();
+    this.radius = 0;
+    this.dailyProgramEnable = true;
+    this.displaySelectPlaces = false;
+  }
+
   toggleGeneratePlan() {
     this.generatePlanVisible = !this.generatePlanVisible;
   }
-  
-
 }

@@ -1,5 +1,5 @@
 <div class="createplan-page">
-    <div class="boxes-container box" *ngIf="!generatePlanVisible">
+    <div class="boxes-container box" [style.display]="generatePlanVisible ? 'none' : 'block'">
         <div class="box-content">
 
             <h1 class="box-title">Create an unforgettable travel itinerary</h1>
@@ -197,15 +197,15 @@
                 </div>
             </div>
             <div class="align-right">
-                <button class="remove-filters remove-filters-btn" [ngClass]="{'disabled': dailyProgramEnable}" [disabled]="dailyProgramEnable && mapChange">Clear Selection</button>
-                <button class="remove-filters remove-filters-btn" [ngClass]="{'disabled': dailyProgramEnable}" [disabled]="dailyProgramEnable && mapChange">Manual Plan Creation</button>
+                <button class="remove-filters remove-filters-btn" [ngClass]="{'disabled': (dailyProgramEnable&&newTripInfo.startLocation==null)}" [disabled]="(dailyProgramEnable&&newTripInfo.startLocation==null)" (click)="onClearSelection()">Clear Selection</button>
+                <button class="remove-filters remove-filters-btn" [ngClass]="{'disabled': (dailyProgramEnable||newTripInfo.startLocation==null)}" [disabled]="dailyProgramEnable ||newTripInfo.startLocation==null" (click)="onManualPlanCreation()">Manual Plan Creation</button>
                 <button class="apply-filters apply-filters-btn" (click)="onGenerateTrip()" 
-                        [ngClass]="{'disabled': dailyProgramEnable}" [disabled]="dailyProgramEnable && mapChange">
+                        [ngClass]="{'disabled': (dailyProgramEnable||newTripInfo.startLocation==null)}" [disabled]="dailyProgramEnable||newTripInfo.startLocation==null" >
                         Automated Plan Generation
                 </button>
             </div>
         </div>
     </div>
     <app-generate-plan-page *ngIf="generatePlanVisible" [selectedAttractions]="selectedAttractions"
-        [newTripInfo]="newTripInfo" [schedulePlacesResponse]="schedulePlaceResponse" (toggleVisibility)="toggleGeneratePlan()"></app-generate-plan-page>
+        [newTripInfo]="newTripInfo" [schedulePlacesResponse]="schedulePlaceResponse" (toggleVisibility)="toggleGeneratePlan()" (childCallback)="receivedChildFunction = $event"></app-generate-plan-page>
 </div>

@@ -15,7 +15,7 @@ import { AuthenticationService } from '../authentication.service';
 })
 export class AttractionsPageComponent implements OnInit {
 
-display: any;
+  display: any;
   center: google.maps.LatLngLiteral = JSON.parse(localStorage.getItem('mapCenter') || '{"lat": 45.75, "lng": 21.22}');
   range: string =  '10';
 

@@ -7,6 +7,9 @@ import { timeInterval } from 'rxjs';
 import { TimeInterval } from '../models/time-interval';
 import { Location } from '@angular/common';
 import { Router } from '@angular/router';
+import { end } from '@popperjs/core';
+import { WeatherData } from '../models/weather-data';
+import { WeatherServiceService } from '../services/weather-service.service';
 
 @Component({
   selector: 'app-generate-plan-page',
@@ -14,7 +17,8 @@ import { Router } from '@angular/router';
   styleUrls: ['./generate-plan-page.component.css']
 })
 export class GeneratePlanPageComponent implements OnInit, OnChanges {
-  @ViewChild('GoogleMap') map!: GoogleMap;
+
+  @ViewChild('GoogleMap') mapp!: GoogleMap;
 
   directionsService = new google.maps.DirectionsService();
   directionsRenderer = new google.maps.DirectionsRenderer({
@@ -23,8 +27,7 @@ export class GeneratePlanPageComponent implements OnInit, OnChanges {
     }
   });
 
-
-  mapCongiguration = {
+  mapCongiguration1 = {
     mapTypeId: 'roadmap',
     disableDefaultUI: true,
     zoomControl: true,
@@ -38,27 +41,58 @@ export class GeneratePlanPageComponent implements OnInit, OnChanges {
 
   @Input() selectedAttractions: Attraction[] = [];
   @Input() newTripInfo!: NewTripInfo;
+  @Input() schedulePlacesResponse!: SchedulePlacesResponse[][];
   @Output() toggleVisibility = new EventEmitter<void>();
+  @Output() childCallback: EventEmitter<Function> = new EventEmitter();
   displayedDate: Date = new Date();
   displayedDateString: string = this.formatDate(this.displayedDate);
   currentDay: any = 1;
-  @Input() schedulePlacesResponse!: SchedulePlacesResponse[][];
+  displayWeather: boolean = false;
+  weatherData: WeatherData[] = [];
 
-  constructor(private location: Location, private router: Router) { }
+ 
+
+  constructor(private location: Location, private router: Router, private weatherService: WeatherServiceService) { }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['newTripInfo'] && changes['newTripInfo'].currentValue) {
       this.displayedDate = new Date(changes['newTripInfo'].currentValue.startDate);
-      
+      let endDate = new Date(this.newTripInfo.endDate);
+      let startDate = new Date(this.newTripInfo.startDate);
+      this.weatherService.getWeather(this.newTripInfo.startLocation.lat , this.newTripInfo.startLocation.lng).subscribe(data => {
+        data.forEach(element => {
+          if (element.date) {
+            element.icon = element.icon?.replace(/\s+/g, '-').toLowerCase();
+            element.icon = element.icon?.split(',')[0];
+            if (element.icon?.includes('day')) {
+              element.icon = element.icon?.replace('day', 'day-');
+            }
+            if (element.icon?.includes('night')) {
+              element.icon = element.icon?.replace('night', 'night-');
+            }
+            if (element.icon?.includes('overcast')) {
+              element.icon = element.icon?.replace('overcast', 'cloudy');
+            }
+            console.log(element.icon);
+            let elementDate = new Date(element.date);
+            let start = new Date(startDate.getTime() - startDate.getTimezoneOffset() * 60000).toISOString().split('T')[0];
+            let end = new Date(endDate.getTime() - endDate.getTimezoneOffset() * 60000).toISOString().split('T')[0];
+            
+            if (elementDate >= new Date(start) && elementDate <= new Date(end)) {
+              this.weatherData.push(element);
+            }
+          }
+        });
+      }, error => {
+        // handle the error
+        console.error(error);
+      });
     }
   }
 
   ngOnInit(): void {
-    this.location.subscribe(() => {
-      this.router.navigateByUrl(this.location.path(), { skipLocationChange: true });
-      console.log('back button pressed');
-      this.toggleVisibility.emit();
-    });
+    this.childCallback.emit(this.calculateAndDisplayRoute.bind(this));
+   
   }
 
   calculateAndDisplayRoute() {
@@ -117,8 +151,8 @@ export class GeneratePlanPageComponent implements OnInit, OnChanges {
               bounds.extend(step.end_location);
             }
           }
-          if (this.map?.googleMap) {
-            this.map.googleMap.fitBounds(bounds);
+          if (this.mapp?.googleMap) {
+            this.mapp.googleMap.fitBounds(bounds);
           }
         } else {
           window.alert("Directions request failed due to " + status);
@@ -128,8 +162,8 @@ export class GeneratePlanPageComponent implements OnInit, OnChanges {
   }
 
   ngAfterViewInit() {
-    if (this.map?.googleMap) {
-      this.directionsRenderer.setMap(this.map.googleMap);
+    if (this.mapp?.googleMap) {
+      this.directionsRenderer.setMap(this.mapp.googleMap);
       this.calculateAndDisplayRoute();
     }
   }
@@ -139,7 +173,6 @@ export class GeneratePlanPageComponent implements OnInit, OnChanges {
     const bounds = circle.getBounds();
     return bounds ? bounds : null;
   }
-
 
   prevDay() {
     if (this.displayedDate > new Date(this.newTripInfo.startDate)) {
@@ -172,6 +205,14 @@ export class GeneratePlanPageComponent implements OnInit, OnChanges {
     let formattedMonth = month < 10 ? 0 + month.toString() : month.toString();
     return formattedDay + "-" + formattedMonth + "-" + year;
   }
+
+  onCancelPlan() {
+    this.toggleVisibility.emit();
+    }
+
+  onSavePlan() {
+    throw new Error('Method not implemented.');
+    }
 
 
 

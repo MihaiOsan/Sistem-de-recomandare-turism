@@ -3,6 +3,7 @@ package com.demo.backend.models.DTO;
 import lombok.Data;
 
 import java.util.Date;
+import java.util.List;
 
 @Data
 public class WeatherData {
@@ -11,6 +12,9 @@ public class WeatherData {
     Double humidity;
     Double temperatureMax;
     Double temperatureMin;
+    String description;
+    Double precProb;
+    String precipType;
     String icon;
 
 }

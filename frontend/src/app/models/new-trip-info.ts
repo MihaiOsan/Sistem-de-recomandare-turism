@@ -5,6 +5,6 @@ export class NewTripInfo {
     startDate!: Date;
     endDate!: Date;
     range!: number;
-    startLocation!: google.maps.LatLng | google.maps.LatLngLiteral;;
+    startLocation!: google.maps.LatLngLiteral;;
     tripTimeSlots!: TimeInterval[][];
   }
