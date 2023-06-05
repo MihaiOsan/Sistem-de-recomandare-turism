@@ -1,21 +1,20 @@
 <div class="card">
   <div class="image">
     <div class="image-wrapper">
-      <img class="real-image" src="https://media.insureyonder.com/wp-content/uploads/2018/04/25202710/Travel.png" alt="Features image">
+      <img class="real-image" [src]="attraction.imageUrl" alt="Features image">
     </div>
   </div> <div class="content">
      <a href="#">
        <span class="title">
-         Lorem ipsum dolor sit amet consectetur adipisicing elit.
+         {{attraction.name}}
        </span>
      </a>
  
      <p class="desc">
-       Lorem ipsum dolor sit amet, consectetur adipisicing elit. Recusandae
-       dolores, possimus pariatur animi temporibus nesciunt praesentium 
+        {{attraction.businessStatus}}
      </p>
  
-     <a href="#" class="action">
+     <a [routerLink]="['/Attraction', attraction.placeId]" class="action">
        Find out more
        <span aria-hidden="true">
          →

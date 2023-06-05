@@ -6,7 +6,6 @@
                 <div class="box-inside-content">
                     <div class="map">
                         <google-map #GoogleMap height="100%" width="100%" [options]="mapCongiguration1">
-
                         </google-map>
                     </div>
                 </div>
@@ -20,7 +19,8 @@
                             style="display: flex; justify-content: center; align-items: center; padding-bottom: 5px;">
                             <div class="weather-container">
                                 <div class="side-by-side">
-                                    <img class="image-style" [src]="'assets/weatherImg/' + weatherData[currentDay-1].icon + '.svg'" />
+                                    <img class="image-style"
+                                        [src]="'assets/weatherImg/' + weatherData[currentDay-1].icon + '.svg'" />
                                     <p class="text-grow">{{weatherData[currentDay-1].temperature}}°C</p>
                                 </div>
                             </div>
@@ -38,14 +38,16 @@
                         </div>
                         <div class="height50vh">
                             <div class="selected-attractions-container"
-                                *ngFor="let slot of newTripInfo.tripTimeSlots[currentDay-1]; let i = index">
+                                *ngFor="let slot of newTripInfo.tripTimeSlots[currentDay-1]; let i = index"
+                                
+                                (click)="onSlotClick(i)">
                                 <div class="selected-attractions">
                                     <div class="selected-attractions-info">
                                         <img *ngIf="slot.asignedPlace?.imageUrl" [src]="slot.asignedPlace?.imageUrl"
-                                            alt="Attraction Image" class="selected-attractions-image" />
+                                            alt="Attraction Image" class="selected-attractions-image" [ngClass]="{'selected': i === selectedSlotIndex}"/>
                                         <img *ngIf="!slot.asignedPlace?.imageUrl"
                                             src="https://static.vecteezy.com/system/resources/thumbnails/004/141/669/small/no-photo-or-blank-image-icon-loading-images-or-missing-image-mark-image-not-available-or-image-coming-soon-sign-simple-nature-silhouette-in-frame-isolated-illustration-vector.jpg"
-                                            alt="Attraction Image" class="selected-attractions-image" />
+                                            alt="Attraction Image" class="selected-attractions-image" [ngClass]="{'selected': i === selectedSlotIndex}"/>
                                         <div class="selected-attractions-details">
                                             <h3 class="selected-attractions-title">{{ slot.start }} - {{ slot.end }}
                                                 <span class="time-slot-type">{{
@@ -55,6 +57,7 @@
                                             <p *ngIf="slot.asignedPlace">{{ slot.asignedPlace.name }}</p>
                                         </div>
                                     </div>
+                                    <button class="selected-attractions-delete" (click)="removeTripSlot(i)">x</button>
                                 </div>
                             </div>
 
@@ -65,13 +68,8 @@
             <div class="column column-right" style="padding-left: 10px;">
                 <div class="box">
                     <div class="box-inside-content">
-                        <h2 class="box-title">Selected locations
-                            <!-- <label class="switch">
-                                <input type="checkbox" [(ngModel)]="allowDuplicates">
-                                <span class="slider round"></span>
-                              </label> -->
-                        </h2>
-                        <p><label class="switch" style="margin-left:10px; margin-bottom: 10px;">
+                        <h2 class="box-title">Selected locations</h2>
+                        <p><label class="switch" style="margin-left:20px; margin-bottom: 10px;">
                                 <input type="checkbox" [(ngModel)]="allowDuplicates">
                                 <span class="slider round"></span>
                             </label> {{allowDuplicates ? 'Duplicates are allowed' : 'Duplicates are not allowed'}}
@@ -79,11 +77,13 @@
                         <div class="height50vh">
                             <div class="content-selected-attractions">
                                 <div class="selected-attractions-container"
-                                    *ngFor="let attraction of selectedAttractions; let i = index">
+                                    *ngFor="let attraction of selectedAttractions; let i = index"
+                                    
+                                    (click)="onAttractionClick(i)">
                                     <div class="selected-attractions">
                                         <div class="selected-attractions-info">
                                             <img [src]="attraction.imageUrl" alt="Attraction Image"
-                                                class="selected-attractions-image" />
+                                                class="selected-attractions-image" [ngClass]="{'selected': i === selectedAttractionIndex}"/>
                                             <div class="selected-attractions-details">
                                                 <h3 class="selected-attractions-title">{{ attraction.name }}</h3>
                                             </div>

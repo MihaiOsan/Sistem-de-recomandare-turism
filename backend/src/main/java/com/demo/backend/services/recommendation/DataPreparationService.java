@@ -35,7 +35,9 @@ public class DataPreparationService {
     LocationDetailService locationDetailService;
 
     public List<LocationToVisitDTO> fetchVisitedLocationsFromGooglePlaces(Long userId) throws IOException, InterruptedException, ApiException {
-        List<Objective> visitedObjectives = userService.getVisitedPlaces(userId);
+        List<Objective> visitedObjectives = userService.getVisitedPlaces(userId).stream()
+                .filter(o -> o.getIdLocaction() != null && !o.getIdLocaction().isEmpty())
+                .collect(Collectors.toList());
         List<CompletableFuture<LocationToVisitDTO>> futures = visitedObjectives.stream()
                 .map(o -> CompletableFuture.supplyAsync(() -> {
                     LocationToVisitDTO ltv = new LocationToVisitDTO();

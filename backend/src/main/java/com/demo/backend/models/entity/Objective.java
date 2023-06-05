@@ -31,7 +31,7 @@ public class Objective {
     @Column(nullable = false)
     private ZonedDateTime endTime;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private String idLocaction;
 
     @ManyToOne

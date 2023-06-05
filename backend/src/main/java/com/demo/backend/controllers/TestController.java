@@ -54,9 +54,5 @@ public class TestController {
         return contentBasedRecommedationService.recommendPlaces(dataPreparationService.fetchVisitedLocationsFromGooglePlaces(idUser),-33.8670522,151.1957362,10000, PlaceType.TOURIST_ATTRACTION);
     }
 
-    @RequestMapping("/weather")
-    public List<WeatherData> getWeather() throws IOException, InterruptedException {
-        return weatherService.getWeatherData(-33.8670522,151.1957362);
-    }
 
 }

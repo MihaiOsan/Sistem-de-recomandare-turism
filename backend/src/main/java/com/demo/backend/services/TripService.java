@@ -111,7 +111,7 @@ public class TripService {
             for (AddressType type : place.types) {
                 if ((interval.getType().toLowerCase().equals("eating break") && (type == AddressType.RESTAURANT || type == AddressType.CAFE)) ||
                         (interval.getType().toLowerCase().equals("shopping spree") && type == AddressType.SHOPPING_MALL) ||
-                        (interval.getType().toLowerCase().equals("visiting time") && (type == AddressType.TOURIST_ATTRACTION || type == AddressType.MUSEUM || type == AddressType.ART_GALLERY || type == AddressType.PARK))) {
+                        (interval.getType().toLowerCase().equals("visiting time") && (type == AddressType.TOURIST_ATTRACTION || type == AddressType.MUSEUM || type == AddressType.ART_GALLERY || type == AddressType.PARK || type == AddressType.PLACE_OF_WORSHIP))) {
                     placeTypeMatches = true;
                     break;
                 }

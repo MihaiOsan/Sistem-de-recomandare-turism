@@ -340,3 +340,7 @@ input:checked + .slider:before {
     margin: 0;
     font-size: calc(15px + 1vmin);
 }
+
+.selected {
+    box-shadow: 0px 3px 6px #FFA500;
+  }

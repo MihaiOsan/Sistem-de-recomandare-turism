@@ -5,6 +5,9 @@ import com.demo.backend.models.DTO.LocationsDTO;
 import com.demo.backend.models.DTO.WeatherData;
 import com.demo.backend.services.LocationDetailService;
 import com.demo.backend.services.WeatherService;
+import com.demo.backend.services.recommendation.ContentBasedRecommedationService;
+import com.demo.backend.services.recommendation.DataPreparationService;
+import com.demo.backend.services.recommendation.RecommendationService;
 import com.google.maps.GeoApiContext;
 import com.google.maps.PlacesApi;
 import com.google.maps.errors.ApiException;
@@ -26,6 +29,12 @@ public class LocationController {
 
     @Autowired
     WeatherService weatherService;
+
+    @Autowired
+    ContentBasedRecommedationService recommendationService;
+
+    @Autowired
+    DataPreparationService dataPreparationService;
 
     @Value("${google.maps.api.key}")
     private String googleMapsApiKey;
@@ -58,13 +67,38 @@ public class LocationController {
         return locationDetailService.getLocationsInRadius(lat,lng,radius,pageToken,locationType,sortBy);
     }
 
+    @GetMapping("/api/recommended-tourist-attractions-in-radius")
+    public LocationsDTO getRecommendedLocationsInRadius(
+            @RequestParam Long idUser,
+            @RequestParam double lat,
+            @RequestParam double lng,
+            @RequestParam double radius,
+            @RequestParam(required = false) String pageToken,
+            @RequestParam(required = false, defaultValue = "turist_attraction") String locationType,
+            @RequestParam(required = false, defaultValue = "prominence") String sortBy
+    ) throws Exception {
+        System.out.println(locationType.toString());
+        PlaceType placeType;
+        try {
+            placeType = PlaceType.valueOf(locationType.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("Invalid locationType: " + locationType);
+        }
+        return recommendationService.recommendPlaces(dataPreparationService.fetchVisitedLocationsFromGooglePlaces(idUser),lat,lng,radius,placeType);
+    }
+
     @GetMapping("/api/details/{placeId}")
     public LocationDetailsDTO getPlaceDetails(@PathVariable String placeId) throws IOException, InterruptedException, ApiException {
         return locationDetailService.getPlaceDetailsWithWiki(placeId);
     }
 
+    @GetMapping("/api/detailsWithoutWiki/{placeId}")
+    public PlaceDetails getPlaceDetailsWithoutWiki(@PathVariable String placeId) throws IOException, InterruptedException, ApiException {
+        return locationDetailService.getPlaceDetail(placeId);
+    }
+
     @GetMapping("/api/weather")
-    public List<WeatherData> getWeather(@RequestParam double lat, @RequestParam double lng) throws IOException, InterruptedException {
-        return weatherService.getWeatherData(lat,lng);
+    public List<WeatherData> getWeather(@RequestParam double lat, @RequestParam double lng, @RequestParam String start, @RequestParam String end) throws IOException, InterruptedException {
+        return weatherService.getWeatherData(lat,lng, start,end);
     }
 }

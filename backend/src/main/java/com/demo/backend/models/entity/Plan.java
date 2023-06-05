@@ -31,7 +31,7 @@ public class Plan {
     @Column(nullable = false)
     private ZonedDateTime endDate;
 
-    @OneToMany(mappedBy = "plan")
+    @OneToMany(mappedBy = "plan", cascade = CascadeType.ALL)
     @JsonIgnore
     private List<Objective> objectives;
 

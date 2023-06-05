@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Attraction } from '../models/attraction';
 import { AttractionsResponse } from '../models/attractions-response';
-import { AttractionsDetails } from '../models/attractions-details';
+import { AttractionsDetails, Place } from '../models/attractions-details';
 import { AuthenticationService } from '../authentication.service';
 
 @Injectable({
@@ -11,11 +11,15 @@ import { AuthenticationService } from '../authentication.service';
 })
 export class AttractionService {
   private apiUrl = 'http://localhost:8080/location/api/tourist-attractions-in-radius';
-  private apiUrlRecommend = 'http://localhost:8080/location/api/tourist-attractions-in-radius-recommend';
+  private apiUrlRecommend = 'http://localhost:8080/location/api/recommended-tourist-attractions-in-radius';
 
   constructor(private http: HttpClient,private authentificationService: AuthenticationService) { }
 
   getAttractions(lat: number, lng: number, radius: number, pagetoken?:string,locationType: string = 'TOURIST_ATTRACTION', sortBy: string= 'prominence'): Observable<AttractionsResponse> {
+    if (sortBy == "recommendation")
+    {
+      return this.getRecommendedAttractions(lat, lng, radius, pagetoken, locationType);
+    }
     const params = {
       lat: lat.toString(),
       lng: lng.toString(),
@@ -34,12 +38,16 @@ export class AttractionService {
       radius: radius.toString(),
       pageToken: pagetoken?.toString() || '',
       locationType: locationType,
-      userId: userId.toString()
+      idUser: userId.toString()
     };
-    return this.http.get<AttractionsResponse>(this.apiUrl, { params });
+    return this.http.get<AttractionsResponse>(this.apiUrlRecommend, { params });
   }
 
   getAttractionDetails(id: string): Observable<AttractionsDetails> {
     return this.http.get<AttractionsDetails>(`http://localhost:8080/location/api/details/${id}`);
+  }
+
+  getAttractionDetailsPlace(id: string): Observable<Place> {
+    return this.http.get<Place>(`http://localhost:8080/location/api/detailsWithoutWiki/${id}`);
   }
 }

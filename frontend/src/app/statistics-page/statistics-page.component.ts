@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { GoogleChartInterface } from 'ng2-google-charts';
-import { of } from 'rxjs';
+import { GenerateTripPlanService } from '../services/generate-trip-plan.service';
+import { NewTripInfo } from '../models/new-trip-info';
+import { TimeInterval } from '../models/time-interval';
 
-export class ChartData{
+export class ChartData {
   destination!: string;
-  year!: number;
 }
 
 @Component({
@@ -36,45 +36,109 @@ export class StatisticsPageComponent implements OnInit {
     }
   }
 
+  allTripInfo?: NewTripInfo[];
+  allTimeIntervals: TimeInterval[] = [];
+
   city: Array<ChartData> = [
-    { destination: 'Paris', year: 2019 },
-    { destination: 'Paris', year: 2020 },
-    { destination: 'London', year: 2020 },
-    { destination: 'New York', year: 2021 },
-    { destination: 'New York', year: 2021 },
-    { destination: 'Los Angeles', year: 2022 },
   ];
 
   country: Array<ChartData> = [
-    { destination: 'France', year: 2019 },
-    { destination: 'France', year: 2020 },
-    { destination: 'England', year: 2020 },
-    { destination: 'USA', year: 2021 },
-    { destination: 'USA', year: 2022 },
-    { destination: 'USA', year: 2021 }
   ];
 
   attractionType: Array<ChartData> = [
-    { destination: 'Museum', year: 2019 },
-    { destination: 'Park', year: 2020 },
-    { destination: 'Park', year: 2020 },
-    { destination: 'Museum', year: 2021 },
-    { destination: 'Restaurant', year: 2022 },
-    { destination: 'Museum', year: 2021 }
   ];
 
   orangePalette = [
     '#FFA500', '#FF8C00', '#FF7F50', '#FF6347', '#FF4500', '#FFA07A', '#FF7F00', '#FF8C69', '#E67E22', '#FFA54F', '#FFA07A', '#FFA347', '#FFB90F', '#FFAE42', '#FF9F00', '#FF9A1E', '#F28500', '#FF7A33', '#FDBA21', '#FBA71B'
   ];
 
+  constructor(private generateTripService: GenerateTripPlanService) { }
+
+  accepedTypes: Array<string> = [
+    'museum',
+    'amusement_park',
+    'park',
+    'aquarium',
+    'art_gallery',
+    'cafe',
+    'shopping_mall',
+    'restaurant',
+    'zoo',
+    'place_of_worship',
+    'establishment',
+  ];
+
+  nrCity: number = 0;
+  nrCountry: number = 0;
+  nrAttraction: number = 0;
+  nrPlans: number = 0;
 
   chartConfig: any;
 
   ngOnInit(): void {
     this.prepareChartData(this.country, 'Country Visited');
+    this.generateTripService.getSavedPlansPast().subscribe(data => {
+      this.allTripInfo = data;
+      this.allTripInfo.forEach(element => {
+        this.nrPlans++;
+        if (element.endDate) {
+            let gotVisitetdCity = false;
+            let gotVisitetdCountry = false;
+          for (let i = 0; i < element.tripTimeSlots.length; i++) {
+            for (let j = 0; j < element.tripTimeSlots[i].length; j++) {
+              if (element.tripTimeSlots[i][j].asignedPlace) {
+                this.nrAttraction++;
+                this.allTimeIntervals.push(element.tripTimeSlots[i][j]);
+                if (!gotVisitetdCity) {
+                  // for all element.tripTimeSlots[i][j].asignedPlace!.address_components.length
+                  for (let k = 0; k < element.tripTimeSlots[i][j].asignedPlace!.addressComponents.length; k++) {
+                    if (element.tripTimeSlots[i][j].asignedPlace!.addressComponents[k].types.includes("LOCALITY")) {
+                      this.city.push({ destination: element.tripTimeSlots[i][j].asignedPlace!.addressComponents[k].longName });
+                      this.nrCity++;
+                      gotVisitetdCity = true;
+                    }
+                    if (element.tripTimeSlots[i][j].asignedPlace!.addressComponents[k].types.includes("COUNTRY")) {
+                      this.nrCountry++;
+                      this.country.push({ destination: element.tripTimeSlots[i][j].asignedPlace!.addressComponents[k].longName });
+                      gotVisitetdCountry = true;
+                    }
+
+                    if (element.tripTimeSlots[i][j].asignedPlace!.types) {
+                      for (let l = 0; l < element.tripTimeSlots[i][j].asignedPlace!.types.length; l++) {
+                        console.log(element.tripTimeSlots[i][j].asignedPlace!.types[l]);
+                        if (this.accepedTypes.includes(element.tripTimeSlots[i][j].asignedPlace!.types[l].toLowerCase())) {
+                          this.attractionType.push({ destination: element.tripTimeSlots[i][j].asignedPlace!.types[l] });
+                          break;
+                        }
+                      }
+
+                      for (let l = 0; l < this.accepedTypes.length; l++) {
+                        if (element.tripTimeSlots[i][j].asignedPlace!.types.includes(this.accepedTypes[l].toUpperCase())) {
+                          this.attractionType.push({ destination: this.accepedTypes[l].toUpperCase() });
+                          break;
+                        }
+                      }
+                    }
+                  }
+                }
+
+                const apiKey = "AIzaSyAILm8lpjdZbGCyZOgmKAW0z0sARKzKM9g&libraries=places";
+                const maxWidth = 400;
+                if (element.tripTimeSlots[i][j].asignedPlace && element.tripTimeSlots[i][j].asignedPlace?.photos && element.tripTimeSlots[i][j].asignedPlace?.photos[0]) {
+                  element.tripTimeSlots[i][j].asignedPlace!.imageUrl = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=${maxWidth}&photoreference=${element.tripTimeSlots[i][j].asignedPlace!.photos[0].photoReference}&key=${apiKey}`;
+              }
+              }
+            }
+          }
+        }
+      });
+
+    this.prepareChartData(this.country, 'Country Visited');
+    });
+
   }
 
-  prepareChartData(datas:Array<any>, chartTitle:string): void {
+  prepareChartData(datas: Array<any>, chartTitle: string): void {
     const destinationCounts = datas.reduce((acc, curr) => {
       acc[curr.destination] = (acc[curr.destination] || 0) + 1;
       return acc;

@@ -123,7 +123,6 @@ export class CreateAPlanPageComponent implements OnInit {
     if (selectedValue !== null) {
       this.filterSort = selectedValue;
     }
-    console.log(this.filterSort);
     this.currentPage = 1
     this.attractions = [];
     this.pageAttractions = [];

@@ -43,6 +43,9 @@ import * as Charts from 'fusioncharts/fusioncharts.charts';
 
 import * as FusionTheme from 'fusioncharts/themes/fusioncharts.theme.fusion';
 import { GeneratePlanPageComponent } from './generate-plan-page/generate-plan-page.component';
+import { DatePipe } from '@angular/common';
+import { DeleteDialogComponent } from './delete-dialog/delete-dialog.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 FusionChartsModule.fcRoot(FusionCharts, Charts, FusionTheme);
 
@@ -68,6 +71,7 @@ FusionChartsModule.fcRoot(FusionCharts, Charts, FusionTheme);
     AttractionDetailsComponent,
     CreatAPlanCardComponent,
     GeneratePlanPageComponent,
+    DeleteDialogComponent,
   ],
   imports: [
     BrowserModule,
@@ -86,8 +90,9 @@ FusionChartsModule.fcRoot(FusionCharts, Charts, FusionTheme);
     NgbModule,
     FusionChartsModule,
     Ng2GoogleChartsModule,
+    BrowserAnimationsModule,
   ],
-  providers: [AttractionService],
+  providers: [AttractionService, DatePipe],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

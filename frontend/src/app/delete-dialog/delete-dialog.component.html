@@ -1,0 +1,8 @@
+<div class="modal" *ngIf="showModal" >
+    <div class="modal-content">
+      <h2>Confirm Delete</h2>
+      <p>Are you sure you want to delete this item?</p>
+      <button (click)="onConfirm()">Yes</button>
+      <button (click)="onCancel()">No</button>
+    </div>
+  </div>

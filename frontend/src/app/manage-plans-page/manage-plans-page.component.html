@@ -1,22 +1,123 @@
-<div class="page">
-    <div class="box">
-        <div class="container">
-            <div class="column column-left">
-                <div class="box-content" style="margin-bottom: 5px;">
-                    <p>manage-plans-page works!</p>
-                </div>
-                <div class="box-content" style="margin-top: 5px;">
-                    <p>manage-plans-page works!</p>
-                </div>
-            </div>
-            <div class="column column-right">
-                <div  style="padding: 0px;" class="box-content">
+<div class="generate-plan-page">
+    <div class="boxes-container box">
+        <div class="box-content">
+
+            <div class="box">
+                <div class="box-inside-content">
                     <div class="map">
                         <google-map #GoogleMap height="100%" width="100%" [options]="mapCongiguration">
                         </google-map>
                     </div>
                 </div>
             </div>
+            <div class="column column-left" style="padding-right: 10px;">
+                <div class="box">
+                    <div class="box-inside-content">
+                        <h2 class="box-title">Selected a plan</h2>
+                        <div class="filter-item">
+                            <div class="select">
+                                <select class="range-input" (change)="onDeisplayTripInfo($event)">
+                                    <option value="all">All</option>
+                                    <option value="upcoming">Upcoming</option>
+                                    <option value="past">Past</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="height50vh">
+                            <div class="content-selected-attractions" *ngIf="displayedTrips.length!=0">
+                                <div class="selected-attractions-container"
+                                    *ngFor="let plan of displayedTrips; let i = index" (click)="onTripInfoClick(i)">
+                                    <div class="selected-attractions" [ngClass]="{'selected': i === selectedTripIndex}">
+                                        <div class="selected-attractions-info">
+                                            <div class="selected-attractions-details">
+                                                <h3 class="selected-attractions-title">{{plan.tripName}}</h3>
+                                                <p>{{transformDate(plan.startDate)}} &rarr;
+                                                    {{transformDate(plan.endDate)}}</p>
+                                            </div>
+                                        </div>
+                                        <button class="selected-attractions-delete"
+                                            (click)="removeTripSlot(i)">x</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="content-selected-attractions" *ngIf="displayedTrips.length==0">
+                                <div class="selected-attractions-container">
+                                    <div class="selected-attractions">
+                                        <div class="selected-attractions-info">
+                                            <div class="selected-attractions-details">
+                                                <h3 class="selected-attractions-title">No plans aveilable</h3>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="column column-right" style="padding-left: 10px;">
+                <div class="box">
+                    <div class="box-inside-content" *ngIf="selectedTripInfo">
+                        <h2 class="box-title">{{selectedTripInfo.tripName}}</h2>
+                        <div class="date-navigation" *ngIf="weatherData[currentDay-1]!=null"
+                            style="display: flex; justify-content: center; align-items: center; padding-bottom: 5px;">
+                            <div class="weather-container">
+                                <div class="side-by-side">
+                                    <img class="image-style"
+                                        [src]="'assets/weatherImg/' + weatherData[currentDay-1].icon + '.svg'" />
+                                    <p class="text-grow">{{weatherData[currentDay-1].temperature}}°C</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="date-navigation"
+                            style="display: flex; justify-content: center; align-items: center; padding-bottom: 5px;">
+
+                            <button class="nav-btn" (click)="prevDay()">
+                                <i class="arrow left"></i>
+                            </button>
+                            <span class="date-text">{{ displayedDateString }}</span>
+                            <button class="nav-btn" (click)="nextDay()">
+                                <i class="arrow right"></i>
+                            </button>
+                        </div>
+                        <div class="height50vh">
+                            <div class="selected-attractions-container"
+                                *ngFor="let slot of selectedTripInfo.tripTimeSlots[currentDay-1]; let i = index">
+                                <div class="selected-attractions">
+                                    <div class="selected-attractions-info">
+                                        <img *ngIf="slot.asignedPlace?.imageUrl" [src]="slot.asignedPlace?.imageUrl"
+                                            alt="Attraction Image" class="selected-attractions-image"
+                                            [ngClass]="{'selected': i === selectedSlotIndex}" />
+                                        <img *ngIf="!slot.asignedPlace?.imageUrl"
+                                            src="https://static.vecteezy.com/system/resources/thumbnails/004/141/669/small/no-photo-or-blank-image-icon-loading-images-or-missing-image-mark-image-not-available-or-image-coming-soon-sign-simple-nature-silhouette-in-frame-isolated-illustration-vector.jpg"
+                                            alt="Attraction Image" class="selected-attractions-image"
+                                            [ngClass]="{'selected': i === selectedSlotIndex}" />
+                                        <div class="selected-attractions-details">
+                                            <h3 class="selected-attractions-title">{{ slot.start }} - {{ slot.end }}
+                                                <span class="time-slot-type">{{
+                                                    slot.type
+                                                    }}</span>
+                                            </h3>
+                                            <p *ngIf="slot.asignedPlace">{{ slot.asignedPlace.name }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="box-inside-content" *ngIf="!selectedTripInfo">
+                        <h2 class="box-title">No daily plan aveilable</h2>
+                    </div>
+                </div>
+            </div>
+
+
+
         </div>
     </div>
 </div>
+
+
+<app-delete-dialog [showModal]="showModal" (cancel)="closeModal()" (confirm)="confirmModal()"></app-delete-dialog>

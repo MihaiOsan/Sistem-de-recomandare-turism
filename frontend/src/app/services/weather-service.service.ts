@@ -11,8 +11,8 @@ export class WeatherServiceService {
 
   constructor(private http: HttpClient) { }
 
-  getWeather(lat: number, lng: number): Observable<WeatherData[]> {
-    const url = this.apiUrl+`/location/api/weather?lat=${lat}&lng=${lng}`;
+  getWeather(lat: number, lng: number, start: string, end: string): Observable<WeatherData[]> {
+    const url = this.apiUrl+`/location/api/weather?lat=${lat}&lng=${lng}&start=${start}&end=${end}`;
     return this.http.get<WeatherData[]>(url);
   }
 }

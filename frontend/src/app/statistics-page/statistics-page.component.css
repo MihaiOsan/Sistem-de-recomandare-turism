@@ -99,3 +99,68 @@
 .responsive-chart {
     width: 100% !important;
 }
+
+
+
+.height50vh {
+    height: 425px; /* 50% of viewport height */
+    overflow: auto; /* If content is larger than 50vh, it'll become scrollable */
+  }
+  
+  
+  .selected-attractions-container {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    padding-left: 20px;
+    padding-right: 20px;
+    width: 100%;
+  }
+  
+
+  .content-selected-attractions {
+    height: 100%;
+    overflow-y: auto;
+    width: 100%;
+  }
+  
+  .selected-attractions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    border-bottom: 1px solid #ccc;
+    padding: 10px;
+  }
+  
+  .selected-attractions-info {
+    display: flex;
+    align-items: center;
+    flex-grow: 1;
+  }
+  
+  .selected-attractions-details {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .selected-attractions-title {
+    margin-bottom: 5px;
+  }
+  
+  .selected-attractions-delete {
+    background-color: transparent;
+    border: none;
+    font-weight: bold;
+    cursor: pointer;
+  }
+  
+  .selected-attractions-image {
+    width: 40px;
+    height: 40px;
+    border-radius: 5px;
+    object-fit: cover;
+    margin-right: 10px;
+  }
+
+ 

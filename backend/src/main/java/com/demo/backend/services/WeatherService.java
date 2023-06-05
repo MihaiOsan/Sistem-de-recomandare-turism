@@ -27,8 +27,8 @@ public class WeatherService {
 
     private RestTemplate restTemplate = new RestTemplate();
 
-    public List<WeatherData> getWeatherData(Double lat, Double lng) throws IOException, InterruptedException {
-        String url = "https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/" + lat + "%2C"+ lng +"/next30days?unitGroup=metric&include=days&key=9UEKDFHPWD6QX7953NR4JPGNA&contentType=json";
+    public List<WeatherData> getWeatherData(Double lat, Double lng, String start, String end) throws IOException, InterruptedException {
+        String url = "https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/" + lat + "%2C"+ lng +"/"+ start+"/"+end+"?unitGroup=metric&include=days&key=9UEKDFHPWD6QX7953NR4JPGNA&contentType=json";
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(url))
                 .method("GET", HttpRequest.BodyPublishers.noBody())

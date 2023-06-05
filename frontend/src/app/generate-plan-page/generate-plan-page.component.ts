@@ -1,15 +1,18 @@
-import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
 import { Attraction } from '../models/attraction';
 import { NewTripInfo } from '../models/new-trip-info';
 import { SchedulePlacesResponse } from '../models/schedule-places-response';
 import { GoogleMap } from '@angular/google-maps';
-import { timeInterval } from 'rxjs';
+import { finalize, timeInterval } from 'rxjs';
 import { TimeInterval } from '../models/time-interval';
-import { Location } from '@angular/common';
+import { DatePipe, Location } from '@angular/common';
 import { Router } from '@angular/router';
 import { end } from '@popperjs/core';
 import { WeatherData } from '../models/weather-data';
 import { WeatherServiceService } from '../services/weather-service.service';
+import { Place } from '../models/attractions-details';
+import { AttractionService } from '../services/attraction.service';
+import { GenerateTripPlanService } from '../services/generate-trip-plan.service';
 
 @Component({
   selector: 'app-generate-plan-page',
@@ -37,62 +40,75 @@ export class GeneratePlanPageComponent implements OnInit, OnChanges {
     fullscreenControl: true,
   };
 
-  allowDuplicates: any;
+  allowDuplicates: boolean = false;
 
   @Input() selectedAttractions: Attraction[] = [];
   @Input() newTripInfo!: NewTripInfo;
   @Input() schedulePlacesResponse!: SchedulePlacesResponse[][];
   @Output() toggleVisibility = new EventEmitter<void>();
   @Output() childCallback: EventEmitter<Function> = new EventEmitter();
+
   displayedDate: Date = new Date();
   displayedDateString: string = this.formatDate(this.displayedDate);
   currentDay: any = 1;
   displayWeather: boolean = false;
   weatherData: WeatherData[] = [];
 
- 
+  selectedPlace: Place = new Place();
 
-  constructor(private location: Location, private router: Router, private weatherService: WeatherServiceService) { }
+  selectedAttractionIndex: number = -1;
+  selectedSlotIndex: number = -1;
+
+
+  constructor(private location: Location, private router: Router, private weatherService: WeatherServiceService, private attractionService: AttractionService, private changeDetectorRef: ChangeDetectorRef, private generateTripService: GenerateTripPlanService, private datePipe: DatePipe) { }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['newTripInfo'] && changes['newTripInfo'].currentValue) {
       this.displayedDate = new Date(changes['newTripInfo'].currentValue.startDate);
       let endDate = new Date(this.newTripInfo.endDate);
       let startDate = new Date(this.newTripInfo.startDate);
-      this.weatherService.getWeather(this.newTripInfo.startLocation.lat , this.newTripInfo.startLocation.lng).subscribe(data => {
-        data.forEach(element => {
-          if (element.date) {
-            element.icon = element.icon?.replace(/\s+/g, '-').toLowerCase();
-            element.icon = element.icon?.split(',')[0];
-            if (element.icon?.includes('day')) {
-              element.icon = element.icon?.replace('day', 'day-');
-            }
-            if (element.icon?.includes('night')) {
-              element.icon = element.icon?.replace('night', 'night-');
-            }
-            if (element.icon?.includes('overcast')) {
-              element.icon = element.icon?.replace('overcast', 'cloudy');
-            }
-            console.log(element.icon);
-            let elementDate = new Date(element.date);
-            let start = new Date(startDate.getTime() - startDate.getTimezoneOffset() * 60000).toISOString().split('T')[0];
-            let end = new Date(endDate.getTime() - endDate.getTimezoneOffset() * 60000).toISOString().split('T')[0];
-            
-            if (elementDate >= new Date(start) && elementDate <= new Date(end)) {
-              this.weatherData.push(element);
-            }
-          }
-        });
-      }, error => {
-        // handle the error
-        console.error(error);
-      });
+      if (endDate != null && startDate != null) {
+        endDate.setDate(endDate.getDate() + 1);
+        let transformedStartDate = this.datePipe.transform(startDate, 'yyyy-MM-dd');
+        let transformedEndDate = this.datePipe.transform(endDate, 'yyyy-MM-dd');
+        if (transformedEndDate && transformedStartDate) {
+          this.weatherService.getWeather(this.newTripInfo.startLocation.lat, this.newTripInfo.startLocation.lng, transformedStartDate, transformedEndDate).subscribe(data => {
+            data.forEach(element => {
+              if (element.date) {
+                element.icon = element.icon?.replace(/\s+/g, '-').toLowerCase();
+                element.icon = element.icon?.split(',')[0];
+                if (element.icon?.includes('day')) {
+                  element.icon = element.icon?.replace('day', 'day-');
+                }
+                if (element.icon?.includes('night')) {
+                  element.icon = element.icon?.replace('night', 'night-');
+                }
+                if (element.icon?.includes('overcast')) {
+                  element.icon = element.icon?.replace('overcast', 'cloudy');
+                }
+                let elementDate = new Date(element.date);
+                let start = new Date(startDate.getTime() - startDate.getTimezoneOffset() * 60000).toISOString().split('T')[0];
+                let end = new Date(endDate.getTime() - endDate.getTimezoneOffset() * 60000).toISOString().split('T')[0];
+                end = new Date(new Date(end).getTime() + 86400000).toISOString().split('T')[0];
+
+
+                if (elementDate >= new Date(start) && elementDate < new Date(end)) {
+                  this.weatherData.push(element);
+                }
+              }
+            });
+          }, error => {
+            // handle the error
+            console.error(error);
+          });
+        }
+      }
     }
   }
 
   ngOnInit(): void {
     this.childCallback.emit(this.calculateAndDisplayRoute.bind(this));
-   
+
   }
 
   calculateAndDisplayRoute() {
@@ -124,7 +140,6 @@ export class GeneratePlanPageComponent implements OnInit, OnChanges {
     } else {
       destination = this.newTripInfo.startLocation as google.maps.LatLngLiteral;
     }
-    console.log("waypoints", waypoints);
 
     this.directionsService.route(
       {
@@ -180,12 +195,10 @@ export class GeneratePlanPageComponent implements OnInit, OnChanges {
       this.displayedDateString = this.formatDate(this.displayedDate);
       this.currentDay--;
       this.calculateAndDisplayRoute();
-      console.log(this.schedulePlacesResponse);
     }
   }
 
   nextDay() {
-    console.log(this.newTripInfo.tripTimeSlots);
     if (this.displayedDate < new Date(this.newTripInfo.endDate)) {
       this.displayedDate.setDate(this.displayedDate.getDate() + 1);
       this.currentDay++;
@@ -208,12 +221,59 @@ export class GeneratePlanPageComponent implements OnInit, OnChanges {
 
   onCancelPlan() {
     this.toggleVisibility.emit();
-    }
+  }
 
   onSavePlan() {
-    throw new Error('Method not implemented.');
+    this.generateTripService.savePlan(this.newTripInfo).subscribe((response: any) => {
+      console.log(response);
+    }, (error) => {
+      console.log(error);
+    });
+    this.router.navigate(['/home']);
+  }
+
+  tripSlotSelect() {
+    if (this.selectedAttractionIndex >= 0 && this.selectedSlotIndex >= 0) {
+      this.attractionService.getAttractionDetailsPlace(this.selectedAttractions[this.selectedAttractionIndex].placeId)
+        .pipe(
+          finalize(() => {
+            this.selectedAttractionIndex = -1;
+            this.selectedSlotIndex = -1;
+          })
+        )
+        .subscribe(
+          (data: Place) => {
+            console.log(data);
+            console.log(this.selectedSlotIndex);
+            data.imageUrl = this.selectedAttractions[this.selectedAttractionIndex].imageUrl;
+            //make sure that the place conatains a type that matches the slot type
+            //convert the type of the slot as follow> "eating break" -> "restaurant" or "cafe", "visiting time "
+            if (this.newTripInfo.tripTimeSlots[this.currentDay - 1][this.selectedSlotIndex].type == "Eating break" && (data.types.includes("RESTAURANT") || data.types.includes("CAFE")) ||
+              (this.newTripInfo.tripTimeSlots[this.currentDay - 1][this.selectedSlotIndex].type == "Visiting time" && (!data.types.includes("RESTAURANT") && !data.types.includes("CAFE") && !data.types.includes("SHOPPING_MALL")) ||
+                (this.newTripInfo.tripTimeSlots[this.currentDay - 1][this.selectedSlotIndex].type == "Shopping spree" && data.types.includes("SHOPPING_MALL")))) {
+              this.newTripInfo.tripTimeSlots[this.currentDay - 1][this.selectedSlotIndex].asignedPlace = data;
+              this.calculateAndDisplayRoute();
+            }
+            this.changeDetectorRef.detectChanges();
+          }
+        );
     }
+  }
 
+  onAttractionClick(i: number) {
+    this.selectedAttractionIndex = this.selectedAttractionIndex === i ? -1 : i;
+    console.log(this.selectedAttractionIndex);
+    this.tripSlotSelect();
+  }
 
+  onSlotClick(i: number) {
+    this.selectedSlotIndex = this.selectedSlotIndex === i ? -1 : i;
+    console.log(this.selectedSlotIndex);
+    this.tripSlotSelect();
+  }
+
+  removeTripSlot(i: number) {
+    this.newTripInfo.tripTimeSlots[this.currentDay - 1][i].asignedPlace = undefined;
+  }
 
 }

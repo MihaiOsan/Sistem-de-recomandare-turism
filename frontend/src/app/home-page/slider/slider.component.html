@@ -1,33 +1,33 @@
 <swiper
       [slidesPerView]="1"
-      [spaceBetween]="50"
+      [spaceBetween]="40"
       [navigation]="true"
       [scrollbar]="{ draggable: true }">
-      <ng-template swiperSlide>
+      <ng-template swiperSlide *ngIf="topAttractions.length>0">
         <div class="card-container"> 
-        <app-card></app-card>
-        <app-card></app-card>
-        <app-card></app-card>
+        <app-card *ngIf="topAttractions.length>0" [attraction]="topAttractions[0]"></app-card>
+        <app-card *ngIf="topAttractions.length>1" [attraction]="topAttractions[1]"></app-card>
+        <app-card *ngIf="topAttractions.length>2" [attraction]="topAttractions[2]"></app-card>
         </div>
       </ng-template>
-      <ng-template swiperSlide>
+      <ng-template swiperSlide *ngIf="topAttractions.length>3">
         <div class="card-container"> 
-            <app-card></app-card>
-            <app-card></app-card>
-            <app-card></app-card>
+            <app-card *ngIf="topAttractions.length>3" [attraction]="topAttractions[3]"></app-card>
+            <app-card *ngIf="topAttractions.length>4" [attraction]="topAttractions[4]"></app-card>
+            <app-card *ngIf="topAttractions.length>5" [attraction]="topAttractions[5]"></app-card>
             </div>
       </ng-template>
-      <ng-template swiperSlide>
-        <div class="card-container"> 
-            <app-card></app-card>
-            <app-card></app-card>
-            <app-card></app-card>
+      <ng-template swiperSlide *ngIf="topAttractions.length>6">
+        <div class="card-container" > 
+            <app-card *ngIf="topAttractions.length>6" [attraction]="topAttractions[6]"></app-card>
+            <app-card *ngIf="topAttractions.length>7" [attraction]="topAttractions[7]"></app-card>
+            <app-card *ngIf="topAttractions.length>8" [attraction]="topAttractions[8]"></app-card>
             </div>
       </ng-template>
-      <ng-template swiperSlide><div class="card-container"> 
-        <app-card></app-card>
-        <app-card></app-card>
-        <app-card></app-card>
+      <ng-template swiperSlid *ngIf="topAttractions.length>9"><div class="card-container"> 
+        <app-card *ngIf="topAttractions.length>9" [attraction]="topAttractions[9]"></app-card>
+        <app-card *ngIf="topAttractions.length>10" [attraction]="topAttractions[10]"></app-card>
+        <app-card *ngIf="topAttractions.length>11" [attraction]="topAttractions[11]"></app-card>
         </div>
       </ng-template>
 </swiper>

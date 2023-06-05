@@ -8,6 +8,7 @@ import java.util.List;
 
 @Data
 public class NewTripInfo {
+    private Long planID;
     private String tripName;
     private Date startDate;
     private Date endDate;
