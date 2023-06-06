@@ -82,8 +82,8 @@ export class StatisticsPageComponent implements OnInit {
       this.allTripInfo.forEach(element => {
         this.nrPlans++;
         if (element.endDate) {
-            let gotVisitetdCity = false;
-            let gotVisitetdCountry = false;
+          let gotVisitetdCity = false;
+          let gotVisitetdCountry = false;
           for (let i = 0; i < element.tripTimeSlots.length; i++) {
             for (let j = 0; j < element.tripTimeSlots[i].length; j++) {
               if (element.tripTimeSlots[i][j].asignedPlace) {
@@ -92,32 +92,30 @@ export class StatisticsPageComponent implements OnInit {
                 if (!gotVisitetdCity) {
                   // for all element.tripTimeSlots[i][j].asignedPlace!.address_components.length
                   for (let k = 0; k < element.tripTimeSlots[i][j].asignedPlace!.addressComponents.length; k++) {
-                    if (element.tripTimeSlots[i][j].asignedPlace!.addressComponents[k].types.includes("LOCALITY")) {
+                    if ((element.tripTimeSlots[i][j].asignedPlace!.addressComponents[k].types.includes("LOCALITY") || element.tripTimeSlots[i][j].asignedPlace!.addressComponents[k].types.includes("POSTAL_TOWN")) && !gotVisitetdCity) {
                       this.city.push({ destination: element.tripTimeSlots[i][j].asignedPlace!.addressComponents[k].longName });
                       this.nrCity++;
                       gotVisitetdCity = true;
                     }
-                    if (element.tripTimeSlots[i][j].asignedPlace!.addressComponents[k].types.includes("COUNTRY")) {
+                    if (element.tripTimeSlots[i][j].asignedPlace!.addressComponents[k].types.includes("COUNTRY") && !gotVisitetdCountry) {
                       this.nrCountry++;
                       this.country.push({ destination: element.tripTimeSlots[i][j].asignedPlace!.addressComponents[k].longName });
                       gotVisitetdCountry = true;
                     }
+                  }
+                }
+                if (element.tripTimeSlots[i][j].asignedPlace!.types) {
+                  for (let l = 0; l < element.tripTimeSlots[i][j].asignedPlace!.types.length; l++) {
+                    if (this.accepedTypes.includes(element.tripTimeSlots[i][j].asignedPlace!.types[l].toLowerCase())) {
+                      this.attractionType.push({ destination: element.tripTimeSlots[i][j].asignedPlace!.types[l] });
+                      break;
+                    }
+                  }
 
-                    if (element.tripTimeSlots[i][j].asignedPlace!.types) {
-                      for (let l = 0; l < element.tripTimeSlots[i][j].asignedPlace!.types.length; l++) {
-                        console.log(element.tripTimeSlots[i][j].asignedPlace!.types[l]);
-                        if (this.accepedTypes.includes(element.tripTimeSlots[i][j].asignedPlace!.types[l].toLowerCase())) {
-                          this.attractionType.push({ destination: element.tripTimeSlots[i][j].asignedPlace!.types[l] });
-                          break;
-                        }
-                      }
-
-                      for (let l = 0; l < this.accepedTypes.length; l++) {
-                        if (element.tripTimeSlots[i][j].asignedPlace!.types.includes(this.accepedTypes[l].toUpperCase())) {
-                          this.attractionType.push({ destination: this.accepedTypes[l].toUpperCase() });
-                          break;
-                        }
-                      }
+                  for (let l = 0; l < this.accepedTypes.length; l++) {
+                    if (element.tripTimeSlots[i][j].asignedPlace!.types.includes(this.accepedTypes[l].toUpperCase())) {
+                      this.attractionType.push({ destination: this.accepedTypes[l].toUpperCase() });
+                      break;
                     }
                   }
                 }
@@ -126,14 +124,14 @@ export class StatisticsPageComponent implements OnInit {
                 const maxWidth = 400;
                 if (element.tripTimeSlots[i][j].asignedPlace && element.tripTimeSlots[i][j].asignedPlace?.photos && element.tripTimeSlots[i][j].asignedPlace?.photos[0]) {
                   element.tripTimeSlots[i][j].asignedPlace!.imageUrl = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=${maxWidth}&photoreference=${element.tripTimeSlots[i][j].asignedPlace!.photos[0].photoReference}&key=${apiKey}`;
-              }
+                }
               }
             }
           }
         }
       });
 
-    this.prepareChartData(this.country, 'Country Visited');
+      this.prepareChartData(this.country, 'Country Visited');
     });
 
   }
