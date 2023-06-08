@@ -19,7 +19,4 @@ public class AppController {
     public String viewHomePage() {
         return "index";
     }
-
-
-
 }
