@@ -11,7 +11,7 @@ import { AuthenticationService } from '../authentication.service';
 })
 export class AttractionService {
   private apiUrl = 'http://localhost:8080/location/api/tourist-attractions-in-radius';
-  private apiUrlRecommend = 'http://localhost:8080/location/api/recommended-tourist-attractions-in-radius';
+  private apiUrlRecommend = 'http://localhost:8080/recommendation/api/recommended-tourist-attractions-in-radius';
 
   constructor(private http: HttpClient,private authentificationService: AuthenticationService) { }
 

@@ -69,12 +69,7 @@ public class ContentBasedRecommedationService {
         List<PlacesSearchResult> recommendedPlaces = new ArrayList<>(placeSimilarity.keySet());
         recommendedPlaces.sort((a, b) -> Double.compare(placeSimilarity.get(b), placeSimilarity.get(a)));
 
-        for(PlacesSearchResult location : recommendedPlaces){
-            System.out.println(location.name +" " +placeSimilarity.get(location));
-        }
-
         newPlaces.setPlaces(recommendedPlaces.toArray(new PlacesSearchResult[0]));
-        System.out.println(newPlaces.getPlaces().length);
         return newPlaces;
     }
 

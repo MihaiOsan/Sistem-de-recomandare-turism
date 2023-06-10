@@ -40,7 +40,6 @@ public class TripService {
         List<PlaceDetails> remainingPlaces = new ArrayList<>(places);  // create a copy of places list
 
         for (int i = 0; i < tripInfo.getTripTimeSlots().size(); i++) {
-            System.out.println("day" + i);
             List<PlaceAssignment> timeSlot = new ArrayList<>();
             LocalDate currentDate = startDate.plusDays(i);
             LatLng currentLatLng = tripInfo.getStartLocation();
@@ -48,13 +47,10 @@ public class TripService {
 
             for (TimeInterval interval : tripInfo.getTripTimeSlots().get(i)) {
                 LatLng nextLatLng = findNextLatLng(currentLatLng, dijkstraAlg, placesCopy, interval, currentDate);
-                System.out.println(interval.getType());
                 if (nextLatLng == null) {
                     continue;
                 }
-                System.out.println("00");
                 PlaceDetails nextPlace = placeDetailsMap.get(nextLatLng);
-                System.out.println(nextPlace.name);
                 timeSlot.add(new PlaceAssignment(nextPlace, interval, currentDate));
                 currentLatLng = nextLatLng;
                 remainingPlaces.remove(nextPlace);  // remove visited place from remainingPlaces
@@ -71,11 +67,9 @@ public class TripService {
         SimpleWeightedGraph<LatLng, DefaultWeightedEdge> graph =
                 new SimpleWeightedGraph<>(DefaultWeightedEdge.class);
         graph.addVertex(startLocation); // Add start location to graph
-        System.out.println("Added vertex: " + startLocation);
         for (int i = 0; i < places.size(); i++) {
             PlaceDetails place = places.get(i);
             graph.addVertex(place.geometry.location);
-            System.out.println("Added vertex: " + place.geometry.location);
             double distance = calculateDistance(
                     startLocation,
                     place.geometry.location
@@ -189,7 +183,6 @@ public class TripService {
                 // Do something if the place is a park
                 System.out.println("The place is a park");
             }
-
             return true;
         }
 

@@ -20,7 +20,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/trip")
 @CrossOrigin(origins = "*", allowedHeaders = "*")
-public class TripController {
+public class PlanController {
     @Autowired
     TripService tripService;
 
