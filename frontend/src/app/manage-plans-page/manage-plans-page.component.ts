@@ -74,7 +74,9 @@ throw new Error('Method not implemented.');
     fullscreenControl: true,
   };
 
+  isLoading: boolean = false;
   ngOnInit(): void {
+    this.isLoading = true;
     this.generateTripService.getSavedPlans().subscribe(data => {
       this.allTripInfo = data;
       this.allTripInfo.forEach(element => {
@@ -107,6 +109,7 @@ throw new Error('Method not implemented.');
 
       this.changeDetectorRef.detectChanges();
       this.calculateAndDisplayRoute();
+      this.isLoading = false;
     });
   }
 

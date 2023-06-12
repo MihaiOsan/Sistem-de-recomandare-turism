@@ -410,3 +410,20 @@ input:checked + .slider:before {
     border-top-color: #ccc;
   }
 
+  .spinner-and-cards-wrapper {
+    position: relative;
+    width: 100%;
+    height: 425px;
+  }
+  
+  .spinner-container {
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10; 
+    margin-top: 100px;
+  }

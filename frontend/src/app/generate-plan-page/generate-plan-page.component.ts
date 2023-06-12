@@ -189,17 +189,28 @@ export class GeneratePlanPageComponent implements OnInit, OnChanges {
     return bounds ? bounds : null;
   }
 
+  resetTime(date: Date) {
+    return new Date(date.getFullYear(), date.getMonth(), date.getDate());
+  }
+  
+
   prevDay() {
-    if (this.displayedDate > new Date(this.newTripInfo.startDate)) {
+    let startDate = this.resetTime(new Date(this.newTripInfo.startDate));
+    let displayedDate = this.resetTime(this.displayedDate);
+  
+    if (displayedDate > startDate) {
       this.displayedDate.setDate(this.displayedDate.getDate() - 1);
       this.displayedDateString = this.formatDate(this.displayedDate);
       this.currentDay--;
       this.calculateAndDisplayRoute();
     }
   }
-
+  
   nextDay() {
-    if (this.displayedDate < new Date(this.newTripInfo.endDate)) {
+    let endDate = this.resetTime(new Date(this.newTripInfo.endDate));
+    let displayedDate = this.resetTime(this.displayedDate);
+  
+    if (displayedDate < endDate) {
       this.displayedDate.setDate(this.displayedDate.getDate() + 1);
       this.currentDay++;
       this.displayedDateString = this.formatDate(this.displayedDate);
@@ -209,6 +220,7 @@ export class GeneratePlanPageComponent implements OnInit, OnChanges {
       this.calculateAndDisplayRoute();
     }
   }
+  
 
   formatDate(date: Date): string {
     let day = date.getDate();

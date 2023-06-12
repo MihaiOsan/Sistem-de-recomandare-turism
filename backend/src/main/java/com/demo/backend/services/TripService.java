@@ -3,6 +3,7 @@ package com.demo.backend.services;
 import com.demo.backend.models.DTO.NewTripInfo;
 import com.demo.backend.models.DTO.PlaceAssignment;
 import com.demo.backend.models.DTO.TimeInterval;
+import com.demo.backend.models.DTO.WeatherData;
 import com.google.maps.model.AddressType;
 import com.google.maps.model.LatLng;
 import com.google.maps.model.PlaceDetails;
@@ -10,10 +11,11 @@ import org.jgrapht.Graph;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.SimpleWeightedGraph;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
-import org.jgrapht.alg.interfaces.ShortestPathAlgorithm.SingleSourcePaths;
 import org.jgrapht.GraphPath;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.ZoneId;
@@ -23,7 +25,10 @@ import java.util.*;
 @Service
 public class TripService {
 
-    public List<List<PlaceAssignment>> schedulePlaces(NewTripInfo tripInfo, List<PlaceDetails> places) {
+    @Autowired
+    WeatherService weatherService;
+
+    public List<List<PlaceAssignment>> schedulePlaces(NewTripInfo tripInfo, List<PlaceDetails> places) throws IOException, InterruptedException {
         List<List<PlaceAssignment>> timeSlots = new ArrayList<>();
         Map<LatLng, PlaceDetails> placeDetailsMap = new HashMap<>();
         for (PlaceDetails place : places) {
@@ -91,7 +96,7 @@ public class TripService {
         return graph;
     }
 
-    private LatLng findNextLatLng(LatLng currentLatLng, DijkstraShortestPath<LatLng, DefaultWeightedEdge> dijkstraAlg, List<PlaceDetails> places, TimeInterval interval, LocalDate currentDate) {
+    private LatLng findNextLatLng(LatLng currentLatLng, DijkstraShortestPath<LatLng, DefaultWeightedEdge> dijkstraAlg, List<PlaceDetails> places, TimeInterval interval, LocalDate currentDate) throws IOException, InterruptedException {
         double shortestDistance = Double.MAX_VALUE;
         LatLng nextLatLng = null;
         for (PlaceDetails place : places) {
@@ -127,7 +132,7 @@ public class TripService {
         return nextLatLng;
     }
 
-    public boolean isTimeSlotSuitable(PlaceDetails place, TimeInterval timeSlot, LocalDate currentDate) {
+    public boolean isTimeSlotSuitable(PlaceDetails place, TimeInterval timeSlot, LocalDate currentDate) throws IOException, InterruptedException {
         String currentDayOfWeek = currentDate.getDayOfWeek().toString().toLowerCase();
         String currentDayOpeningHours="";
 
@@ -180,16 +185,18 @@ public class TripService {
                 (slotEnd.isBefore(placeEnd) || slotEnd.equals(placeEnd))) {
 
             if (Arrays.asList(place.types).contains(AddressType.PARK)) {
-                // Do something if the place is a park
                 System.out.println("The place is a park");
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+                String formattedDate = currentDate.format(formatter);
+                WeatherData weatherData = (weatherService.getWeatherData(place.geometry.location.lat,place.geometry.location.lng,formattedDate,formattedDate)).get(0);
+                if (weatherData.getPrecProb()>60 && weatherData.getPrecipType().equals("rain"))
+                    return false;
             }
             return true;
         }
 
         return false;
     }
-
-
 
     public static double calculateDistance(LatLng point1, LatLng point2) {
         System.out.println("6");

@@ -4,30 +4,30 @@
 
             <div class="column column-left">
                 <div class="box">
-                    <div class="box-content" style="height: 100%">
-                        <div>
-                            <h2>Locations in your plans</h2>
-                            <div class="height50vh">
-                                <div class="selected-attractions-container"
-                                    *ngFor="let slot of allTimeIntervals; let i = index">
-                                    <div class="selected-attractions">
-                                        <div class="selected-attractions-info">
-                                            <img *ngIf="slot.asignedPlace?.imageUrl" [src]="slot.asignedPlace?.imageUrl"
-                                                alt="Attraction Image" class="selected-attractions-image"
-                                                 />
-                                            <img *ngIf="!slot.asignedPlace?.imageUrl"
-                                                src="https://static.vecteezy.com/system/resources/thumbnails/004/141/669/small/no-photo-or-blank-image-icon-loading-images-or-missing-image-mark-image-not-available-or-image-coming-soon-sign-simple-nature-silhouette-in-frame-isolated-illustration-vector.jpg"
-                                                alt="Attraction Image" class="selected-attractions-image"
-                                                 />
-                                            <div class="selected-attractions-details">
-                                                <h3 class="selected-attractions-title">{{slot.asignedPlace?.name }}
-                                                    
-                                                </h3>
-                                            </div>
+                    <div class="box-content" style="height: 100%;">
+                        <h2>Locations in your plans</h2>
+                        <div class="height50vh" *ngIf="!isLoading">
+                            <div class="selected-attractions-container"
+                                *ngFor="let slot of allTimeIntervals; let i = index">
+                                <div class="selected-attractions">
+                                    <div class="selected-attractions-info">
+                                        <img *ngIf="slot.asignedPlace?.imageUrl" [src]="slot.asignedPlace?.imageUrl"
+                                            alt="Attraction Image" class="selected-attractions-image" />
+                                        <img *ngIf="!slot.asignedPlace?.imageUrl"
+                                            src="https://static.vecteezy.com/system/resources/thumbnails/004/141/669/small/no-photo-or-blank-image-icon-loading-images-or-missing-image-mark-image-not-available-or-image-coming-soon-sign-simple-nature-silhouette-in-frame-isolated-illustration-vector.jpg"
+                                            alt="Attraction Image" class="selected-attractions-image" />
+                                        <div class="selected-attractions-details">
+                                            <h3 class="selected-attractions-title">{{slot.asignedPlace?.name }}
+
+                                            </h3>
                                         </div>
                                     </div>
                                 </div>
-    
+                            </div>
+                        </div>
+                        <div class="spinner-and-cards-wrapper" *ngIf="isLoading">
+                            <div class="spinner-container">
+                                <app-spinner></app-spinner>
                             </div>
                         </div>
                     </div>

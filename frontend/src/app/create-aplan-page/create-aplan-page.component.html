@@ -158,10 +158,19 @@
                     <!-- End Filter Bar -->
 
 
-                    <div class="cards">
-                        <app-creat-aplan-card *ngFor="let attraction of pageAttractions" [attraction]="attraction"
-                            [isSelected]="isAttractionSelected(attraction)"
-                            (selectItemEvent)="onSelectItem($event)"></app-creat-aplan-card>
+
+
+
+                    <div class="spinner-and-cards-wrapper">
+                        <div class="cards">
+                            <app-creat-aplan-card *ngFor="let attraction of pageAttractions" [attraction]="attraction"
+                                [isSelected]="isAttractionSelected(attraction)"
+                                (selectItemEvent)="onSelectItem($event)"></app-creat-aplan-card>
+
+                            <div class="spinner-container" *ngIf="isLoading">
+                                <app-spinner></app-spinner>
+                            </div>
+                        </div>
                     </div>
                     <div class="navigation"><button class="nav-btn" (click)="prevPage()">
                             <i class="arrow left"></i>
@@ -198,15 +207,24 @@
                 </div>
             </div>
             <div class="align-right">
-                <button class="remove-filters remove-filters-btn" [ngClass]="{'disabled': (dailyProgramEnable&&newTripInfo.startLocation==null)}" [disabled]="(dailyProgramEnable&&newTripInfo.startLocation==null)" (click)="onClearSelection()">Clear Selection</button>
-                <button class="remove-filters remove-filters-btn" [ngClass]="{'disabled': (dailyProgramEnable||newTripInfo.startLocation==null)}" [disabled]="dailyProgramEnable ||newTripInfo.startLocation==null" (click)="onManualPlanCreation()">Manual Plan Creation</button>
-                <button class="apply-filters apply-filters-btn" (click)="onGenerateTrip()" 
-                        [ngClass]="{'disabled': (dailyProgramEnable||newTripInfo.startLocation==null)}" [disabled]="dailyProgramEnable||newTripInfo.startLocation==null" >
-                        Automated Plan Generation
+                <button class="remove-filters remove-filters-btn"
+                    [ngClass]="{'disabled': (dailyProgramEnable&&newTripInfo.startLocation==null)}"
+                    [disabled]="(dailyProgramEnable&&newTripInfo.startLocation==null)"
+                    (click)="onClearSelection()">Clear Selection</button>
+                <button class="remove-filters remove-filters-btn"
+                    [ngClass]="{'disabled': (dailyProgramEnable||newTripInfo.startLocation==null)}"
+                    [disabled]="dailyProgramEnable ||newTripInfo.startLocation==null"
+                    (click)="onManualPlanCreation()">Manual Plan Creation</button>
+                <button class="apply-filters apply-filters-btn" (click)="onGenerateTrip()"
+                    [ngClass]="{'disabled': (dailyProgramEnable||newTripInfo.startLocation==null)}"
+                    [disabled]="dailyProgramEnable||newTripInfo.startLocation==null">
+                    Automated Plan Generation
                 </button>
             </div>
         </div>
     </div>
     <app-generate-plan-page *ngIf="generatePlanVisible" [selectedAttractions]="selectedAttractions"
-        [newTripInfo]="newTripInfo" [schedulePlacesResponse]="schedulePlaceResponse" (toggleVisibility)="toggleGeneratePlan()" (childCallback)="receivedChildFunction = $event"></app-generate-plan-page>
+        [newTripInfo]="newTripInfo" [schedulePlacesResponse]="schedulePlaceResponse"
+        (toggleVisibility)="toggleGeneratePlan()"
+        (childCallback)="receivedChildFunction = $event"></app-generate-plan-page>
 </div>

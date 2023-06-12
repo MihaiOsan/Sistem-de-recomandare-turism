@@ -139,6 +139,23 @@
   padding: 20px;
 }
 
+.spinner-and-cards-wrapper {
+  position: relative;
+}
+
+.spinner-container {
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10; 
+  margin-top: 10vh;
+  margin-bottom: 10vh;
+}
+
 .box-map{
   display: flex;
   justify-content: center;
@@ -166,6 +183,11 @@
   overflow: hidden;
 }
 
+.spinner-container {
+  position: relative;
+  width: 100%;  /* or adjust according to your needs */
+  height: 100%; /* or adjust according to your needs */
+}
 
 .cards {
   display: grid;

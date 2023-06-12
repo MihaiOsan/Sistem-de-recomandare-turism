@@ -604,3 +604,20 @@ label{
     justify-content: flex-end;
     margin-top: 15px;
 }
+
+.spinner-and-cards-wrapper {
+    position: relative;
+  }
+  
+  .spinner-container {
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10; 
+    margin-top: 10vh;
+    margin-bottom: 10vh;
+  }

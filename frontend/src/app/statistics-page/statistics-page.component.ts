@@ -75,7 +75,12 @@ export class StatisticsPageComponent implements OnInit {
 
   chartConfig: any;
 
+  isLoading: boolean = true;
+
   ngOnInit(): void {
+    this.isLoading = true;
+    // pause for 10 seconds while loading the data
+
     this.prepareChartData(this.country, 'Country Visited');
     this.generateTripService.getSavedPlansPast().subscribe(data => {
       this.allTripInfo = data;
@@ -132,6 +137,7 @@ export class StatisticsPageComponent implements OnInit {
       });
 
       this.prepareChartData(this.country, 'Country Visited');
+      this.isLoading = false;
     });
 
   }

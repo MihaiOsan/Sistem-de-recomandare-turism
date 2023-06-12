@@ -144,7 +144,10 @@ export class CreateAPlanPageComponent implements OnInit {
     this.changeDetectorRef.detectChanges();
   }
 
+  isLoading: boolean = false;
+
   fetchAttractions2(): void {
+    this.isLoading = true;
     this.attractionService.getAttractions(this.circleCenter.lat, this.circleCenter.lng, this.radius, this.nextPageToken, this.filterType, this.filterSort).subscribe(
       (data: AttractionsResponse) => {
         this.attractions.push(data.places);
@@ -158,9 +161,11 @@ export class CreateAPlanPageComponent implements OnInit {
         }
         this.pageAttractions = this.attractions[this.currentPage - 1];
         this.changeDetectorRef.detectChanges();
+        this.isLoading = false;
       },
       (error) => {
         console.error('Error fetching attractions:', error);
+        this.isLoading = false;
       }
     );
   }
@@ -394,7 +399,6 @@ export class CreateAPlanPageComponent implements OnInit {
       tripInfo: this.newTripInfo,
       places: listPlanceId,
     };
-    console.log(request);
     this.tripService.schedulePlaces(request).subscribe(response => {
       this.schedulePlaceResponse = response;
       for (let i = 0; i < this.schedulePlaceResponse.length; i++) {

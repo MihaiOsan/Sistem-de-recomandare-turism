@@ -23,7 +23,7 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="height50vh">
+                        <div class="height50vh" *ngIf="!isLoading">
                             <div class="content-selected-attractions" *ngIf="displayedTrips.length!=0">
                                 <div class="selected-attractions-container"
                                     *ngFor="let plan of displayedTrips; let i = index" (click)="onTripInfoClick(i)">
@@ -50,6 +50,11 @@
                                         </div>
                                     </div>
                                 </div>
+                            </div>
+                        </div>
+                        <div class="spinner-and-cards-wrapper" *ngIf="isLoading">
+                            <div class="spinner-container">
+                                <app-spinner></app-spinner>
                             </div>
                         </div>
                     </div>
@@ -81,7 +86,7 @@
                                 <i class="arrow right"></i>
                             </button>
                         </div>
-                        <div class="height50vh">
+                        <div class="height50vh" *ngIf="!isLoading">
                             <div class="selected-attractions-container"
                                 *ngFor="let slot of selectedTripInfo.tripTimeSlots[currentDay-1]; let i = index">
                                 <div class="selected-attractions">
@@ -104,11 +109,21 @@
                                     </div>
                                 </div>
                             </div>
-
+                        </div>
+                        <div class="spinner-and-cards-wrapper" *ngIf="isLoading">
+                            <div class="spinner-container">
+                                <app-spinner></app-spinner>
+                            </div>
                         </div>
                     </div>
                     <div class="box-inside-content" *ngIf="!selectedTripInfo">
                         <h2 class="box-title">No daily plan aveilable</h2>
+
+                        <div class="spinner-and-cards-wrapper" *ngIf="isLoading">
+                            <div class="spinner-container">
+                                <app-spinner></app-spinner>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

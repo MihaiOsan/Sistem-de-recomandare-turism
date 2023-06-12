@@ -46,6 +46,7 @@ import { GeneratePlanPageComponent } from './generate-plan-page/generate-plan-pa
 import { DatePipe } from '@angular/common';
 import { DeleteDialogComponent } from './delete-dialog/delete-dialog.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { SpinnerComponent } from './spinner/spinner.component';
 
 FusionChartsModule.fcRoot(FusionCharts, Charts, FusionTheme);
 
@@ -72,6 +73,7 @@ FusionChartsModule.fcRoot(FusionCharts, Charts, FusionTheme);
     CreatAPlanCardComponent,
     GeneratePlanPageComponent,
     DeleteDialogComponent,
+    SpinnerComponent,
   ],
   imports: [
     BrowserModule,

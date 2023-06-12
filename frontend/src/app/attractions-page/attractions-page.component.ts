@@ -125,6 +125,7 @@ export class AttractionsPageComponent implements OnInit {
     this.currentPage--;
     this.pageAttractions = this.attractions[this.currentPage - 1];
     this.changeDetectorRef.detectChanges();
+    this.goToTop();
   }
 
   nextPage() {
@@ -242,7 +243,9 @@ export class AttractionsPageComponent implements OnInit {
     this.changeDetectorRef.detectChanges();
   }
 
+  isLoading: boolean = false;
   fetchAttractions(): void {
+    this.isLoading = true;
     this.attractionService.getAttractions(this.circleCenter.lat, this.circleCenter.lng, this.radius, this.nextPageToken, this.filterType, this.filterSort).subscribe(
       (data: AttractionsResponse) => {
         this.attractions.push(data.places);
@@ -256,9 +259,11 @@ export class AttractionsPageComponent implements OnInit {
         }
         this.pageAttractions = this.attractions[this.currentPage - 1];
         this.changeDetectorRef.detectChanges();
+        this.isLoading = false;
       },
       (error) => {
         console.error('Error fetching attractions:', error);
+        this.isLoading = false;
       }
     );
   }
