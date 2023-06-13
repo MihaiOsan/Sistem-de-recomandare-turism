@@ -6,7 +6,7 @@ spring:
     jpa:
         database-platform: org.hibernate.dialect.PostgreSQLDialect
         hibernate:
-            ddl-auto: create
+            ddl-auto: update
         properties:
             hibernate:
                 format_sql: true
@@ -45,7 +45,7 @@ spring:
 google:
     maps:
         api:
-            key: AIzaSyAILm8lpjdZbGCyZOgmKAW0z0sARKzKM9g&libraries=places
+            key: AIzaSyAILm8lpjdZbGCyZOgmKAW0z0sARKzKM9g
 openweather:
     api:
         key: 110462fcfdd6f8aed8bf4a424ff122f8

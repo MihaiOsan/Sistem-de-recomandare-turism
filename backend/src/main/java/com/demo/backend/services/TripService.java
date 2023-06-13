@@ -4,15 +4,17 @@ import com.demo.backend.models.DTO.NewTripInfo;
 import com.demo.backend.models.DTO.PlaceAssignment;
 import com.demo.backend.models.DTO.TimeInterval;
 import com.demo.backend.models.DTO.WeatherData;
-import com.google.maps.model.AddressType;
-import com.google.maps.model.LatLng;
-import com.google.maps.model.PlaceDetails;
+import com.google.maps.DirectionsApi;
+import com.google.maps.DirectionsApiRequest;
+import com.google.maps.GeoApiContext;
+import com.google.maps.model.*;
 import org.jgrapht.Graph;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.SimpleWeightedGraph;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.GraphPath;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -24,6 +26,9 @@ import java.util.*;
 
 @Service
 public class TripService {
+
+    @Value("${google.maps.api.key}")
+    private String googleMapsApiKey;
 
     @Autowired
     WeatherService weatherService;
@@ -75,7 +80,7 @@ public class TripService {
         for (int i = 0; i < places.size(); i++) {
             PlaceDetails place = places.get(i);
             graph.addVertex(place.geometry.location);
-            double distance = calculateDistance(
+            double distance = getDrivingDistance(
                     startLocation,
                     place.geometry.location
             );
@@ -84,7 +89,7 @@ public class TripService {
             for (int j = i + 1; j < places.size(); j++) {
                 PlaceDetails otherPlace = places.get(j);
                 if (graph.containsVertex(otherPlace.geometry.location)) {
-                    distance = calculateDistance(
+                    distance = getDrivingDistance(
                             place.geometry.location,
                             otherPlace.geometry.location
                     );
@@ -198,7 +203,34 @@ public class TripService {
         return false;
     }
 
-    public static double calculateDistance(LatLng point1, LatLng point2) {
+    public double getDrivingDistance(LatLng origin, LatLng destination) {
+        GeoApiContext context = new GeoApiContext.Builder()
+                .apiKey(googleMapsApiKey)
+                .build();
+
+        DirectionsApiRequest apiRequest = DirectionsApi.newRequest(context);
+        apiRequest.origin(new com.google.maps.model.LatLng(origin.lat, origin.lng));
+        apiRequest.destination(new com.google.maps.model.LatLng(destination.lat, destination.lng));
+        apiRequest.mode(TravelMode.DRIVING);
+        double distanceInMeters=9999999;
+
+        try {
+            DirectionsResult result = apiRequest.await();
+
+            if (result.routes != null && result.routes.length > 0) {
+                DirectionsRoute route = result.routes[0];
+                distanceInMeters = route.legs[0].distance.inMeters;
+            } else {
+                distanceInMeters = calculateDistance(origin, destination);
+            }
+        } catch (Exception e) {
+            System.out.println("Error with Google Maps API request: " + e.getMessage());
+            distanceInMeters = calculateDistance(origin, destination);
+        }
+        return distanceInMeters;
+    }
+
+    public double calculateDistance(LatLng point1, LatLng point2) {
         System.out.println("6");
         final int EARTH_RADIUS = 6371;
         double dLat = Math.toRadians((point2.lat - point1.lat));

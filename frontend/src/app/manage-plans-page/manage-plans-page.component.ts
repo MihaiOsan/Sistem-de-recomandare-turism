@@ -75,6 +75,7 @@ throw new Error('Method not implemented.');
   };
 
   isLoading: boolean = false;
+
   ngOnInit(): void {
     this.isLoading = true;
     this.generateTripService.getSavedPlans().subscribe(data => {
@@ -103,7 +104,8 @@ throw new Error('Method not implemented.');
       this.displayedTrips = this.upcomingTrips;
       if (this.allTripInfo.length > 0) {
         this.selectedTripInfo = this.allTripInfo[0];
-        console.log(this.selectedTripInfo);
+        this.displayedDate = new Date(this.selectedTripInfo.startDate);
+        this.displayedDateString = this.formatDate(this.displayedDate);
         this.getWeather();
       }
 

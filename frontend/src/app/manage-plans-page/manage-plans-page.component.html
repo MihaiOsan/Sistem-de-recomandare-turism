@@ -13,8 +13,8 @@
             <div class="column column-left" style="padding-right: 10px;">
                 <div class="box">
                     <div class="box-inside-content">
-                        <h2 class="box-title">Selected a plan</h2>
-                        <div class="filter-item">
+                        <h2 class="box-title">Select a plan</h2>
+                        <div class="filter-item" *ngIf="!isLoading">
                             <div class="select">
                                 <select class="range-input" (change)="onDeisplayTripInfo($event)">
                                     <option value="all">All</option>
