@@ -46,8 +46,9 @@ public class PlanController {
     }
 
     @PostMapping("/update-plan")
-    public Plan updatePlan(@RequestParam Long PlanID, @RequestBody NewTripInfo newTripInfo){
-        return planService.updatePlan(PlanID,newTripInfo);
+    public Plan updatePlan(@RequestParam Long planID, @RequestBody NewTripInfo newTripInfo){
+        System.out.println("updats");
+        return planService.updatePlan(planID,newTripInfo);
     }
 
     @GetMapping("/get-plans")

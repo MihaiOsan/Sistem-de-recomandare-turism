@@ -5,6 +5,7 @@ import com.demo.backend.models.DTO.TimeInterval;
 import com.demo.backend.models.entity.Objective;
 import com.demo.backend.models.entity.Plan;
 import com.demo.backend.models.entity.User;
+import com.demo.backend.repository.ObjectiveRepository;
 import com.demo.backend.repository.PlanRepository;
 import com.demo.backend.repository.UserRepository;
 import com.google.maps.errors.ApiException;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -31,6 +33,9 @@ public class PlanService {
 
     @Autowired
     LocationDetailService locationDetailService;
+
+    @Autowired
+    ObjectiveRepository objectiveRepository;
 
     public Plan savePlan(Long userId, NewTripInfo newTripInfo){
         User user = userRepository.getReferenceById(userId);
@@ -122,10 +127,19 @@ public class PlanService {
                     }
                 LocalDate date = objective.getStartTime().toLocalDate();  // Extract date from ZonedDateTime
 
+
                 if (!dateToTimeIntervalsMap.containsKey(date)) {
                     dateToTimeIntervalsMap.put(date, new ArrayList<>());
                 }
                 dateToTimeIntervalsMap.get(date).add(timeInterval);
+
+                // Sort time intervals by start time within the map
+                dateToTimeIntervalsMap.get(date).sort((o1, o2) -> {
+                    LocalTime time1 = LocalTime.parse(o1.getStart());
+                    LocalTime time2 = LocalTime.parse(o2.getStart());
+
+                    return time1.compareTo(time2);
+                });
             }
 
             // Get the keys (dates) and sort them
@@ -158,19 +172,26 @@ public class PlanService {
         Optional<Plan> optionalPlan = planRepository.findById(planId);
         if (optionalPlan.isPresent()) {
             Plan plan = optionalPlan.get();
-            plan.setTitle(updatedTripInfo.getTripName());
-            plan.setStartDate(updatedTripInfo.getStartDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate().atStartOfDay(ZoneId.systemDefault()));
-            plan.setEndDate(updatedTripInfo.getEndDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate().atStartOfDay(ZoneId.systemDefault()));
-            plan.setLng(updatedTripInfo.getStartLocation().lng);
-            plan.setLat(updatedTripInfo.getStartLocation().lat);
-            plan.setRadius(updatedTripInfo.getRange());
 
-            // Update objectives
-            List<Objective> objectives = new ArrayList<>();
+            List<Objective> oldObjectives = new ArrayList<>(plan.getObjectives());
+            plan.getObjectives().clear();  // Clear the objectives in the plan
+
+            for (Objective oldObjective : oldObjectives) {
+                objectiveRepository.delete(oldObjective);
+            }
+            objectiveRepository.flush(); // Flush the changes to the database
+
+
+            // Prepare the new objectives based on the updated trip information
+            LocalDate startDate = updatedTripInfo.getStartDate().toInstant()
+                    .atZone(ZoneId.systemDefault())
+                    .toLocalDate();
+
             for (int i = 0; i < updatedTripInfo.getTripTimeSlots().size(); i++) {
-                for (TimeInterval timeInterval : updatedTripInfo.getTripTimeSlots().get(i)) {
+                for (TimeInterval timeInterval : updatedTripInfo.getTripTimeSlots().get(i)){
                     Objective objective = new Objective();
                     objective.setType(timeInterval.getType());
+
                     String[] startParts = timeInterval.getStart().split(":");
                     int startHour = Integer.parseInt(startParts[0]);
                     int startMinute = Integer.parseInt(startParts[1]);
@@ -180,10 +201,7 @@ public class PlanService {
                     int endMinute = Integer.parseInt(endParts[1]);
 
                     // Add `i` days to the startDate
-                    LocalDate currentDay = updatedTripInfo.getStartDate().toInstant()
-                            .atZone(ZoneId.systemDefault())
-                            .toLocalDate()
-                            .plusDays(i);
+                    LocalDate currentDay = startDate.plusDays(i);
 
                     ZonedDateTime startTime = ZonedDateTime.of(currentDay.getYear(), currentDay.getMonthValue(),
                             currentDay.getDayOfMonth(), startHour, startMinute, 0, 0,
@@ -193,13 +211,14 @@ public class PlanService {
                             ZoneId.systemDefault());
                     objective.setStartTime(startTime);
                     objective.setEndTime(endTime);
+
                     if (timeInterval.getAsignedPlace() != null)
                         objective.setIdLocaction(timeInterval.getAsignedPlace().placeId);
+
                     objective.setPlan(plan);
-                    objectives.add(objective);
+                    plan.getObjectives().add(objective);
                 }
             }
-            plan.setObjectives(objectives);
 
             return planRepository.saveAndFlush(plan);
         } else {
@@ -240,10 +259,19 @@ public class PlanService {
                     }
                 LocalDate date = objective.getStartTime().toLocalDate();  // Extract date from ZonedDateTime
 
+
                 if (!dateToTimeIntervalsMap.containsKey(date)) {
                     dateToTimeIntervalsMap.put(date, new ArrayList<>());
                 }
                 dateToTimeIntervalsMap.get(date).add(timeInterval);
+
+                // Sort time intervals by start time within the map
+                dateToTimeIntervalsMap.get(date).sort((o1, o2) -> {
+                    LocalTime time1 = LocalTime.parse(o1.getStart());
+                    LocalTime time2 = LocalTime.parse(o2.getStart());
+
+                    return time1.compareTo(time2);
+                });
             }
 
             // Get the keys (dates) and sort them
@@ -262,4 +290,6 @@ public class PlanService {
         }
         return newTripInfos;
     }
+
+
 }

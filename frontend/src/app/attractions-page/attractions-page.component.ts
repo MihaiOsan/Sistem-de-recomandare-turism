@@ -164,10 +164,10 @@ export class AttractionsPageComponent implements OnInit {
     const radioButtons = document.querySelectorAll('input[type="radio"]') as NodeListOf<HTMLInputElement>;
     radioButtons.forEach((radioButtons) => {
       radioButtons.checked = false;
-      radioButtons.closest('.radio-button')?.classList.remove('radio-button-selected');
-      if (radioButtons.value === this.filterSort) {
+      radioButtons.closest('.checkbox-button')?.classList.remove('checkbox-button-selected');
+      if (radioButtons.value == this.filterSort) {
         radioButtons.checked = true;
-        radioButtons.closest('.radio-button')?.classList.add('radio-button-selected');
+        radioButtons.closest('.checkbox-button')?.classList.add('checkbox-button-selected');
       }
     });
   }
@@ -178,6 +178,8 @@ export class AttractionsPageComponent implements OnInit {
     this.currentUser = this.authentificationService.currentUserValue;
 
     this.filterType = localStorage.getItem('filterType') || 'tourist_attraction';
+    this.filterSort = localStorage.getItem('filterSort') || 'prominence';
+    console.log(this.filterSort);
     this.setFiltersCheck();
 
     this.fetchAttractions();

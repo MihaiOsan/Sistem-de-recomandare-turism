@@ -9,7 +9,7 @@ import { Place } from '../models/attractions-details';
 @Injectable({
   providedIn: 'root'
 })
-export class GenerateTripPlanService {
+export class TripPlanService {
   private apiUrl = 'http://localhost:8080'; // replace with your API URL
 
   constructor(private http: HttpClient) { }
@@ -44,9 +44,9 @@ export class GenerateTripPlanService {
   }
 
   //update plan
-  updatePlan(planid: number, request: NewTripInfo): Observable<any> {
-    const url = `${this.apiUrl}/trip/update-plan?planID=${planid}`;
-    return this.http.put(url, request);
+  updatePlan(planID: number, request: NewTripInfo): Observable<any> {
+    const url = `${this.apiUrl}/trip/update-plan?planID=${planID}`;
+    return this.http.post(url, request);
   }
 
   getTopAttractions(): Observable<Place[]> {

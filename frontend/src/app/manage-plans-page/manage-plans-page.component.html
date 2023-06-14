@@ -17,25 +17,32 @@
                         <div class="filter-item" *ngIf="!isLoading">
                             <div class="select">
                                 <select class="range-input" (change)="onDeisplayTripInfo($event)">
-                                    <option value="all">All</option>
                                     <option value="upcoming">Upcoming</option>
                                     <option value="past">Past</option>
+                                    <option value="all">All</option>
                                 </select>
                             </div>
                         </div>
                         <div class="height50vh" *ngIf="!isLoading">
                             <div class="content-selected-attractions" *ngIf="displayedTrips.length!=0">
                                 <div class="selected-attractions-container"
-                                    *ngFor="let plan of displayedTrips; let i = index" (click)="onTripInfoClick(i)">
+                                    *ngFor="let plan of displayedTrips; let i = index" >
                                     <div class="selected-attractions" [ngClass]="{'selected': i === selectedTripIndex}">
-                                        <div class="selected-attractions-info">
+                                        <div class="selected-attractions-info" (click)="onTripInfoClick(i)">
                                             <div class="selected-attractions-details">
                                                 <h3 class="selected-attractions-title">{{plan.tripName}}</h3>
                                                 <p>{{transformDate(plan.startDate)}} &rarr;
                                                     {{transformDate(plan.endDate)}}</p>
                                             </div>
                                         </div>
-                                        <button class="selected-attractions-delete"
+                                        <button class="selected-attractions-button" (click)="cancelEditTripSlot(i)"
+                                            *ngIf="getPlanDate(plan.startDate)>dateToday && selectedForEdit==i">cancel
+                                        </button>
+                                        <button class="selected-attractions-button" (click)="saveEditTripSlot(i)"
+                                            *ngIf="getPlanDate(plan.startDate)>dateToday && selectedForEdit==i">save</button>
+                                        <button class="selected-attractions-button" (click)="editTripSlot(i)"
+                                            *ngIf="getPlanDate(plan.startDate)>dateToday && selectedForEdit!=i">edit</button>
+                                        <button class="selected-attractions-button"
                                             (click)="removeTripSlot(i)">x</button>
                                     </div>
                                 </div>
@@ -88,7 +95,7 @@
                         </div>
                         <div class="height50vh" *ngIf="!isLoading">
                             <div class="selected-attractions-container"
-                                *ngFor="let slot of selectedTripInfo.tripTimeSlots[currentDay-1]; let i = index">
+                                *ngFor="let slot of selectedTripInfo.tripTimeSlots[currentDay-1]; let i = index" (click)="onSlotClick(i)">
                                 <div class="selected-attractions">
                                     <div class="selected-attractions-info">
                                         <img *ngIf="slot.asignedPlace?.imageUrl" [src]="slot.asignedPlace?.imageUrl"
@@ -127,10 +134,62 @@
                     </div>
                 </div>
             </div>
+            <div class="box" *ngIf="selectedForEdit>-1">
+                <div class="box-inside-content">
+                    <h2 class="box-title">Select the places that you want to visit and asign it to a time slot</h2>
+                    <!-- Filter Bar -->
+                    <div class="filter-bar">
+                        <div class="filter-item">
+                            <label for="orderBy">Order by:</label>
+                            <div class="select">
+                                <select class="range-input" (change)="onOrderByChange($event)">
+                                    <!-- <option value="name">Name</option> -->
+                                    <option value="prominence">Prominence</option>
+                                    <option value="distance">Distance</option>
+                                    <option value="recommendation">Recommendation</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="filter-item">
+                            <label for="attractionType">Attraction Type:</label>
+                            <div class="select">
+                                <select id="attractionType" (change)="onAttractionTypeChange($event)">
+                                    <option value="tourist_attraction">Tourist attractions</option>
+                                    <option value="museum">Museum</option>
+                                    <option value="art_gallery">Art gallery</option>
+                                    <option value="place_of_worship">Places of worship</option>
+                                    <option value="park">Parks</option>
+                                    <option value="restaurant">Restaurants</option>
+                                    <option value="cafe">Cafe</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- End Filter Bar -->
 
+                    <div class="spinner-and-cards-wrapper">
+                        <div class="cards">
+                            <app-creat-aplan-card *ngFor="let attraction of pageAttractions" [attraction]="attraction"
+                                [isSelected]="isAttractionSelected(attraction)"
+                                (selectItemEvent)="onSelectItem($event)"></app-creat-aplan-card>
 
-
+                            <div class="spinner-container" *ngIf="isLoadingSelection">
+                                <app-spinner></app-spinner>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="navigation"><button class="nav-btn" (click)="prevPage()">
+                            <i class="arrow left"></i>
+                        </button>
+                        <span class="page-number">{{currentPage}}</span>
+                        <button class="nav-btn" (click)="nextPage()">
+                            <i class="arrow right"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
         </div>
+
     </div>
 </div>
 

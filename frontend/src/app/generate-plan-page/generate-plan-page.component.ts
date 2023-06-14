@@ -12,7 +12,7 @@ import { WeatherData } from '../models/weather-data';
 import { WeatherServiceService } from '../services/weather-service.service';
 import { Place } from '../models/attractions-details';
 import { AttractionService } from '../services/attraction.service';
-import { GenerateTripPlanService } from '../services/generate-trip-plan.service';
+import { TripPlanService } from '../services/trip-plan.service';
 
 @Component({
   selector: 'app-generate-plan-page',
@@ -60,7 +60,7 @@ export class GeneratePlanPageComponent implements OnInit, OnChanges {
   selectedSlotIndex: number = -1;
 
 
-  constructor(private location: Location, private router: Router, private weatherService: WeatherServiceService, private attractionService: AttractionService, private changeDetectorRef: ChangeDetectorRef, private generateTripService: GenerateTripPlanService, private datePipe: DatePipe) { }
+  constructor(private location: Location, private router: Router, private weatherService: WeatherServiceService, private attractionService: AttractionService, private changeDetectorRef: ChangeDetectorRef, private generateTripService: TripPlanService, private datePipe: DatePipe) { }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['newTripInfo'] && changes['newTripInfo'].currentValue) {
@@ -274,13 +274,11 @@ export class GeneratePlanPageComponent implements OnInit, OnChanges {
 
   onAttractionClick(i: number) {
     this.selectedAttractionIndex = this.selectedAttractionIndex === i ? -1 : i;
-    console.log(this.selectedAttractionIndex);
     this.tripSlotSelect();
   }
 
   onSlotClick(i: number) {
     this.selectedSlotIndex = this.selectedSlotIndex === i ? -1 : i;
-    console.log(this.selectedSlotIndex);
     this.tripSlotSelect();
   }
 

@@ -3,7 +3,7 @@ import { forkJoin } from 'rxjs';
 import { Attraction } from 'src/app/models/attraction';
 import { AttractionsDetails, Place } from 'src/app/models/attractions-details';
 import { AttractionService } from 'src/app/services/attraction.service';
-import { GenerateTripPlanService } from 'src/app/services/generate-trip-plan.service';
+import { TripPlanService } from 'src/app/services/trip-plan.service';
 // import Swiper core and required modules
 import SwiperCore, { Navigation, Pagination, Scrollbar, A11y } from 'swiper';
 
@@ -17,7 +17,7 @@ SwiperCore.use([Navigation, Pagination, Scrollbar, A11y]);
   encapsulation: ViewEncapsulation.None,
 })
 export class SliderComponent implements AfterViewInit {
-  constructor(private generateService: GenerateTripPlanService, private attractionService: AttractionService) { }
+  constructor(private generateService: TripPlanService, private attractionService: AttractionService) { }
   topAttractions: Place[] = [];
 
 

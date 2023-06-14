@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { GenerateTripPlanService } from '../services/generate-trip-plan.service';
+import { TripPlanService } from '../services/trip-plan.service';
 import { NewTripInfo } from '../models/new-trip-info';
 import { TimeInterval } from '../models/time-interval';
 
@@ -52,7 +52,7 @@ export class StatisticsPageComponent implements OnInit {
     '#FFA500', '#FF8C00', '#FF7F50', '#FF6347', '#FF4500', '#FFA07A', '#FF7F00', '#FF8C69', '#E67E22', '#FFA54F', '#FFA07A', '#FFA347', '#FFB90F', '#FFAE42', '#FF9F00', '#FF9A1E', '#F28500', '#FF7A33', '#FDBA21', '#FBA71B'
   ];
 
-  constructor(private generateTripService: GenerateTripPlanService) { }
+  constructor(private generateTripService: TripPlanService) { }
 
   accepedTypes: Array<string> = [
     'museum',

@@ -7,7 +7,7 @@ import { AttractionService } from '../services/attraction.service';
 import { NewTripInfo } from '../models/new-trip-info';
 import { TimeInterval } from '../models/time-interval';
 import { GeneratePlanPageComponent } from '../generate-plan-page/generate-plan-page.component';
-import { GenerateTripPlanService } from '../services/generate-trip-plan.service';
+import { TripPlanService } from '../services/trip-plan.service';
 import { SchedulePlacesRequest } from '../models/schedule-places-request';
 import { SchedulePlacesResponse } from '../models/schedule-places-response';
 
@@ -50,7 +50,7 @@ export class CreateAPlanPageComponent implements OnInit {
   filterSort: string = 'prominence';
   filterType: string = 'tourist_attraction';
 
-  constructor(private formBuilder: FormBuilder, private attractionService: AttractionService, private changeDetectorRef: ChangeDetectorRef, private tripService: GenerateTripPlanService) { }
+  constructor(private formBuilder: FormBuilder, private attractionService: AttractionService, private changeDetectorRef: ChangeDetectorRef, private tripService: TripPlanService) { }
 
   ngAfterViewInit() {
     const searchBox = new google.maps.places.SearchBox(this.mapSearchField.nativeElement);

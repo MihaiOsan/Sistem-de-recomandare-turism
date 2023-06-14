@@ -3,10 +3,14 @@ import { WeatherData } from '../models/weather-data';
 import { GoogleMap } from '@angular/google-maps';
 import { NewTripInfo } from '../models/new-trip-info';
 import { WeatherServiceService } from '../services/weather-service.service';
-import { GenerateTripPlanService } from '../services/generate-trip-plan.service';
+import { TripPlanService } from '../services/trip-plan.service';
 import { DatePipe } from '@angular/common';
 import { TimeInterval } from '../models/time-interval';
 import { Attraction } from '../models/attraction';
+import { AttractionService } from '../services/attraction.service';
+import { AttractionsResponse } from '../models/attractions-response';
+import { finalize } from 'rxjs';
+import { Place } from '../models/attractions-details';
 
 @Component({
   selector: 'app-manage-plans-page',
@@ -15,15 +19,189 @@ import { Attraction } from '../models/attraction';
 })
 
 export class ManagePlansPageComponent implements OnInit {
-isAttractionSelected(_t143: any): boolean|undefined {
-throw new Error('Method not implemented.');
-}
-onSelectItem($event: Attraction) {
-throw new Error('Method not implemented.');
-}
+  editTripInfo!: NewTripInfo;
+  onSlotClick(i: number) {
+    if (this.selectedForEdit != -1) {
+      this.selectedSlotIndex = this.selectedSlotIndex == i ? -1 : i;
+      this.tripSlotSelect();
+    }
+  }
 
-  onOrderByChange($event: Event) {
-    throw new Error('Method not implemented.');
+  tripSlotSelect() {
+    if (this.selectedAttraction != undefined && this.selectedSlotIndex >= 0) {
+      this.attractionService.getAttractionDetailsPlace(this.selectedAttraction.placeId)
+        .pipe(
+          finalize(() => {
+            this.selectedAttraction = undefined;
+            this.selectedSlotIndex = -1;
+          })
+        )
+        .subscribe(
+          (data: Place) => {
+            console.log(data);
+            if (this.selectedAttraction) {
+              data.imageUrl = this.selectedAttraction.imageUrl;
+              //make sure that the place conatains a type that matches the slot type
+              //convert the type of the slot as follow> "eating break" -> "restaurant" or "cafe", "visiting time "
+              if (this.editTripInfo.tripTimeSlots[this.currentDay - 1][this.selectedSlotIndex].type == "Eating break" && (data.types.includes("RESTAURANT") || data.types.includes("CAFE")) ||
+                (this.editTripInfo.tripTimeSlots[this.currentDay - 1][this.selectedSlotIndex].type == "Visiting time" && (!data.types.includes("RESTAURANT") && !data.types.includes("CAFE") && !data.types.includes("SHOPPING_MALL")) ||
+                  (this.editTripInfo.tripTimeSlots[this.currentDay - 1][this.selectedSlotIndex].type == "Shopping spree" && data.types.includes("SHOPPING_MALL")))) {
+                this.editTripInfo.tripTimeSlots[this.currentDay - 1][this.selectedSlotIndex].asignedPlace = data;
+                this.calculateAndDisplayRoute();
+              }
+              this.changeDetectorRef.detectChanges();
+            }
+          }
+        );
+    }
+  }
+
+  selectedForEdit: number = -1;
+  nextPageToken: string | undefined;
+  filterType: string | undefined;
+  filterSort: string | undefined;
+  attractions: Attraction[][] = [];
+  pageAttractions: Attraction[] = [];
+  selectedAttraction: Attraction | undefined;
+
+  fetchAttractions(lat: number, lng: number, radius: number): void {
+    this.isLoadingSelection = true;
+    this.attractionService.getAttractions(lat, lng, radius, this.nextPageToken, this.filterType, this.filterSort).subscribe(
+      (data: AttractionsResponse) => {
+        this.attractions.push(data.places);
+        this.nextPageToken = data.pageToken;
+        for (let i = 0; i < this.attractions[this.currentPage - 1].length; i++) {
+          const apiKey = "AIzaSyAILm8lpjdZbGCyZOgmKAW0z0sARKzKM9g&libraries=places";
+          const maxWidth = 400;
+          if (this.attractions[this.currentPage - 1][i] && this.attractions[this.currentPage - 1][i].photos && this.attractions[this.currentPage - 1][i].photos[0]) {
+            this.attractions[this.currentPage - 1][i].imageUrl = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=${maxWidth}&photoreference=${this.attractions[this.currentPage - 1][i].photos[0].photoReference}&key=${apiKey}`;
+          }
+        }
+        this.pageAttractions = this.attractions[this.currentPage - 1];
+        this.changeDetectorRef.detectChanges();
+        this.isLoadingSelection = false;
+      },
+      (error) => {
+        console.error('Error fetching attractions:', error);
+        this.isLoadingSelection = false;
+      }
+    );
+  }
+
+
+  onSelectItem(attraction: Attraction) {
+    if (this.selectedAttraction === attraction) {
+      this.selectedAttraction = undefined;
+    }
+    else {
+      this.selectedAttraction = attraction;
+      this.tripSlotSelect();
+    }
+    this.changeDetectorRef.detectChanges();
+  }
+
+  saveEditTripSlot(i: number) {
+    this.planService.updatePlan(this.editTripInfo.planID!, this.editTripInfo).subscribe();
+    this.allTripInfo.forEach(trip => {
+      if (trip.planID == this.editTripInfo.planID) {
+        trip = this.editTripInfo;
+      }
+    }
+    );
+    this.upcomingTrips.forEach(trip => {
+      if (trip.planID == this.editTripInfo.planID) {
+        trip = this.editTripInfo;
+      }
+    });
+    this.pastTrips.forEach(trip => {
+      if (trip.planID == this.editTripInfo.planID) {
+        trip = this.editTripInfo;
+      }
+    }
+    );
+    this.displayedTrips[i] = this.editTripInfo;
+    this.selectedTripInfo = this.editTripInfo;
+    this.attractions = [];
+    this.nextPageToken = '';
+    this.currentPage = 1;
+    this.pageAttractions = [];
+    this.filterSort = 'prominence';
+    this.filterType = 'tourist_attraction';
+    this.selectedForEdit = -1;
+    this.selectedTripIndex = -1;
+  }
+
+  cancelEditTripSlot(i: number) {
+    this.selectedTripInfo = this.displayedTrips[i];
+    this.selectedForEdit = -1;
+  }
+
+  editTripSlot(i: number) {
+    this.selectedForEdit = i;
+    this.selectedTripIndex = i;
+    this.editTripInfo = JSON.parse(JSON.stringify(this.displayedTrips[i]));
+    this.selectedTripInfo = this.editTripInfo;
+    this.attractions = [];
+    this.nextPageToken = '';
+    this.currentPage = 1;
+    this.pageAttractions = [];
+    this.filterSort = 'prominence';
+    this.filterType = 'tourist_attraction';
+    this.fetchAttractions(this.editTripInfo.startLocation.lat, this.editTripInfo.startLocation.lng, this.selectedTripInfo.range * 1000);
+  }
+
+  isLoadingSelection: any;
+
+
+  prevPage() {
+    if (this.currentPage == 1) return;
+    this.currentPage--;
+    this.pageAttractions = this.attractions[this.currentPage - 1];
+    this.changeDetectorRef.detectChanges();
+  }
+
+  nextPage() {
+    console.log(this.nextPageToken);
+    if (this.attractions[this.currentPage] != null) {
+      this.currentPage++;
+      this.pageAttractions = this.attractions[this.currentPage];
+    } else if (this.nextPageToken != '' && this.nextPageToken != null) {
+      this.currentPage++;
+      this.fetchAttractions(this.selectedTripInfo.startLocation.lat, this.selectedTripInfo.startLocation.lng, this.selectedTripInfo.range * 1000);
+    }
+    this.changeDetectorRef.detectChanges();
+  }
+
+  currentPage: number = 1;
+
+  isAttractionSelected(attractionS: Attraction): boolean {
+    return this.selectedAttraction === attractionS;
+  }
+
+  onOrderByChange(event: Event) {
+    const selectedValue = (event.target as HTMLSelectElement).value;
+    if (selectedValue !== null) {
+      this.filterSort = selectedValue;
+    }
+    this.currentPage = 1
+    this.attractions = [];
+    this.pageAttractions = [];
+    this.nextPageToken = '';
+    this.fetchAttractions(this.selectedTripInfo.startLocation.lat, this.selectedTripInfo.startLocation.lng, this.selectedTripInfo.range * 1000);
+    this.changeDetectorRef.detectChanges();
+  }
+
+  onAttractionTypeChange(event: Event) {
+    const selectedValue = (event.target as HTMLSelectElement).value;
+    if (selectedValue !== null) {
+      this.filterType = selectedValue;
+    }
+    this.currentPage = 1
+    this.attractions = [];
+    this.pageAttractions = [];
+    this.nextPageToken = '';
+    this.fetchAttractions(this.selectedTripInfo.startLocation.lat, this.selectedTripInfo.startLocation.lng, this.selectedTripInfo.range * 1000);
+    this.changeDetectorRef.detectChanges();
   }
   slectedTripIndex: any;
 
@@ -41,6 +219,7 @@ throw new Error('Method not implemented.');
     }
   });
 
+  dateToday: Date = new Date((new Date()).setHours(0, 0, 0, 0));
   displayedDate: Date = new Date();
   displayedDateString: string = this.formatDate(this.displayedDate);
   displayWeather: boolean = false;
@@ -62,7 +241,7 @@ throw new Error('Method not implemented.');
     }
   }
 
-  constructor(private weatherService: WeatherServiceService, private changeDetectorRef: ChangeDetectorRef, private generateTripService: GenerateTripPlanService, private datePipe: DatePipe) { }
+  constructor(private weatherService: WeatherServiceService, private changeDetectorRef: ChangeDetectorRef, private generateTripService: TripPlanService, private datePipe: DatePipe, private attractionService: AttractionService, private planService: TripPlanService) { }
 
   mapCongiguration = {
     mapTypeId: 'roadmap',
@@ -76,8 +255,13 @@ throw new Error('Method not implemented.');
 
   isLoading: boolean = false;
 
+  getPlanDate(date: Date) {
+    return new Date(date);
+  }
+
   ngOnInit(): void {
     this.isLoading = true;
+    console.log(this.dateToday);
     this.generateTripService.getSavedPlans().subscribe(data => {
       this.allTripInfo = data;
       this.allTripInfo.forEach(element => {
@@ -103,7 +287,7 @@ throw new Error('Method not implemented.');
       });
       this.displayedTrips = this.upcomingTrips;
       if (this.allTripInfo.length > 0) {
-        this.selectedTripInfo = this.allTripInfo[0];
+        this.selectedTripInfo = this.upcomingTrips[0];
         this.displayedDate = new Date(this.selectedTripInfo.startDate);
         this.displayedDateString = this.formatDate(this.displayedDate);
         this.getWeather();
@@ -115,10 +299,10 @@ throw new Error('Method not implemented.');
     });
   }
 
-
   getWeather() {
     let endDate = new Date(this.selectedTripInfo.endDate);
     let startDate = new Date(this.selectedTripInfo.startDate);
+    this.weatherData = [];
     if (endDate != null && startDate != null) {
       //add a day to the end date to include the last day
       endDate.setDate(endDate.getDate() + 1);
@@ -168,7 +352,6 @@ throw new Error('Method not implemented.');
     this.mapp.panTo(this.selectedTripInfo.startLocation);
     //clear previous route
     this.directionsRenderer.setDirections({ routes: [] });
-
 
     const locations = this.selectedTripInfo.tripTimeSlots[this.currentDay - 1]
       .filter((timeInterval: TimeInterval) => timeInterval.asignedPlace && timeInterval.asignedPlace.geometry)
@@ -279,28 +462,27 @@ throw new Error('Method not implemented.');
       today.setHours(0, 0, 0, 0);
       if (selectedValue === 'all') {
         this.displayedTrips = this.allTripInfo;
-        console.log(this.displayedTrips);
       }
       else if (selectedValue === 'past') {
         this.displayedTrips = this.pastTrips;
-        console.log(this.displayedTrips);
       }
       if (selectedValue === 'upcoming') {
         this.displayedTrips = this.upcomingTrips;
-        console.log(this.displayedTrips);
       }
       this.selectedTripInfo = this.displayedTrips[0];
       this.selectedTripIndex = 0;
       this.currentDay = 1;
       this.displayedDate = new Date(this.selectedTripInfo.startDate);
-      this.getWeather();
+      this.displayedDateString = this.formatDate(this.displayedDate);
       this.calculateAndDisplayRoute();
+      this.getWeather();
       this.changeDetectorRef.detectChanges();
     }
   }
 
 
   onTripInfoClick(i: number) {
+    this.cancelEditTripSlot(i);
     this.selectedTripInfo = this.displayedTrips[i];
     this.selectedTripIndex = i;
     this.currentDay = 1;
@@ -324,41 +506,41 @@ throw new Error('Method not implemented.');
   }
 
   confirmModal() {
-     this.showModal = false;
-     let tripToDelete = this.displayedTrips[this.selectedforDelete];
+    this.showModal = false;
+    let tripToDelete = this.displayedTrips[this.selectedforDelete];
 
-     if (tripToDelete.planID != null) {
-       this.generateTripService.deletePlan(tripToDelete.planID).subscribe();
-      }
+    if (tripToDelete.planID != null) {
+      this.generateTripService.deletePlan(tripToDelete.planID).subscribe();
+    }
 
-     this.displayedTrips.splice(this.selectedforDelete, 1);
- 
-     let indexInAll = this.allTripInfo.indexOf(tripToDelete);
-     if (indexInAll > -1) {
-       this.allTripInfo.splice(indexInAll, 1);
-     }
- 
-     let indexInPast = this.pastTrips.indexOf(tripToDelete);
-     if (indexInPast > -1) {
-       this.pastTrips.splice(indexInPast, 1);
-     }
- 
-     let indexInUpcoming = this.upcomingTrips.indexOf(tripToDelete);
-     if (indexInUpcoming > -1) {
-       this.upcomingTrips.splice(indexInUpcoming, 1);
-     }
- 
-     // Reset deletion index.
-     if (this.selectedforDelete == this.selectedTripIndex){
-        this.selectedTripIndex = 0;
-        this.selectedTripInfo = this.displayedTrips[0];
-        this.currentDay = 1;
-        this.displayedDate = new Date(this.selectedTripInfo.startDate);
-        this.getWeather();
-        this.calculateAndDisplayRoute();
-     }
+    this.displayedTrips.splice(this.selectedforDelete, 1);
 
-     this.selectedforDelete = -1;
+    let indexInAll = this.allTripInfo.indexOf(tripToDelete);
+    if (indexInAll > -1) {
+      this.allTripInfo.splice(indexInAll, 1);
+    }
+
+    let indexInPast = this.pastTrips.indexOf(tripToDelete);
+    if (indexInPast > -1) {
+      this.pastTrips.splice(indexInPast, 1);
+    }
+
+    let indexInUpcoming = this.upcomingTrips.indexOf(tripToDelete);
+    if (indexInUpcoming > -1) {
+      this.upcomingTrips.splice(indexInUpcoming, 1);
+    }
+
+    // Reset deletion index.
+    if (this.selectedforDelete == this.selectedTripIndex) {
+      this.selectedTripIndex = 0;
+      this.selectedTripInfo = this.displayedTrips[0];
+      this.currentDay = 1;
+      this.displayedDate = new Date(this.selectedTripInfo.startDate);
+      this.getWeather();
+      this.calculateAndDisplayRoute();
+    }
+
+    this.selectedforDelete = -1;
   }
 
 }

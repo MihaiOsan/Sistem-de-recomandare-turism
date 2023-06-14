@@ -190,7 +190,6 @@ public class TripService {
                 (slotEnd.isBefore(placeEnd) || slotEnd.equals(placeEnd))) {
 
             if (Arrays.asList(place.types).contains(AddressType.PARK)) {
-                System.out.println("The place is a park");
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
                 String formattedDate = currentDate.format(formatter);
                 WeatherData weatherData = (weatherService.getWeatherData(place.geometry.location.lat,place.geometry.location.lng,formattedDate,formattedDate)).get(0);
