@@ -37,11 +37,14 @@ public class PlanService {
     @Autowired
     ObjectiveRepository objectiveRepository;
 
+    @Autowired
+    EmailService emailService;
+
     public Plan savePlan(Long userId, NewTripInfo newTripInfo){
+        String email = "You created a new trip plan:\n\n";
+
         User user = userRepository.getReferenceById(userId);
         Plan plan = new Plan();
-        System.out.println(user.getEmail());
-        System.out.println(newTripInfo.getTripName());
         List<Objective> objectives = new ArrayList<>();
         LocalDate startDate = newTripInfo.getStartDate().toInstant()
                 .atZone(ZoneId.systemDefault())
@@ -50,14 +53,31 @@ public class PlanService {
                 .atZone(ZoneId.systemDefault())
                 .toLocalDate();
 
+
+
         ZonedDateTime startDateTime = startDate.atStartOfDay(ZoneId.systemDefault());
         ZonedDateTime endDateTime = endDate.atStartOfDay(ZoneId.systemDefault());
 
         plan.setStartDate(startDateTime);
         plan.setEndDate(endDateTime);
+        plan.setRadius(newTripInfo.getRange());
+        plan.setLng(newTripInfo.getStartLocation().lng);
+        plan.setLat(newTripInfo.getStartLocation().lat);
+        plan.setTitle(newTripInfo.getTripName());
+        plan.setUser(user);
+
+        email += plan.getTitle()+"\n";
+        email +="Date: " + plan.getStartDate().getYear() + "-" + plan.getStartDate().getMonth() + "-" + plan.getStartDate().getDayOfMonth() +" -> " +plan.getEndDate().getYear() + "-" + plan.getEndDate().getMonth() + "-" + plan.getEndDate().getDayOfMonth()+ "\n";
+        email +="Location: " + plan.getLat() + " " + plan.getLng() + "\n";
+        email +="Radius: " + plan.getRadius() +"km\n";
+        email +="Plan: \n";
 
         for (int i = 0; i < newTripInfo.getTripTimeSlots().size(); i++)
         {
+
+            // Add `i` days to the startDate
+            LocalDate currentDay = startDate.plusDays(i);
+            email+=currentDay+"\n";
             for (TimeInterval timeInterval : newTripInfo.getTripTimeSlots().get(i)){
                 Objective objective = new Objective();
                 objective.setType(timeInterval.getType());
@@ -69,9 +89,6 @@ public class PlanService {
                 int endHour = Integer.parseInt(endParts[0]);
                 int endMinute = Integer.parseInt(endParts[1]);
 
-                // Add `i` days to the startDate
-                LocalDate currentDay = startDate.plusDays(i);
-
                 ZonedDateTime startTime = ZonedDateTime.of(currentDay.getYear(), currentDay.getMonthValue(),
                         currentDay.getDayOfMonth(), startHour, startMinute, 0, 0,
                         ZoneId.systemDefault());
@@ -80,19 +97,19 @@ public class PlanService {
                         ZoneId.systemDefault());
                 objective.setStartTime(startTime);
                 objective.setEndTime(endTime);
-                if (timeInterval.getAsignedPlace()!=null)
+                if (timeInterval.getAsignedPlace()!=null){
                     objective.setIdLocaction(timeInterval.getAsignedPlace().placeId);
+                    email += startTime.getHour() + ":" + startTime.getMinute() + " -> " + endTime.getHour() + ":" + endTime.getMinute() + " " + timeInterval.getAsignedPlace().name+"\n";
+                }
                 objective.setPlan(plan);
                 objectives.add(objective);
             }
+            email += "\n";
         }
-        plan.setRadius(newTripInfo.getRange());
-        plan.setLng(newTripInfo.getStartLocation().lng);
-        plan.setLat(newTripInfo.getStartLocation().lat);
-        plan.setTitle(newTripInfo.getTripName());
+
         plan.setObjectives(objectives);
-        plan.setUser(user);
-        System.out.println(plan.getTitle());
+        emailService.sendEmail(user.getEmail(),"New trip created", email);
+
         return planRepository.saveAndFlush(plan);
     }
 
@@ -170,8 +187,16 @@ public class PlanService {
 
     public Plan updatePlan(Long planId, NewTripInfo updatedTripInfo) {
         Optional<Plan> optionalPlan = planRepository.findById(planId);
+
+        String email = "Your trip plan was updated:\n\n";
         if (optionalPlan.isPresent()) {
             Plan plan = optionalPlan.get();
+
+            email += plan.getTitle()+"\n";
+            email +="Date: " + plan.getStartDate().getYear() + "-" + plan.getStartDate().getMonth() + "-" + plan.getStartDate().getDayOfMonth() +" -> " +plan.getEndDate().getYear() + "-" + plan.getEndDate().getMonth() + "-" + plan.getEndDate().getDayOfMonth()+ "\n";
+            email +="Location: " + plan.getLat() + " " + plan.getLng() + "\n";
+            email +="Radius: " + plan.getRadius() +"km\n";
+            email +="Plan: \n";
 
             List<Objective> oldObjectives = new ArrayList<>(plan.getObjectives());
             plan.getObjectives().clear();  // Clear the objectives in the plan
@@ -188,6 +213,11 @@ public class PlanService {
                     .toLocalDate();
 
             for (int i = 0; i < updatedTripInfo.getTripTimeSlots().size(); i++) {
+
+                // Add `i` days to the startDate
+                LocalDate currentDay = startDate.plusDays(i);
+                email+=currentDay+"\n";
+
                 for (TimeInterval timeInterval : updatedTripInfo.getTripTimeSlots().get(i)){
                     Objective objective = new Objective();
                     objective.setType(timeInterval.getType());
@@ -200,8 +230,6 @@ public class PlanService {
                     int endHour = Integer.parseInt(endParts[0]);
                     int endMinute = Integer.parseInt(endParts[1]);
 
-                    // Add `i` days to the startDate
-                    LocalDate currentDay = startDate.plusDays(i);
 
                     ZonedDateTime startTime = ZonedDateTime.of(currentDay.getYear(), currentDay.getMonthValue(),
                             currentDay.getDayOfMonth(), startHour, startMinute, 0, 0,
@@ -212,18 +240,22 @@ public class PlanService {
                     objective.setStartTime(startTime);
                     objective.setEndTime(endTime);
 
-                    if (timeInterval.getAsignedPlace() != null)
+                    if (timeInterval.getAsignedPlace() != null) {
                         objective.setIdLocaction(timeInterval.getAsignedPlace().placeId);
-
+                        email += startTime.getHour() + ":" + startTime.getMinute() + " -> " + endTime.getHour() + ":" + endTime.getMinute() + " " + timeInterval.getAsignedPlace().name + "\n";
+                    }
                     objective.setPlan(plan);
                     plan.getObjectives().add(objective);
                 }
+                email += "\n";
             }
 
+            emailService.sendEmail(plan.getUser().getEmail(),"New trip created", email);
             return planRepository.saveAndFlush(plan);
         } else {
             throw new RuntimeException("Plan not found with id: " + planId);
         }
+
     }
 
     public List<NewTripInfo> getPlansByUserIdBefore(Long userId) throws IOException, InterruptedException, ApiException {

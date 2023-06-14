@@ -84,6 +84,8 @@ export class StatisticsPageComponent implements OnInit {
     this.prepareChartData(this.country, 'Country Visited');
     this.generateTripService.getSavedPlansPast().subscribe(data => {
       this.allTripInfo = data;
+      let visitedCities = new Set<string>();
+      let visitedCountries = new Set<string>();
       this.allTripInfo.forEach(element => {
         this.nrPlans++;
         if (element.endDate) {
@@ -98,12 +100,18 @@ export class StatisticsPageComponent implements OnInit {
                   // for all element.tripTimeSlots[i][j].asignedPlace!.address_components.length
                   for (let k = 0; k < element.tripTimeSlots[i][j].asignedPlace!.addressComponents.length; k++) {
                     if ((element.tripTimeSlots[i][j].asignedPlace!.addressComponents[k].types.includes("LOCALITY") || element.tripTimeSlots[i][j].asignedPlace!.addressComponents[k].types.includes("POSTAL_TOWN")) && !gotVisitetdCity) {
+                      if(!visitedCities.has(element.tripTimeSlots[i][j].asignedPlace!.addressComponents[k].longName)){
+                        this.nrCity++;
+                        visitedCities.add(element.tripTimeSlots[i][j].asignedPlace!.addressComponents[k].longName);
+                      } 
                       this.city.push({ destination: element.tripTimeSlots[i][j].asignedPlace!.addressComponents[k].longName });
-                      this.nrCity++;
                       gotVisitetdCity = true;
                     }
                     if (element.tripTimeSlots[i][j].asignedPlace!.addressComponents[k].types.includes("COUNTRY") && !gotVisitetdCountry) {
-                      this.nrCountry++;
+                      if (!visitedCountries.has(element.tripTimeSlots[i][j].asignedPlace!.addressComponents[k].longName)) {
+                        this.nrCountry++;
+                        visitedCountries.add(element.tripTimeSlots[i][j].asignedPlace!.addressComponents[k].longName); 
+                      }
                       this.country.push({ destination: element.tripTimeSlots[i][j].asignedPlace!.addressComponents[k].longName });
                       gotVisitetdCountry = true;
                     }

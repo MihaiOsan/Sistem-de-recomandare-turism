@@ -147,6 +147,7 @@ export class ManagePlansPageComponent implements OnInit {
     this.pageAttractions = [];
     this.filterSort = 'prominence';
     this.filterType = 'tourist_attraction';
+    this.getWeather();
     this.fetchAttractions(this.editTripInfo.startLocation.lat, this.editTripInfo.startLocation.lng, this.selectedTripInfo.range * 1000);
   }
 
