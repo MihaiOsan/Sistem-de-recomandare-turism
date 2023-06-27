@@ -74,7 +74,6 @@ export class AttractionDetailsComponent implements OnInit {
       return;
     }
 
-    //console.log(this.attraction.place.reviews[0].profilePhotoUrl);
 
     if (this.attraction.place.geometry.location) {
       const latLngLiteral: google.maps.LatLngLiteral = {

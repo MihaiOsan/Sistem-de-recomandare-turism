@@ -79,7 +79,6 @@ export class StatisticsPageComponent implements OnInit {
 
   ngOnInit(): void {
     this.isLoading = true;
-    // pause for 10 seconds while loading the data
 
     this.prepareChartData(this.country, 'Country Visited');
     this.generateTripService.getSavedPlansPast().subscribe(data => {
@@ -97,7 +96,6 @@ export class StatisticsPageComponent implements OnInit {
                 this.nrAttraction++;
                 this.allTimeIntervals.push(element.tripTimeSlots[i][j]);
                 if (!gotVisitetdCity) {
-                  // for all element.tripTimeSlots[i][j].asignedPlace!.address_components.length
                   for (let k = 0; k < element.tripTimeSlots[i][j].asignedPlace!.addressComponents.length; k++) {
                     if ((element.tripTimeSlots[i][j].asignedPlace!.addressComponents[k].types.includes("LOCALITY") || element.tripTimeSlots[i][j].asignedPlace!.addressComponents[k].types.includes("POSTAL_TOWN")) && !gotVisitetdCity) {
                       if(!visitedCities.has(element.tripTimeSlots[i][j].asignedPlace!.addressComponents[k].longName)){

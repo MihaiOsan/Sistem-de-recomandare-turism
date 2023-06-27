@@ -87,13 +87,11 @@
     display: flex;
     align-items: center;
     gap: 8px;
-    /* Adjust the space between elements */
     padding: 20px;
 }
 
 .date-text {
     font-size: 14px;
-    /* Adjust the font size of the date text */
 }
 
 .range-input {
@@ -177,9 +175,7 @@ label{
 
 .add-time-slot-btn {
     font-size: 14px;
-    /* Adjust the font size of the Add Time Slot button */
     padding: 6px 12px;
-    /* Adjust the padding of the Add Time Slot button */
     overflow: hidden;
     border-radius: 6px;
     border: 1px solid #FFA500;
@@ -205,7 +201,7 @@ label{
 }
 
 .content-time-slot{
-  height: 150px; /* Adjust the desired height */
+  height: 150px; 
   overflow-y: auto;
 }
 
@@ -248,7 +244,6 @@ label{
     cursor: pointer;
 }
 
- /* selected attractions */
 
  .selected-attractions-container {
     display: flex;
@@ -406,16 +401,13 @@ label{
     border: 0;
 }
 
-/* style for both icons -- search,close */
 .form svg {
-    /* display: block; */
     color: #111;
     transition: 0.3s cubic-bezier(.4, 0, .2, 1);
     position: absolute;
     height: 15px;
 }
 
-/* search icon */
 .icon {
     position: absolute;
     left: var(--padding);
@@ -425,16 +417,13 @@ label{
     align-items: center;
 }
 
-/* arrow-icon*/
 .swap-off {
     transform: rotate(-80deg);
     opacity: 0;
     visibility: hidden;
 }
 
-/* close button */
 .close-btn {
-    /* removing default bg of button */
     background: none;
     border: none;
     right: calc(var(--padding) - var(--gap));
@@ -495,7 +484,6 @@ label{
     width: 100%;
 }
 
-/* app.component.css */
 .trip-form {
     width: 100%;
     max-width: 600px;

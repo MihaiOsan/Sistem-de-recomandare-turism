@@ -65,7 +65,7 @@ public class ContentBasedRecommedationService {
         CompletableFuture.allOf(futures.toArray(new CompletableFuture[0])).join();
         newPlaces.setPageToken(null);
 
-        // Sort places by similarity and return the top-k places
+        // Sort places by similarity and return
         List<PlacesSearchResult> recommendedPlaces = new ArrayList<>(placeSimilarity.keySet());
         recommendedPlaces.sort((a, b) -> Double.compare(placeSimilarity.get(b), placeSimilarity.get(a)));
 

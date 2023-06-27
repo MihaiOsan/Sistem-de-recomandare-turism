@@ -63,7 +63,6 @@ export class LogInFormComponent implements OnInit {
       .subscribe(
         (data) => {
           data.enabled ? this.router.navigate(['/home']) : this.router.navigate(['/Validation']);
-          //this.router.navigate(['/home']);
         },
         (error) => {
           this.loading = false;

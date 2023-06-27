@@ -42,7 +42,6 @@ export class ManagePlansPageComponent implements OnInit {
             if (this.selectedAttraction) {
               data.imageUrl = this.selectedAttraction.imageUrl;
               //make sure that the place conatains a type that matches the slot type
-              //convert the type of the slot as follow> "eating break" -> "restaurant" or "cafe", "visiting time "
               if (this.editTripInfo.tripTimeSlots[this.currentDay - 1][this.selectedSlotIndex].type == "Eating break" && (data.types.includes("RESTAURANT") || data.types.includes("CAFE")) ||
                 (this.editTripInfo.tripTimeSlots[this.currentDay - 1][this.selectedSlotIndex].type == "Visiting time" && (!data.types.includes("RESTAURANT") && !data.types.includes("CAFE") && !data.types.includes("SHOPPING_MALL")) ||
                   (this.editTripInfo.tripTimeSlots[this.currentDay - 1][this.selectedSlotIndex].type == "Shopping spree" && data.types.includes("SHOPPING_MALL")))) {
@@ -216,7 +215,7 @@ export class ManagePlansPageComponent implements OnInit {
   directionsService = new google.maps.DirectionsService();
   directionsRenderer = new google.maps.DirectionsRenderer({
     polylineOptions: {
-      strokeColor: '#FFA500'  // orange
+      strokeColor: '#FFA500'  
     }
   });
 
@@ -224,7 +223,7 @@ export class ManagePlansPageComponent implements OnInit {
   displayedDate: Date = new Date();
   displayedDateString: string = this.formatDate(this.displayedDate);
   displayWeather: boolean = false;
-  weatherData: WeatherData[] = [];  // WeatherData is a model class
+  weatherData: WeatherData[] = [];  
   currentDay: number = 1;
 
   selectedTripInfo!: NewTripInfo;
@@ -337,7 +336,6 @@ export class ManagePlansPageComponent implements OnInit {
             }
           });
         }, error => {
-          // handle the error
           console.error(error);
         });
       }
@@ -365,7 +363,6 @@ export class ManagePlansPageComponent implements OnInit {
       });
 
     if (locations.length === 0) {
-      // All time slots have no assigned place, nothing to do here.
       return;
     }
 
@@ -391,7 +388,7 @@ export class ManagePlansPageComponent implements OnInit {
         if (status === "OK" && response) {
           this.directionsRenderer.setDirections(response);
 
-          // New code to center the map on the route
+          // center the map on the route
           const bounds = new google.maps.LatLngBounds();
           const route = response.routes[0];
           for (let i = 0; i < route.legs.length; i++) {

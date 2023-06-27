@@ -255,8 +255,6 @@ export class CreateAPlanPageComponent implements OnInit {
   }
 
   createDefaultTimeSlots(): TimeInterval[] {
-    // Here, create your default program for a day.
-    // This is just an example, modify it according to your needs.
     return [
       { start: '09:00', end: '11:00', type: 'Visiting time' },
       { start: '11:30', end: '13:30', type: 'Visiting time' },
@@ -420,7 +418,7 @@ export class CreateAPlanPageComponent implements OnInit {
       }
     },
       error => {
-        console.error(error);  // Handle errors here
+        console.error(error); 
       });
   }
 
