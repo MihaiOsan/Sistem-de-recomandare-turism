@@ -19,16 +19,16 @@ export class StatisticsPageComponent implements OnInit {
     switch (chartType) {
       case 'attractions':
         // Update the chartConfig for Attractions Visited
-        this.prepareChartData(this.attractionType, 'Attractions Visited');
+        this.prepareChartData(this.attractionType, 'Attractions');
 
         break;
       case 'country':
         // Update the chartConfig for Country Visited
-        this.prepareChartData(this.country, 'Country Visited');
+        this.prepareChartData(this.country, 'Country');
         break;
       case 'city':
         // Update the chartConfig for City Visited
-        this.prepareChartData(this.city, 'City Visited');
+        this.prepareChartData(this.city, 'City');
         break;
       default:
         // Handle the default case
@@ -142,7 +142,7 @@ export class StatisticsPageComponent implements OnInit {
         }
       });
 
-      this.prepareChartData(this.country, 'Country Visited');
+      this.prepareChartData(this.attractionType, 'Attractions');
       this.isLoading = false;
     });
 
@@ -168,7 +168,7 @@ export class StatisticsPageComponent implements OnInit {
         chart: {
           paletteColors: this.orangePalette.join(','),
           caption: chartTitle,
-          subCaption: 'Past Vacations',
+          subCaption: 'In your plans',
           showPercentValues: 1,
           decimals: 0,
           useDataPlotColorForLabels: 1,

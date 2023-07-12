@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit, AfterViewInit, ViewEncapsulation, ChangeDetectorRef } from '@angular/core';
 import { forkJoin } from 'rxjs';
 import { Attraction } from 'src/app/models/attraction';
 import { AttractionsDetails, Place } from 'src/app/models/attractions-details';
@@ -17,7 +17,7 @@ SwiperCore.use([Navigation, Pagination, Scrollbar, A11y]);
   encapsulation: ViewEncapsulation.None,
 })
 export class SliderComponent implements AfterViewInit {
-  constructor(private generateService: TripPlanService, private attractionService: AttractionService) { }
+  constructor(private generateService: TripPlanService, private attractionService: AttractionService, private changeDetectorRef: ChangeDetectorRef) { }
   topAttractions: Place[] = [];
 
 
@@ -33,6 +33,7 @@ export class SliderComponent implements AfterViewInit {
         }
       });
     });
+    this.changeDetectorRef.detectChanges();
   }
 
   onInit() {

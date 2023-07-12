@@ -38,6 +38,10 @@ export class AttractionDetailsComponent implements OnInit {
   constructor(private route: ActivatedRoute, private router: Router,private attractionService: AttractionService) { }
 
   ngOnInit(): void {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+  });
     this.attractionId = this.route.snapshot.paramMap.get('id');
     this.fetchAttractionDetails(this.attractionId!);
   }

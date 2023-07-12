@@ -87,6 +87,7 @@ public class TripService {
             DefaultWeightedEdge edge = graph.addEdge(startLocation, place.geometry.location);
             graph.setEdgeWeight(edge, distance);
             for (int j = i + 1; j < places.size(); j++) {
+
                 PlaceDetails otherPlace = places.get(j);
                 if (graph.containsVertex(otherPlace.geometry.location)) {
                     distance = getDrivingDistance(
